@@ -9,4 +9,4 @@ assignees: ''
 
 ## 요구 사항: 
 
-- [] todo1
+- [ ] todo1
