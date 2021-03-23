@@ -6,6 +6,7 @@ import { AnswerModule } from './answer/answer.module';
 import { BoardModule } from './board/board.module';
 import { CommentModule } from './comment/comment.module';
 import { FileModule } from './file/file.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FileModule } from './file/file.module';
     BoardModule,
     CommentModule,
     FileModule,
+    TypeOrmModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
