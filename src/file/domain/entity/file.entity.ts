@@ -13,15 +13,17 @@ export class File {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   identifier: number;
 
-  @Column({ type: 'text' })
-  file_path: string;
-
+  /*relations*/
   @ManyToOne(() => Question, (post) => post.files)
   question_identifier: Question;
-
   @ManyToOne(() => Board, (board) => board.files)
   board_identifier: Board;
 
+  /*properties*/
+  @Column({ type: 'text' })
+  file_path: string;
+
+  /*timestamps*/
   @CreateDateColumn()
   date_register: Date;
 }
