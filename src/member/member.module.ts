@@ -5,5 +5,6 @@ import { MemberService } from './domain/service/member.service';
 @Module({
   controllers: [MembersController],
   providers: [MemberService],
+  exports: [MemberService],
 })
-export class MembersModule {}
+export class MemberModule {}
