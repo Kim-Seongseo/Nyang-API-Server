@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MembersController } from './infra/api/member.controller';
-import { MemberService } from './domain/service/member.service';
-import { MemberRepository } from './infra/repository/member.repository';
+import { MemberController } from 'src/modules/member/infrastructure/api/member.controller';
+import { MemberService } from 'src/modules/member/application/service/member.service';
+import { MemberRepository } from 'src/modules/member/infrastructure/repository/member.repository';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from 'src/auth/passport/jwt-auth.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MemberRepository])],
-  controllers: [MembersController],
-  providers: [MemberService],
+  controllers: [MemberController],
+  providers: [MemberService], //, { provide: APP_GUARD, useClass: JwtAuthGuard }],
   exports: [MemberService],
 })
 export class MemberModule {}

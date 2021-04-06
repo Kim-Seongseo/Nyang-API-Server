@@ -8,6 +8,8 @@ import { CommentModule } from 'src/modules/comment/comment.module';
 import { FileModule } from 'src/modules/file/file.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     FileModule,
     AuthModule,
     TypeOrmModule.forRoot(),
+    // MailerModule.forRoot(),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

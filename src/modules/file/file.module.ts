@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FileController } from './infra/api/file.controller';
-import { FileService } from './domain/service/file.service';
+import { FileController } from './infrastructure/api/file.controller';
+import { FileService } from './application/service/file.service';
 
 @Module({
   controllers: [FileController],

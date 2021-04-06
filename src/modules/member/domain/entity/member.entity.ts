@@ -15,7 +15,7 @@ export class Member {
   identifier: number;
 
   /*properties*/
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 20, unique: true })
   account: string;
   @Column({ type: 'varchar' })
   password: string;
