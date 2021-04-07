@@ -5,9 +5,10 @@ import { MemberService } from 'src/modules/member/application/service/member.ser
 import { MemberRepository } from 'src/modules/member/infrastructure/repository/member.repository';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from 'src/auth/passport/jwt-auth.guard';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MemberRepository])],
+  imports: [MailModule, TypeOrmModule.forFeature([MemberRepository])],
   controllers: [MemberController],
   providers: [MemberService], //, { provide: APP_GUARD, useClass: JwtAuthGuard }],
   exports: [MemberService],

@@ -18,7 +18,7 @@ import {
   MemberFindResDto,
 } from '../../application/dto/member-find.dto';
 import { MemberReadResDto } from '../../application/dto/member-read.dto';
-import { MailService } from 'src/modules/mail/mail.service';
+import { MailService } from 'src/modules/mail/application/service/mail.service';
 
 @ApiTags('회원 관리')
 @Controller('member')

@@ -8,20 +8,32 @@ import { CommentModule } from 'src/modules/comment/comment.module';
 import { FileModule } from 'src/modules/file/file.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MemberModule,
     AnswerModule,
     BoardModule,
     CommentModule,
     FileModule,
     AuthModule,
-    TypeOrmModule.forRoot(),
-    // MailerModule.forRoot(),
     MailModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'mysql',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT) || 3306,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        logging: true,
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
