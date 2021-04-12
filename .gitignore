@@ -1,5 +1,7 @@
+# lib & auto
 node_modules
 dist
-ormconfig.json
-constants.ts
 
+# env
+config
+.env

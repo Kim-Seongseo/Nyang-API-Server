@@ -1,23 +1,41 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { MemberModule } from './member/member.module';
-import { AnswerModule } from './answer/answer.module';
-import { BoardModule } from './board/board.module';
-import { CommentModule } from './comment/comment.module';
-import { FileModule } from './file/file.module';
+import { AppController } from 'src/app.controller';
+import { AppService } from 'src/app.service';
+import { MemberModule } from 'src/modules/member/member.module';
+import { AnswerModule } from 'src/modules/answer/answer.module';
+import { BoardModule } from 'src/modules/board/board.module';
+import { CommentModule } from 'src/modules/comment/comment.module';
+import { FileModule } from 'src/modules/file/file.module';
+import { AuthModule } from 'src/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { MailModule } from './modules/mail/mail.module';
+import { CertificationCodeModule } from './modules/certification-code/certification-code.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MemberModule,
     AnswerModule,
     BoardModule,
     CommentModule,
     FileModule,
-    TypeOrmModule.forRoot(),
     AuthModule,
+    MailModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'mysql',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT) || 3306,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        logging: true,
+      }),
+    }),
+    CertificationCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

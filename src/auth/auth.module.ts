@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './domain/service/auth.service';
-import { MemberModule } from '../member/member.module';
-import { LocalStrategy } from './local.strategy';
-import { JwtStrategy } from './jwt.strategy';
+import { AuthService } from 'src/auth/application/service/auth.service';
+import { MemberModule } from 'src/modules/member/member.module';
+import { LocalStrategy } from 'src/auth/passport/local.strategy';
+import { JwtStrategy } from 'src/auth/passport/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { jwtConstants } from 'src/auth/passport/constants';
+import { AuthController } from 'src/auth/infra/api/auth.controller';
 @Module({
   imports: [
     MemberModule,
@@ -15,6 +16,7 @@ import { jwtConstants } from './constants';
       signOptions: { expiresIn: '60s' },
     }),
   ],
+  controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService, JwtModule],
 })
