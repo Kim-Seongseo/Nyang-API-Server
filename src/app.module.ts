@@ -10,6 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
+import { CertificationCodeModule } from './modules/certification-code/certification-code.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MailModule } from './modules/mail/mail.module';
         logging: true,
       }),
     }),
+    CertificationCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

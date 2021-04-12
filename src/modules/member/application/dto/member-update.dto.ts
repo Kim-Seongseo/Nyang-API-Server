@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 // Request
-export class UpdateMemberReqDto {
+export class MemberUpdateReqDto {
   @ApiProperty()
   @IsOptional()
   @IsString()

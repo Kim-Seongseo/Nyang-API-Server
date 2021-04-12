@@ -2,9 +2,6 @@
 node_modules
 dist
 
-# secret
-constants.ts
-
 # env
 config
 .env

@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { MemberService } from 'src/modules/member/application/service/member.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginReqDto, LoginResDto } from 'src/auth/application/dto/login.dto';
+import { MemberVerifyService } from 'src/modules/member/application/service/member-verify.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private memberService: MemberService,
+    private memberVerifyService: MemberVerifyService,
     private jwtService: JwtService,
   ) {}
 
   async validateMember(loginReqDto: LoginReqDto): Promise<LoginResDto> {
-    const memberInfo = await this.memberService.verify(loginReqDto);
+    const memberInfo = await this.memberVerifyService.verify(loginReqDto);
 
     if (!memberInfo) throw new UnauthorizedException();
     return memberInfo;

@@ -5,7 +5,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MemberAuthority } from 'src/modules/member/domain/entity/member-authority.enum';
-import { RecordState } from 'src/modules/common/domain/entity/record-state.enum';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class Member {
@@ -40,5 +41,11 @@ export class Member {
 
   async comparePassword(cryptogram: string): Promise<boolean> {
     return cryptogram === this.password;
+  }
+
+  static async encryptToHash(prevPlainText: string): Promise<string> {
+    const BCRYPT_ROUNDS = 10;
+    const nextHash = bcrypt.hash(prevPlainText, BCRYPT_ROUNDS);
+    return nextHash;
   }
 }

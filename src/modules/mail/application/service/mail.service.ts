@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { MailSendCertificationCodeReqDto } from 'src/modules/mail/application/dto/mail-send-certification-code.dto';
+import { Member } from 'src/modules/member/domain/entity/member.entity';
 
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async example2(): Promise<void | undefined> {
+  async sendMail(
+    mailSendCertificationCodeReqDto: MailSendCertificationCodeReqDto,
+  ): Promise<void | undefined> {
     await this.mailerService.sendMail({
-      to: 'dubu4050@naver.com', // list of receivers
-      from: 'projectnyang@gmail.com', // sender address
-      subject: 'Testing Nest MailerModule ✔', // Subject line
-      text: 'welcome', // plaintext body
-      html: '<b>welcome</b>', // HTML body content
+      to: mailSendCertificationCodeReqDto.email,
+      subject: '[Project Nyang] Authentication for Email ✔',
+      template: 'certification_code',
+      context: {
+        code: mailSendCertificationCodeReqDto.certification_code,
+        username: 'you',
+      },
     });
   }
 }

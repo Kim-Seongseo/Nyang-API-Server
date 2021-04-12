@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Post } from 'src/modules/common/domain/entity/post.entity';
+import { Post } from 'src/modules/post/domain/entity/post.entity';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { File } from 'src/modules/file/domain/entity/file.entity';
 @Entity()
