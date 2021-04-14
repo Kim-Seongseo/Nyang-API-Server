@@ -5,15 +5,17 @@ import { LocalStrategy } from 'src/auth/passport/local.strategy';
 import { JwtStrategy } from 'src/auth/passport/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from 'src/auth/passport/constants';
 import { AuthController } from 'src/auth/infra/api/auth.controller';
+
 @Module({
   imports: [
     MemberModule,
     PassportModule,
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.AUTH_CONSTANTS_SECRET,
+        signOptions: { expiresIn: process.env.AUTH_EXPIRES_IN },
+      }),
     }),
   ],
   controllers: [AuthController],

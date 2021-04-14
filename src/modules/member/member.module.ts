@@ -36,7 +36,11 @@ import { MemberVerifyService } from './application/service/member-verify.service
     MemberSendCertificationCodeService,
     MemberUpdateService,
     MemberVerifyService,
-  ], //, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
   exports: [MemberVerifyService],
 })
 export class MemberModule {}

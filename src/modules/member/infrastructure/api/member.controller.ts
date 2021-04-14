@@ -61,6 +61,7 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '아이디 중복 확인' }) // done
+  @Public()
   @Post('/duplicate')
   async checkDuplication(@Body() account: string): Promise<any | undefined> {
     await this.memberCheckDuplicationService.checkDuplication(
@@ -99,7 +100,7 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '회원 활동 조회' }) // 추후 작업
-  @Post('/duplicate')
+  @Post('/history/:account')
   async getHistory() {
     // need: board, question, comment, answer, page 고려하여 api분리
     return;
@@ -132,7 +133,6 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '비밀번호 수정' }) // done
-  @Public()
   @Patch('/find/password')
   async modifyPassword(
     @Body() memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
@@ -144,6 +144,7 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '이메일 인증번호 요청' }) // done
+  @Public()
   @Get('/cert/email/:email')
   async sendCertificationCode(
     @Param() email: string,
@@ -155,6 +156,7 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '이메일 인증번호 검증' }) // done
+  @Public()
   @Post('/cert/email/')
   async verifyCertificationCode(
     @Body() certificationCodeEmailFindReqDto: CertificationCodeEmailFindReqDto,
