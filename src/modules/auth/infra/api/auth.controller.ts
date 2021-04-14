@@ -1,8 +1,8 @@
 import { Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { LocalAuthGuard } from 'src/auth/passport/local-auth.guard';
-import { AuthService } from 'src/auth/application/service/auth.service';
-import { JwtAuthGuard } from 'src/auth/passport/jwt-auth.guard';
+import { LocalAuthGuard } from 'src/modules/auth/passport/local-auth.guard';
+import { AuthService } from 'src/modules/auth/application/service/auth.service';
+import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 
 @ApiTags('로그인 관리')
 @Controller('auth')

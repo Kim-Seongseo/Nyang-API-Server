@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { classToPlain, plainToClass } from 'class-transformer';
-import { LoginReqDto, LoginResDto } from 'src/auth/application/dto/login.dto';
+import {
+  LoginReqDto,
+  LoginResDto,
+} from 'src/modules/auth/application/dto/login.dto';
 import { Member } from '../../domain/entity/member.entity';
 import { MemberRepository } from '../../infrastructure/repository/member.repository';
 

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
-import { Public } from 'src/auth/decorator/skip-auth.decorator';
+import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   MemberFindAccountReqDto,

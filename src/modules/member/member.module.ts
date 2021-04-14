@@ -4,7 +4,7 @@ import { MemberController } from 'src/modules/member/infrastructure/api/member.c
 import { MemberService } from 'src/modules/member/application/service/member.service';
 import { MemberRepository } from 'src/modules/member/infrastructure/repository/member.repository';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from 'src/auth/passport/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { MailModule } from '../mail/mail.module';
 import { CertificationCodeModule } from '../certification-code/certification-code.module';
 import { MemberCheckDuplicationService } from './application/service/member-check-duplication.service';
