@@ -14,7 +14,7 @@ export class File {
   identifier: number;
 
   /*relations*/
-  @ManyToOne(() => Question, (post) => post.files)
+  @ManyToOne(() => Question, (question) => question.files)
   question_identifier: Question;
   @ManyToOne(() => Board, (board) => board.files)
   board_identifier: Board;
