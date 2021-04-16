@@ -9,7 +9,7 @@ export class Question extends Post {
   member_identifier: Member;
   @OneToMany(() => File, (file) => file.board_identifier, {
     lazy: true,
-    cascade: false,
+    onDelete: 'CASCADE',
   })
   files: File[];
 

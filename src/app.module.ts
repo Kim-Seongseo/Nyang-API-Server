@@ -6,7 +6,7 @@ import { AnswerModule } from 'src/modules/answer/answer.module';
 import { BoardModule } from 'src/modules/board/board.module';
 import { CommentModule } from 'src/modules/comment/comment.module';
 import { FileModule } from 'src/modules/file/file.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from 'src/modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';

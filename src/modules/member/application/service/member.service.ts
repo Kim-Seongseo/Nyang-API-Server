@@ -9,7 +9,10 @@ import { MemberReadResDto } from 'src/modules/member/application/dto/member-read
 import { classToPlain, plainToClass } from 'class-transformer';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
-import { LoginReqDto, LoginResDto } from 'src/auth/application/dto/login.dto';
+import {
+  LoginReqDto,
+  LoginResDto,
+} from 'src/modules/auth/application/dto/login.dto';
 import { DuplicatedAccountException } from '../exception/duplicated-account.exception';
 import { uuid } from 'uuidv4';
 import {

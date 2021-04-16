@@ -2,16 +2,21 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MemberAuthority } from 'src/modules/member/domain/entity/member-authority.enum';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import * as bcrypt from 'bcryptjs';
+import { Authority } from 'src/modules/authority/domain/entity/authority.entity';
 
 @Entity()
 export class Member {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   identifier: number;
+
+  /*relations*/
+  @ManyToOne(() => Authority, { lazy: true, cascade: false })
+  authority: Authority;
 
   /*properties*/
   @Column({ type: 'varchar', length: 20, unique: true })
@@ -26,12 +31,12 @@ export class Member {
   email: string;
   @Column({ type: 'varchar', length: 20 })
   phone_number: string;
-  @Column({
-    type: 'enum',
-    enum: MemberAuthority,
-    default: MemberAuthority.MEMBER,
-  })
-  authority: MemberAuthority;
+  // @Column({
+  //   type: 'enum',
+  //   enum: MemberAuthority,
+  //   default: MemberAuthority.MEMBER,
+  // })
+  // authority: MemberAuthority;
   @Column({ type: 'datetime' })
   date_birth: Date;
   @Column({ type: 'enum', enum: RecordState, default: RecordState.NONE })

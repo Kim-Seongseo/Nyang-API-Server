@@ -5,7 +5,12 @@ import { AppModule } from 'src/app.module';
 import * as morgan from 'morgan';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
+    },
+  });
 
   // 수신 데이터 유효성 검사
   app.useGlobalPipes(
