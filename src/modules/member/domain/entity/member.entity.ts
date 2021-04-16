@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import * as bcrypt from 'bcryptjs';
-import { Authority } from 'src/modules/authority/domain/entity/authority.entity';
+import { Role } from 'src/modules/role/domain/entity/role.entity';
 
 @Entity()
 export class Member {
@@ -15,8 +15,8 @@ export class Member {
   identifier: number;
 
   /*relations*/
-  @ManyToOne(() => Authority, { lazy: true, cascade: false })
-  authority: Authority;
+  @ManyToOne(() => Role, { lazy: true, cascade: false })
+  authority: Role;
 
   /*properties*/
   @Column({ type: 'varchar', length: 20, unique: true })

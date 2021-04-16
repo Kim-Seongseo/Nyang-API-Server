@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from 'src/modules/auth/application/service/auth.service';
 import { MemberModule } from 'src/modules/member/member.module';
-import { LocalStrategy } from 'src/modules/auth/passport/local.strategy';
-import { JwtStrategy } from 'src/modules/auth/passport/jwt.strategy';
+import { LocalStrategy } from 'src/modules/auth/guard/local/local.strategy';
+import { JwtStrategy } from 'src/modules/auth/guard/jwt/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from 'src/modules/auth/infra/api/auth.controller';
