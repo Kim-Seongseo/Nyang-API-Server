@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberController } from 'src/modules/member/infrastructure/api/member.controller';
-import { MemberService } from 'src/modules/member/application/service/member.service';
 import { MemberRepository } from 'src/modules/member/infrastructure/repository/member.repository';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt/jwt-auth.guard';
@@ -17,6 +16,8 @@ import { MemberReadService } from './application/service/member-read.service';
 import { MemberSendCertificationCodeService } from './application/service/member-send-certification-code.service';
 import { MemberUpdateService } from './application/service/member-update.service';
 import { MemberVerifyService } from './application/service/member-verify.service';
+import { RoleGuard } from '../role/guard/role.guard';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
@@ -36,10 +37,14 @@ import { MemberVerifyService } from './application/service/member-verify.service
     MemberSendCertificationCodeService,
     MemberUpdateService,
     MemberVerifyService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RoleGuard,
+    // },
   ],
   exports: [MemberVerifyService],
 })
