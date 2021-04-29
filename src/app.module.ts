@@ -11,17 +11,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
 import { CertificationCodeModule } from './modules/certification-code/certification-code.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    MemberModule,
-    AnswerModule,
-    BoardModule,
-    CommentModule,
-    FileModule,
-    AuthModule,
-    MailModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'mysql',
@@ -35,7 +31,15 @@ import { CertificationCodeModule } from './modules/certification-code/certificat
         logging: true,
       }),
     }),
-    CertificationCodeModule,
+    MemberModule,
+    AnswerModule,
+    BoardModule,
+    CommentModule,
+    FileModule,
+    // AuthModule,
+    // MailModule,
+    // CertificationCodeModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

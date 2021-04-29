@@ -1,4 +1,4 @@
-export enum AuthorityDetailType {
+export enum PermissionType {
   MEMBER_ACCESS = 'member_access',
   QUESTION_ACCESS = 'question_access',
   QUESTION_MANAGE = 'question_manage',

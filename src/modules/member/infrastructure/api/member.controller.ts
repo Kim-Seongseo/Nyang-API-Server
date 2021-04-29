@@ -30,7 +30,8 @@ import { MemberFindAccountService } from '../../application/service/member-find-
 import { MemberFindPasswordService } from '../../application/service/member-find-password.service';
 import { MemberModifyPasswordService } from '../../application/service/member-modify-password.service';
 import { MemberSendCertificationCodeService } from '../../application/service/member-send-certification-code.service';
-import { MemberVerifyService } from '../../application/service/member-verify.service';
+import { Permissions } from 'src/modules/role/decorator/role.decorator';
+import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 
 @ApiTags('회원 관리')
 @Controller('member')
@@ -61,6 +62,7 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '아이디 중복 확인' }) // done
+  @Permissions(PermissionType.MEMBER_ACCESS)
   @Public()
   @Post('/duplicate')
   async checkDuplication(@Body() account: string): Promise<any | undefined> {

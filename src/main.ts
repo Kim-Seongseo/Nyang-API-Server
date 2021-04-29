@@ -11,7 +11,7 @@ async function bootstrap() {
       credentials: true,
     },
   });
-
+  // app.setGlobalPrefix('')
   // 수신 데이터 유효성 검사
   app.useGlobalPipes(
     new ValidationPipe({
