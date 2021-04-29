@@ -14,16 +14,15 @@ export class AuthService {
   ) {}
 
   async validateMember(loginReqDto: LoginReqDto): Promise<LoginResDto> {
-    const memberInfo = await this.memberVerifyService.verify(loginReqDto);
-
+    const memberInfo: LoginResDto = await this.memberVerifyService.verify(
+      loginReqDto,
+    );
     if (!memberInfo) throw new UnauthorizedException();
     return memberInfo;
   }
 
-  async login(loginResDto: LoginResDto): Promise<any> {
-    const payload = { account: loginResDto.account, name: loginResDto.name };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async createAccessToken(payload: Record<string, any>): Promise<string> {
+    console.log(payload);
+    return await this.jwtService.sign(payload);
   }
 }

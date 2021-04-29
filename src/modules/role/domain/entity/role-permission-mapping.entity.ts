@@ -8,8 +8,8 @@ export class RolePermissionMapping {
   identifier: number;
 
   @ManyToOne(() => Role, { lazy: true, cascade: false })
-  authority_group: Role;
+  role: Role;
 
   @ManyToOne(() => Permission, { lazy: true, cascade: false })
-  authority: Permission;
+  permission: Permission;
 }

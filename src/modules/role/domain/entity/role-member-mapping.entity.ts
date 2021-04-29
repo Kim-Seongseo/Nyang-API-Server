@@ -9,7 +9,7 @@ export class RoleMemberMapping {
 
   /*relations*/
   @ManyToOne(() => Role, { lazy: true, cascade: false })
-  authority_group: Role;
+  role: Role;
 
   @ManyToOne(() => Member, { lazy: true, cascade: false })
   member: Member;

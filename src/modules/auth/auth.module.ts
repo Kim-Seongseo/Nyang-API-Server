@@ -6,6 +6,7 @@ import { JwtStrategy } from 'src/modules/auth/guard/jwt/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from 'src/modules/auth/infra/api/auth.controller';
+import { AuthDecodeAccessTokenService } from './application/service/auth.decode-access-token.service';
 
 @Module({
   imports: [
@@ -19,7 +20,12 @@ import { AuthController } from 'src/modules/auth/infra/api/auth.controller';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  providers: [
+    AuthService,
+    AuthDecodeAccessTokenService,
+    LocalStrategy,
+    JwtStrategy,
+  ],
+  exports: [AuthService, AuthDecodeAccessTokenService, JwtModule],
 })
 export class AuthModule {}

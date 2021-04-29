@@ -1,17 +1,12 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PermissionType } from './permission-type.enum';
-import { Role } from './role.entity';
+import { PermissionType } from '../type/permission-type.enum';
 
 @Entity()
 export class Permission {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   identifier: number;
 
-  /*relations*/
-  @ManyToOne(() => Role, { lazy: true, cascade: false })
-  authority: Role;
-
   /*properties*/
-  @Column({ type: 'enum', enum: PermissionType })
-  authority_detail_name: PermissionType;
+  @Column({ type: 'enum', enum: PermissionType, unique: true })
+  permission_name: PermissionType;
 }

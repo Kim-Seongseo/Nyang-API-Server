@@ -17,7 +17,7 @@ export class LoginReqDto {
 @Exclude()
 export class LoginResDto {
   @Expose()
-  readonly account: string;
+  readonly identifier: number;
   @Expose()
-  readonly name: string;
+  readonly account: string;
 }

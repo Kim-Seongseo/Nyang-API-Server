@@ -31,7 +31,7 @@ import { MemberFindPasswordService } from '../../application/service/member-find
 import { MemberModifyPasswordService } from '../../application/service/member-modify-password.service';
 import { MemberSendCertificationCodeService } from '../../application/service/member-send-certification-code.service';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
-import { PermissionType } from 'src/modules/role/domain/entity/permission-type.enum';
+import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 
 @ApiTags('회원 관리')
 @Controller('member')

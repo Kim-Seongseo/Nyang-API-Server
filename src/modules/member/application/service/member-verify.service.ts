@@ -15,6 +15,7 @@ export class MemberVerifyService {
     const result = await this.memberRepository.findOne({
       account: loginReqDto.account,
     });
+    console.log(result);
     const cryptogram = await Member.encryptToHash(result.password);
     if (!result.comparePassword(cryptogram)) return null;
     return plainToClass(LoginResDto, classToPlain(result));

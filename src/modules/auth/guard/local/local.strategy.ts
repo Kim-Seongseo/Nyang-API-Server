@@ -15,6 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       account,
       password,
     });
+
     console.log(loginResDto);
     if (!loginResDto) throw new UnauthorizedException();
     return loginResDto;
