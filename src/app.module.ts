@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
 import { CertificationCodeModule } from './modules/certification-code/certification-code.module';
 import { RoleModule } from './modules/role/role.module';
+import { ImpressionModule } from 'src/modules/impression/impression.module';
 
 @Module({
   imports: [
@@ -36,10 +37,8 @@ import { RoleModule } from './modules/role/role.module';
     BoardModule,
     CommentModule,
     FileModule,
-    // AuthModule,
-    // MailModule,
-    // CertificationCodeModule,
     RoleModule,
+    ImpressionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
