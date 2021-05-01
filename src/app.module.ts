@@ -6,11 +6,8 @@ import { AnswerModule } from 'src/modules/answer/answer.module';
 import { BoardModule } from 'src/modules/board/board.module';
 import { CommentModule } from 'src/modules/comment/comment.module';
 import { FileModule } from 'src/modules/file/file.module';
-import { AuthModule } from 'src/modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { MailModule } from './modules/mail/mail.module';
-import { CertificationCodeModule } from './modules/certification-code/certification-code.module';
 import { RoleModule } from './modules/role/role.module';
 import { ImpressionModule } from 'src/modules/impression/impression.module';
 

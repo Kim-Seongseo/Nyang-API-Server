@@ -10,7 +10,6 @@ export class MemberUpdateService {
     account: string,
     memberUpdateReqDto: MemberUpdateReqDto,
   ): Promise<any | undefined> {
-    // await this.checkDuplication(account);
     try {
       await this.memberRepository.update(
         { account: account },

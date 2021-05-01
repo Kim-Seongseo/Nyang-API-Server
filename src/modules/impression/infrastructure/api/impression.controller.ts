@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { json } from 'express';
 import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
 
 @ApiTags('예진 관리')
@@ -9,14 +10,16 @@ export class ImpressionController {
   @Public()
   @Post()
   async impression(@Body() query): Promise<any | undefined> {
-    const address = '/api/impression';
+    const address = '/impression';
+    const body = '{"content": "' + query['content'] + '"}';
+
     const response = (
       await fetch(process.env.ML_API_SERVER + address, {
         method: 'POST',
         headers: {
           'Content-Type': 'appilcation/json',
         },
-        body: query,
+        body: body,
       })
     ).json();
     return response;

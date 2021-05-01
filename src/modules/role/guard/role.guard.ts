@@ -29,10 +29,12 @@ export class RoleGuard implements CanActivate {
         headers['token'],
       );
       console.log(decodeToken);
+
       const identifier: number = decodeToken['identifier'];
       const role: number = await this.roleMemberMappingReadService.readRole(
         identifier,
       );
+
       const permissions: string[] = await this.rolePermissionMappingReadService.readPermissions(
         role,
       );
