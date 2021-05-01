@@ -30,8 +30,8 @@ import { MemberFindAccountService } from '../../application/service/member-find-
 import { MemberFindPasswordService } from '../../application/service/member-find-password.service';
 import { MemberModifyPasswordService } from '../../application/service/member-modify-password.service';
 import { MemberSendCertificationCodeService } from '../../application/service/member-send-certification-code.service';
-import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
+import { Permissions } from 'src/modules/role/decorator/role.decorator';
 
 @ApiTags('회원 관리')
 @Controller('member')
