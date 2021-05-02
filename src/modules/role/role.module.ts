@@ -9,6 +9,7 @@ import { PermissionDeleteService } from './application/service/permission/permis
 import { PermissionExistService } from './application/service/permission/permission-exist.service';
 import { PermissionInitService } from './application/service/permission/permission-init.service';
 import { PermissionReadAllService } from './application/service/permission/permission-read-all.service';
+import { PermissionReadByMemberService } from './application/service/permission/permission-read-by-member.service';
 import { RoleMemberMappingReadService } from './application/service/role-member-mapping/role-member-mapping-read.service';
 import { RolePermissionMappingCreateService } from './application/service/role-permission-mapping/role-permission-mapping-create.service';
 import { RolePermissionMappingExistService } from './application/service/role-permission-mapping/role-permission-mapping-exist.service';
@@ -55,6 +56,7 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
     PermissionDeleteService,
     PermissionInitService,
     PermissionReadAllService,
+    PermissionReadByMemberService,
     RoleMemberMappingReadService,
     RolePermissionMappingExistService,
     RolePermissionMappingCreateService,
