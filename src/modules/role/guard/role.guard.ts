@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthDecodeAccessTokenService } from 'src/modules/auth/application/service/auth.decode-access-token.service';
+import { PermissionReadByMemberService } from '../application/service/permission/permission-read-by-member.service';
 import { RoleMemberMappingReadService } from '../application/service/role-member-mapping/role-member-mapping-read.service';
 import { RolePermissionMappingReadService } from '../application/service/role-permission-mapping/role-permission-mapping-read.service';
 import { PERMISSION_KEY } from '../decorator/role.decorator';
@@ -10,8 +11,7 @@ import { PermissionType } from '../domain/type/permission-type.enum';
 export class RoleGuard implements CanActivate {
   constructor(
     private readonly authDecodeAccessTokenService: AuthDecodeAccessTokenService,
-    private readonly roleMemberMappingReadService: RoleMemberMappingReadService,
-    private readonly rolePermissionMappingReadService: RolePermissionMappingReadService,
+    private readonly permissionReadByMemberService: PermissionReadByMemberService,
     private reflector: Reflector,
   ) {}
 
@@ -31,13 +31,12 @@ export class RoleGuard implements CanActivate {
       console.log(decodeToken);
 
       const identifier: number = decodeToken['identifier'];
-      const role: number = await this.roleMemberMappingReadService.readRole(
+
+      const permissions = await this.permissionReadByMemberService.readByMember(
         identifier,
       );
+      console.log(permissions);
 
-      const permissions: string[] = await this.rolePermissionMappingReadService.readPermissions(
-        role,
-      );
       for (const requiredPermission of requiredPermissions) {
         if (!permissions.includes(requiredPermission)) {
           return false;
