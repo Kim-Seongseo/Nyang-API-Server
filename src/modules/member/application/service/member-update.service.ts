@@ -7,12 +7,12 @@ export class MemberUpdateService {
   constructor(private memberRepository: MemberRepository) {}
 
   async update(
-    account: string,
+    identifier: number,
     memberUpdateReqDto: MemberUpdateReqDto,
   ): Promise<any | undefined> {
     try {
       await this.memberRepository.update(
-        { account: account },
+        { identifier },
         { ...memberUpdateReqDto },
       );
       return { message: 'account is successfully modified.' };

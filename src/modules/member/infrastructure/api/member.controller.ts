@@ -3,15 +3,23 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
 import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   MemberFindAccountReqDto,
   MemberFindAccountResDto,
@@ -32,8 +40,15 @@ import { MemberModifyPasswordService } from '../../application/service/member-mo
 import { MemberSendCertificationCodeService } from '../../application/service/member-send-certification-code.service';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
+import { ResponseService } from 'src/modules/response/application/service/response.service';
+import { Response } from 'src/modules/response/response.interface';
+import { Member } from '../../decorator/member.decorator';
+import { MemberType } from '../../domain/entity/member-type.enum';
+import { SimpleConsoleLogger } from 'typeorm';
+import { ExceptionInterceptor } from 'src/modules/common/interceptor/exception.interceptor';
 
 @ApiTags('회원 관리')
+@UseInterceptors(ExceptionInterceptor)
 @Controller('member')
 export class MemberController {
   constructor(
@@ -47,126 +62,301 @@ export class MemberController {
     private readonly memberFindPasswordService: MemberFindPasswordService,
     private readonly memberModifyPasswordService: MemberModifyPasswordService,
     private readonly memberSendCertificationCodeService: MemberSendCertificationCodeService,
+    private readonly responseService: ResponseService,
   ) {}
 
   @ApiOperation({ summary: '회원 등록' })
-  @Public()
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @Post('/')
   async registerMember(
     @Body() memberCreateReqDto: MemberCreateReqDto,
-  ): Promise<number | undefined> {
+  ): Promise<Response | undefined> {
     // 필수 입력정보 체크 -> validator / done
     // account 중복 체크여부 -> checkDup()로 사전에 검증 / done
     // 이메일 인증 여부 -> verifyCertificationCode()로 검증
-    return await this.memberCreateService.create(memberCreateReqDto);
-  }
+    try {
+      const identifier: string = (
+        await this.memberCreateService.create(memberCreateReqDto)
+      ).toString();
 
-  @ApiOperation({ summary: '아이디 중복 확인' }) // done
-  @Permissions(PermissionType.MEMBER_ACCESS)
-  @Public()
-  @Post('/duplicate')
-  async checkDuplication(@Body() account: string): Promise<any | undefined> {
-    await this.memberCheckDuplicationService.checkDuplication(
-      account['account'],
-    );
-    return { message: 'Available' };
+      return this.responseService.success(
+        '계정을 성공적으로 생성하였습니다.',
+        HttpStatus.CREATED,
+        { identifier },
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '회원 개인정보 수정' })
-  @Put('/:account')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
+  @Permissions(PermissionType.MEMBER_ACCESS)
+  @Put('/')
   async modifyMember(
-    @Param() account: string,
+    @Member() memberIdentifier: number,
     @Body() memberUpdateReqDto: MemberUpdateReqDto,
   ): Promise<any | undefined> {
     // params: dto / done
     // 필수 입력정보 검증 -> validator & optional / done
-    return await this.memberUpdateService.update(
-      account['account'],
-      memberUpdateReqDto,
-    );
+    try {
+      const identifier: string = await this.memberUpdateService.update(
+        memberIdentifier,
+        memberUpdateReqDto,
+      );
+      return this.responseService.success(
+        '계정이 성공적으로 수정되었습니다.',
+        HttpStatus.OK,
+        { identifier },
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '회원 탈퇴' }) // done
-  @Delete('/:account')
-  async removeMember(@Param() account: string): Promise<any | undefined> {
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
+  @Delete('/')
+  async removeMember(
+    @Member() memberIdentifier: number,
+  ): Promise<any | undefined> {
     // handle: account -> uuid4, isdeleted: true
-    return await this.memberDeleteService.delete(account['account']);
+    try {
+      const identifier: string = await this.memberDeleteService
+        .delete(memberIdentifier)
+        .toString();
+      return this.responseService.success(
+        '계정이 성공적으로 삭제되었습니다.',
+        HttpStatus.OK,
+        { identifier },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '회원 개인정보 조회' }) // done
-  @Get('/:account')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+    type: [MemberReadResDto],
+  })
+  @Get('/')
   async getOne(
-    @Param() account: string,
-  ): Promise<MemberReadResDto | undefined> {
-    return await this.memberReadService.read(account['account']);
+    @Member() memberIdentifier: number,
+  ): Promise<Response | undefined> {
+    try {
+      const memberInfo: MemberReadResDto = await this.memberReadService.read(
+        memberIdentifier,
+      );
+      return this.responseService.success(
+        '계정이 성공적으로 조회되었습니다.',
+        HttpStatus.OK,
+        { memberInfo },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '아이디 중복 확인' }) // done
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        account: {
+          type: 'string',
+        },
+      },
+    },
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+  })
+  @Permissions(PermissionType.BOARD_ACCESS)
+  @Post('/duplicate')
+  async checkDuplication(
+    @Body('account') account: string,
+  ): Promise<Response | undefined> {
+    try {
+      await this.memberCheckDuplicationService.checkDuplication(account);
+      return this.responseService.success(
+        '사용가능한 계정입니다.',
+        HttpStatus.CREATED,
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '회원 활동 조회' }) // 추후 작업
-  @Post('/history/:account')
-  async getHistory() {
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    // schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
+  @Post('/history')
+  async getHistory(@Member() memberIdentifier) {
     // need: board, question, comment, answer, page 고려하여 api분리
     return;
   }
 
   @ApiOperation({ summary: '계정 찾기' }) // done
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [MemberFindAccountResDto],
+  })
   @Public()
   @Post('/find/account')
   async findAccount(
     @Body() memberFindAccountReqDto: MemberFindAccountReqDto,
-  ): Promise<MemberFindAccountResDto | undefined> {
+  ): Promise<Response | undefined> {
     // params: email, name
     // need: dto
-    return this.memberFindAccountService.findAccount(memberFindAccountReqDto);
+    try {
+      const memberInfo: MemberFindAccountResDto = await this.memberFindAccountService.findAccount(
+        memberFindAccountReqDto,
+      );
+      return this.responseService.success(
+        '계정을 성공적으로 조회했습니다.',
+        HttpStatus.CREATED,
+        { memberInfo },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '비밀번호 찾기' }) // done
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @Public()
   @Post('/find/password')
   async findPassword(
     @Body() memberFindPasswordReqDto: MemberFindPasswordReqDto,
-  ) {
+  ): Promise<Response | undefined> {
     // params: account, email, name
     // need: dto
     // 1. 존재여부 검증
     // 2. 이메일 발송
-    return this.memberFindPasswordService.findPassword(
-      memberFindPasswordReqDto,
-    );
+    try {
+      const identifier: string = await this.memberFindPasswordService
+        .findPassword(memberFindPasswordReqDto)
+        .toString();
+      return this.responseService.success(
+        '비밀번호 찾기를 위한 이메일이 발송되었습니다.',
+        HttpStatus.CREATED,
+        { identifier },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '비밀번호 수정' }) // done
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
+  @Public()
   @Patch('/find/password')
   async modifyPassword(
     @Body() memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
-  ) {
+  ): Promise<Response | undefined> {
     // param: password
-    return this.memberModifyPasswordService.modifyPassword(
-      memberModifyPasswordReqDto,
-    );
+    try {
+      const identifier: string = await this.memberModifyPasswordService
+        .modifyPassword(memberModifyPasswordReqDto)
+        .toString();
+      return this.responseService.success(
+        '비밀번호가 성공적으로 수정되었습니다.',
+        HttpStatus.OK,
+        { identifier },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({ summary: '이메일 인증번호 요청' }) // done
+  @ApiParam({
+    name: 'email',
+    type: 'string',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+  })
   @Public()
   @Get('/cert/email/:email')
   async sendCertificationCode(
     @Param() email: string,
-  ): Promise<void | undefined> {
+  ): Promise<Response | undefined> {
     // param: param
-    return await this.memberSendCertificationCodeService.sendCertificationCode(
-      email['email'],
-    );
+    try {
+      await this.memberSendCertificationCodeService.sendCertificationCode(
+        email['email'],
+      );
+      return this.responseService.success(
+        '성공적으로 이메일이 발송되었습니다.',
+        HttpStatus.OK,
+      );
+    } catch (error) {}
   }
 
-  @ApiOperation({ summary: '이메일 인증번호 검증' }) // done
+  @ApiOperation({
+    summary: '이메일 인증번호 검증',
+    description: 'type의 default는 email',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @Public()
   @Post('/cert/email/')
   async verifyCertificationCode(
     @Body() certificationCodeEmailFindReqDto: CertificationCodeEmailFindReqDto,
-  ) {
+  ): Promise<Response | undefined> {
     // params: email, certification_code
     // need: dto
-    return await this.certificationCodeService.verify(
-      certificationCodeEmailFindReqDto,
-    );
+    try {
+      const identifier: string = (
+        await this.certificationCodeService.verify(
+          certificationCodeEmailFindReqDto,
+        )
+      ).toString();
+      return this.responseService.success(
+        '이메일 인증이 완료되었습니다.',
+        HttpStatus.CREATED,
+        { identifier },
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
   }
 }

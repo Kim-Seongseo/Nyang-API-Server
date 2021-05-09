@@ -38,10 +38,10 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
   ],
   controllers: [RoleController],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
     {
       provide: APP_GUARD,
       useClass: RoleGuard,

@@ -8,15 +8,15 @@ import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 export class MemberDeleteService {
   constructor(private memberRepository: MemberRepository) {}
 
-  async delete(account: string): Promise<any | undefined> {
+  async delete(identifier: number): Promise<number | undefined> {
     let alternate = uuid();
     alternate = alternate.slice(-20, alternate.length);
     try {
       await this.memberRepository.update(
-        { account: account },
+        { identifier },
         { account: alternate, isDeleted: RecordState.DELETED },
       );
-      return { message: 'account is successfully deleted.' };
+      return identifier;
     } catch (error) {
       throw new UnexpectedErrorException();
     }

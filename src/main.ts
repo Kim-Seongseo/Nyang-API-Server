@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import * as morgan from 'morgan';
+import { customRequestMiddleware } from './modules/common/request/custom-request.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -33,7 +34,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
-
-  await app.listen(8090);
+  app.use(customRequestMiddleware); // request expansion for account info
+  await app.listen(8091);
 }
 bootstrap();

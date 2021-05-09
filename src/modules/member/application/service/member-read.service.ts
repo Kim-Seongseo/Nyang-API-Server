@@ -8,10 +8,10 @@ import { MemberReadResDto } from '../dto/member-read.dto';
 export class MemberReadService {
   constructor(private memberRepository: MemberRepository) {}
 
-  async read(account: string): Promise<MemberReadResDto | undefined> {
+  async read(identifier: number): Promise<MemberReadResDto | undefined> {
     try {
       return await this.memberRepository
-        .findOne({ account: account })
+        .findOne({ identifier })
         .then((member) => plainToClass(MemberReadResDto, classToPlain(member))); // entity to dto
     } catch (error) {
       throw new UnexpectedErrorException();
