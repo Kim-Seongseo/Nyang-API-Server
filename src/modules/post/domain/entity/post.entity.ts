@@ -1,8 +1,8 @@
-import { Column, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Common } from 'src/modules/common/domain/entity/common.entity';
 
 export abstract class Post {
-  @PrimaryColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   identifier: number;
 
   /*properties*/
