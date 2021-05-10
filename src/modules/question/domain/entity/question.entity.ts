@@ -2,6 +2,8 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Post } from 'src/modules/post/domain/entity/post.entity';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { File } from 'src/modules/file/domain/entity/file.entity';
+import { QuestionState } from './question-state.enum';
+
 @Entity()
 export class Question extends Post {
   /*relations*/
@@ -20,6 +22,6 @@ export class Question extends Post {
   species: string;
   @Column({ type: 'int', width: 4 })
   age: number;
-  @Column({ type: 'varchar', length: 20 })
-  state: string;
+  @Column({ type: 'enum', enum: QuestionState, default: QuestionState.NONE })
+  state: QuestionState;
 }

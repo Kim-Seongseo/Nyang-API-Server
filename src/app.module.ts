@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { RoleModule } from './modules/role/role.module';
 import { ImpressionModule } from 'src/modules/impression/impression.module';
+import { QuestionModule } from './modules/question/question.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ImpressionModule } from 'src/modules/impression/impression.module';
       }),
     }),
     MemberModule,
+    QuestionModule,
     AnswerModule,
     BoardModule,
     CommentModule,

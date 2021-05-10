@@ -2,7 +2,7 @@ import { CreateDateColumn, UpdateDateColumn, Column } from 'typeorm';
 
 export class Common {
   /*properties*/
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: 'none' })
   is_deleted: string;
 
   /*timestamps*/
