@@ -43,8 +43,6 @@ import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/response.interface';
 import { Member } from '../../decorator/member.decorator';
-import { MemberType } from '../../domain/entity/member-type.enum';
-import { SimpleConsoleLogger } from 'typeorm';
 import { ExceptionInterceptor } from 'src/modules/common/interceptor/exception.interceptor';
 
 @ApiTags('회원 관리')
@@ -71,6 +69,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @Permissions()
   @Post('/')
   async registerMember(
     @Body() memberCreateReqDto: MemberCreateReqDto,
@@ -130,6 +129,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @Permissions(PermissionType.MEMBER_ACCESS)
   @Delete('/')
   async removeMember(
     @Member() memberIdentifier: number,
@@ -155,6 +155,7 @@ export class MemberController {
     description: 'success',
     type: [MemberReadResDto],
   })
+  @Permissions(PermissionType.MEMBER_ACCESS)
   @Get('/')
   async getOne(
     @Member() memberIdentifier: number,
@@ -189,7 +190,7 @@ export class MemberController {
     status: HttpStatus.CREATED,
     description: 'success',
   })
-  @Permissions(PermissionType.BOARD_ACCESS)
+  @Permissions()
   @Post('/duplicate')
   async checkDuplication(
     @Body('account') account: string,
@@ -212,6 +213,7 @@ export class MemberController {
     description: 'success',
     // schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @Permissions(PermissionType.MEMBER_ACCESS)
   @Post('/history')
   async getHistory(@Member() memberIdentifier) {
     // need: board, question, comment, answer, page 고려하여 api분리
@@ -224,7 +226,7 @@ export class MemberController {
     description: 'success',
     type: [MemberFindAccountResDto],
   })
-  @Public()
+  @Permissions()
   @Post('/find/account')
   async findAccount(
     @Body() memberFindAccountReqDto: MemberFindAccountReqDto,
@@ -251,7 +253,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
-  @Public()
+  @Permissions()
   @Post('/find/password')
   async findPassword(
     @Body() memberFindPasswordReqDto: MemberFindPasswordReqDto,
@@ -280,7 +282,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
-  @Public()
+  @Permissions(PermissionType.MEMBER_ACCESS)
   @Patch('/find/password')
   async modifyPassword(
     @Body() memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
@@ -310,7 +312,7 @@ export class MemberController {
     status: HttpStatus.OK,
     description: 'success',
   })
-  @Public()
+  @Permissions()
   @Get('/cert/email/:email')
   async sendCertificationCode(
     @Param() email: string,
@@ -336,7 +338,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
-  @Public()
+  @Permissions()
   @Post('/cert/email/')
   async verifyCertificationCode(
     @Body() certificationCodeEmailFindReqDto: CertificationCodeEmailFindReqDto,
