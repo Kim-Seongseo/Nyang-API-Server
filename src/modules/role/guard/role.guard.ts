@@ -23,7 +23,7 @@ export class RoleGuard implements CanActivate {
     const requiredPermissions = this.reflector.getAllAndOverride<
       PermissionType[]
     >(PERMISSION_KEY, [context.getHandler(), context.getClass()]);
-    if (!requiredPermissions) {
+    if (!requiredPermissions.length) {
       return true;
     }
 
