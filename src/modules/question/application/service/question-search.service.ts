@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { classToPlain, plainToClass } from "class-transformer";
-import { QuestionRepository } from "../../infrastructure/repository/question.repository";
-import { QuestionSearchReqDto } from "../dto/question-search.dto";
-import { QuestionViewResDto } from "../dto/question-view.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { classToPlain, plainToClass } from 'class-transformer';
+import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { QuestionSearchReqDto } from '../dto/question-search.dto';
+import { QuestionViewResDto } from '../dto/question-view.dto';
 
 @Injectable()
 export class QuestionSearchService {
   constructor(private questionRepository: QuestionRepository) {}
 
-  async searchQuestion(questionSearchReqDto: QuestionSearchReqDto): Promise<QuestionViewResDto | undefined> {
-    const result = await this.questionRepository.createQueryBuilder('q')
+  async searchQuestion(
+    questionSearchReqDto: QuestionSearchReqDto,
+  ): Promise<QuestionViewResDto | undefined> {
+    const result = await this.questionRepository
+      .createQueryBuilder('q')
       .select('q.identifier', 'identifier')
       .addSelect('q.title', 'title')
       .addSelect('q.content', 'content')
@@ -20,12 +23,14 @@ export class QuestionSearchService {
       .innerJoin('member', 'm', 'q.memberIdentifierIdentifier = m.identifier')
       .leftJoin('answer', 'a', 'a.questionIdentifierIdentifier = q.identifier')
       .where('q.commonIs_deleted = :none', { none: 'none' })
-      .andWhere('q.title like :keyword', { keyword: `%${questionSearchReqDto.keyword}%` })
+      .andWhere('q.title like :keyword', {
+        keyword: `%${questionSearchReqDto.keyword}%`,
+      })
       .groupBy('q.identifier')
       .orderBy('q.identifier', 'DESC')
       .getRawMany();
 
-    if(result.length == 0) throw new NotFoundException();
+    if (result.length == 0) throw new NotFoundException();
     return plainToClass(QuestionViewResDto, classToPlain(result));
   }
 }

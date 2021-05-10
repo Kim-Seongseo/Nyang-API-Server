@@ -18,7 +18,7 @@ import { QuestionRepository } from './infrastructure/repository/question.reposit
     QuestionDeleteService,
     QuestionViewService,
     QuestionDetailViewService,
-    QuestionSearchService
+    QuestionSearchService,
   ],
 })
 export class QuestionModule {}

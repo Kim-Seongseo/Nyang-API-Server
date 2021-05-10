@@ -1,6 +1,6 @@
-import { Exclude, Expose } from "class-transformer";
-import { IsNumber, IsString } from "class-validator";
-import { QuestionState } from "../../domain/entity/question-state.enum";
+import { Exclude, Expose } from 'class-transformer';
+import { IsNumber, IsString } from 'class-validator';
+import { QuestionState } from '../../domain/entity/question-state.enum';
 
 //Request
 

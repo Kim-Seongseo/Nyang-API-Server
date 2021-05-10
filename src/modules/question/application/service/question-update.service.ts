@@ -1,6 +1,6 @@
-import { Injectable, RequestTimeoutException } from "@nestjs/common";
-import { QuestionRepository } from "../../infrastructure/repository/question.repository";
-import { QuestionUpdateReqDto } from "../dto/question-update.dto";
+import { Injectable, RequestTimeoutException } from '@nestjs/common';
+import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { QuestionUpdateReqDto } from '../dto/question-update.dto';
 
 @Injectable()
 export class QuestionUpdateService {
@@ -8,12 +8,12 @@ export class QuestionUpdateService {
 
   async update(
     identifier: number,
-    questionUpdateReqDto: QuestionUpdateReqDto
+    questionUpdateReqDto: QuestionUpdateReqDto,
   ): Promise<any | undefined> {
     try {
       await this.questionRepository.update(
         { identifier: identifier },
-        { ...questionUpdateReqDto }
+        { ...questionUpdateReqDto },
       );
     } catch (error) {
       throw new RequestTimeoutException();

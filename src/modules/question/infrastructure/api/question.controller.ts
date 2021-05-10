@@ -1,4 +1,12 @@
-import { Controller, Body, Param, Post, Get, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Param,
+  Post,
+  Get,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
@@ -21,13 +29,15 @@ export class QuestionController {
     private readonly questionDeleteService: QuestionDeleteService,
     private readonly questionViewService: QuestionViewService,
     private readonly questionDetailViewService: QuestionDetailViewService,
-    private readonly questionSearchService: QuestionSearchService
+    private readonly questionSearchService: QuestionSearchService,
   ) {}
 
   @ApiOperation({ summary: '질문 등록' })
   @Public()
   @Post('/')
-  async registerQuestion(@Body() questionCreateReqDto: QuestionCreateReqDto): Promise<any | undefined> {
+  async registerQuestion(
+    @Body() questionCreateReqDto: QuestionCreateReqDto,
+  ): Promise<any | undefined> {
     return await this.questionCreateService.create(questionCreateReqDto);
   }
 
@@ -36,11 +46,11 @@ export class QuestionController {
   @Put('/:identifier')
   async updateQuestion(
     @Param() identifier: number,
-    @Body() questionUpdateReqDto: QuestionUpdateReqDto
+    @Body() questionUpdateReqDto: QuestionUpdateReqDto,
   ): Promise<any | undefined> {
     return await this.questionUpdateService.update(
       identifier['identifier'],
-      questionUpdateReqDto
+      questionUpdateReqDto,
     );
   }
 
@@ -62,13 +72,19 @@ export class QuestionController {
   @Public()
   @Get('/:identifier')
   async viewDetail(@Param() identifier: number): Promise<any | undefined> {
-    return await this.questionDetailViewService.detailView(identifier['identifier']);
+    return await this.questionDetailViewService.detailView(
+      identifier['identifier'],
+    );
   }
 
   @ApiOperation({ summary: '질문 검색' })
   @Public()
   @Post('/search')
-  async searchQuestion(@Body() questionSearchReqDto: QuestionSearchReqDto): Promise<any | undefined> {
-    return await this.questionSearchService.searchQuestion(questionSearchReqDto);
+  async searchQuestion(
+    @Body() questionSearchReqDto: QuestionSearchReqDto,
+  ): Promise<any | undefined> {
+    return await this.questionSearchService.searchQuestion(
+      questionSearchReqDto,
+    );
   }
 }

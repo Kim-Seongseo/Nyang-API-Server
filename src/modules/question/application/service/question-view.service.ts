@@ -1,14 +1,15 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { classToPlain, plainToClass } from "class-transformer";
-import { QuestionRepository } from "../../infrastructure/repository/question.repository";
-import { QuestionViewResDto } from "../dto/question-view.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { classToPlain, plainToClass } from 'class-transformer';
+import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { QuestionViewResDto } from '../dto/question-view.dto';
 
 @Injectable()
 export class QuestionViewService {
   constructor(private questionRepository: QuestionRepository) {}
 
   async view(): Promise<QuestionViewResDto | undefined> {
-    const result = await this.questionRepository.createQueryBuilder('q')
+    const result = await this.questionRepository
+      .createQueryBuilder('q')
       .select('q.identifier', 'identifier')
       .addSelect('q.title', 'title')
       .addSelect('q.content', 'content')
@@ -23,7 +24,7 @@ export class QuestionViewService {
       .orderBy('q.identifier', 'DESC')
       .getRawMany();
 
-    if(result.length == 0) throw new NotFoundException();
+    if (result.length == 0) throw new NotFoundException();
     return plainToClass(QuestionViewResDto, classToPlain(result));
   }
 }

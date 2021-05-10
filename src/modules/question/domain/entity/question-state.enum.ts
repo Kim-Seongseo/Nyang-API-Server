@@ -1,4 +1,4 @@
 export enum QuestionState {
   NONE = 'none',
-  ADOPTED = 'adopted'
+  ADOPTED = 'adopted',
 }
