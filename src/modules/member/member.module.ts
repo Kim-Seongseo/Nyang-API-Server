@@ -15,12 +15,14 @@ import { MemberSendCertificationCodeService } from './application/service/member
 import { MemberUpdateService } from './application/service/member-update.service';
 import { MemberVerifyService } from './application/service/member-verify.service';
 import { MemberEntityService } from './application/service/member-entity.service';
+import { ResponseModule } from '../response/response.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([MemberRepository]),
     MailModule,
     CertificationCodeModule,
+    ResponseModule,
   ],
   controllers: [MemberController],
   providers: [

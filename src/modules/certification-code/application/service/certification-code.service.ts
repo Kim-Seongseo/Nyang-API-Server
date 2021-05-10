@@ -1,4 +1,10 @@
-import { Injectable, RequestTimeoutException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { CertificationCodeRepository } from 'src/modules/certification-code/infrastructure/repository/certification-code.repository';
 import { CertificationCode } from '../../domain/entity/certification-code.entity';
@@ -44,7 +50,11 @@ export class CertificationCodeService {
     const certificationCode = await this.findOne(
       certificationCodeEmailFindReqDto,
     );
+    if (!certificationCode) {
+      console.log('sibal');
+      throw new HttpException('Invalid Information', HttpStatus.BAD_REQUEST);
+    }
     const currentTime = new Date();
-    return certificationCode.checkValid(currentTime);
+    return await certificationCode.checkValid(currentTime);
   }
 }

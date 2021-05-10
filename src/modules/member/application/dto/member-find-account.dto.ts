@@ -18,14 +18,17 @@ export class MemberFindAccountReqDto {
 // response
 @Exclude()
 export class MemberFindAccountResDto {
+  @ApiProperty()
   @Expose()
   @IsString()
   readonly account: string;
 
+  @ApiProperty()
   @Expose()
   @IsString()
   readonly email: string;
 
+  @ApiProperty()
   @Expose()
   @IsString()
   readonly name: string;

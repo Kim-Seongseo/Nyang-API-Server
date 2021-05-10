@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { CertificationCodeEmailCreateReqDto } from 'src/modules/certification-code/application/dto/certification-code-email-create.dto';
 import { CertificationCodeService } from 'src/modules/certification-code/application/service/certification-code.service';
@@ -22,15 +22,22 @@ export class MemberSendCertificationCodeService {
     );
 
     /*for certification_code*/
-    await this.certificationCodeService.insert(
-      plainToClass(CertificationCodeEmailCreateReqDto, {
-        contact_info: email,
-        certification_code,
-      }),
-    );
+    try {
+      await this.certificationCodeService.insert(
+        plainToClass(CertificationCodeEmailCreateReqDto, {
+          contact_info: email,
+          certification_code,
+        }),
+      );
+    } catch (error) {
+      throw new HttpException(
+        'error An error has occurred in CertificationCodeService',
+        HttpStatus.CONFLICT,
+      );
+    }
 
     /*for mail*/
-    const mailSendCertificationCodeReqDto = plainToClass(
+    const mailSendCertificationCodeReqDto: MailSendCertificationCodeReqDto = plainToClass(
       MailSendCertificationCodeReqDto,
       {
         email: email,
