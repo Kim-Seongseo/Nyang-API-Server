@@ -18,6 +18,7 @@ export enum EditorPermission {
   MEMBER_ACCESS = 'member_access',
   QUESTION_ACCESS = 'question_access',
   ANSWER_ACCESS = 'answer_access',
+  BOARD_ACCESS = 'board_access',
   BOARD_INFO_PUBLISH = 'board_info_publish',
   COMMENT_ACCESS = 'comment_access',
   FILE_ACCESS = 'file_access',

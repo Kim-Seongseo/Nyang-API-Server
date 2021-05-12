@@ -1,14 +1,10 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthDecodeAccessTokenService } from 'src/modules/auth/application/service/auth.decode-access-token.service';
 import { CustomRequest } from 'src/modules/common/request/custom-request.interface';
 import { PermissionReadByMemberService } from '../application/service/permission/permission-read-by-member.service';
 import { PERMISSION_KEY } from '../decorator/role.decorator';
+import parseBearerToken from 'parse-bearer-token';
 import { PermissionType } from '../domain/type/permission-type.enum';
 
 @Injectable()
@@ -20,41 +16,50 @@ export class RoleGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermissions = this.reflector.getAllAndOverride<
-      PermissionType[]
-    >(PERMISSION_KEY, [context.getHandler(), context.getClass()]);
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      PERMISSION_KEY,
+      [context.getHandler(), context.getClass()],
+    );
     if (!requiredPermissions.length) {
+      // 지정권한이 없을 경우
       return true;
     }
 
-    const { headers } = context.switchToHttp().getRequest<CustomRequest>();
-    const token = Array.isArray(headers.token)
-      ? headers.token[0]
-      : headers.token;
-
-    const decodeToken = await this.authDecodeAccessTokenService.decodeAccessToken(
-      token,
+    const token = parseBearerToken(
+      context.switchToHttp().getRequest<CustomRequest>(),
     );
 
-    if (!token || Date.now() > decodeToken.exp) {
-      // token is expired
-      return false;
-    }
+    if (token) {
+      // 토큰이 있는 경우
+      const decodeToken = await this.authDecodeAccessTokenService.decodeAccessToken(
+        token,
+      );
+      const identifier: number = decodeToken['identifier'];
+      context.switchToHttp().getRequest<CustomRequest>().account = identifier;
 
-    const identifier: number = decodeToken['identifier'];
-    context.switchToHttp().getRequest<CustomRequest>().account = identifier;
-
-    const permissions = await this.permissionReadByMemberService.readByMember(
-      identifier,
-    );
-    console.log(permissions);
-
-    for (const requiredPermission of requiredPermissions) {
-      if (!permissions.includes(requiredPermission)) {
-        // case: do not have a permission
+      if (Date.now() / 1000 > decodeToken.exp) {
+        // 토큰이 만료된 경우
         return false;
       }
+
+      const permissions = await this.permissionReadByMemberService.readByMember(
+        identifier,
+      );
+
+      for (const permission of permissions) {
+        if (requiredPermissions.includes(permission)) {
+          const type = permission.split('_')[1];
+          if (type === 'manage') {
+            context.switchToHttp().getRequest<CustomRequest>().isAdmin = true;
+          }
+          return true;
+        }
+      }
     }
-    return true;
+
+    if (requiredPermissions.includes(PermissionType.OPTION)) {
+      return true;
+    }
+    return false;
   }
 }

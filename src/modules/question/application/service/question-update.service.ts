@@ -9,12 +9,13 @@ export class QuestionUpdateService {
   async update(
     identifier: number,
     questionUpdateReqDto: QuestionUpdateReqDto,
-  ): Promise<any | undefined> {
+  ): Promise<number | undefined> {
     try {
       await this.questionRepository.update(
         { identifier: identifier },
         { ...questionUpdateReqDto },
       );
+      return identifier;
     } catch (error) {
       throw new RequestTimeoutException();
     }

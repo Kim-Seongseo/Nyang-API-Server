@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from 'src/modules/auth/infra/api/auth.controller';
 import { AuthDecodeAccessTokenService } from './application/service/auth.decode-access-token.service';
+import { ResponseModule } from '../response/response.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthDecodeAccessTokenService } from './application/service/auth.decode-
         signOptions: { expiresIn: process.env.AUTH_EXPIRES_IN },
       }),
     }),
+    ResponseModule,
   ],
   controllers: [AuthController],
   providers: [

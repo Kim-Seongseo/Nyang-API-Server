@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { QuestionIssuer } from '../../domain/type/question-issuer.type';
 
 //Request
 
@@ -33,4 +34,8 @@ export class QuestionDetailViewResDto {
   @Expose()
   @IsDate()
   readonly createDate: Date;
+
+  @Expose()
+  @IsEnum(QuestionIssuer)
+  isIssuer: QuestionIssuer;
 }

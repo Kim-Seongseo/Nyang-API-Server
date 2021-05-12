@@ -7,11 +7,14 @@ export class QuestionCreateService {
   constructor(private questionRepository: QuestionRepository) {}
 
   async create(
+    memberIdentifier: number,
     questionCreateReqDto: QuestionCreateReqDto,
-  ): Promise<any | undefined> {
+  ): Promise<number | undefined> {
     const question = await this.questionRepository.create({
+      member_identifier: { identifier: memberIdentifier },
       ...questionCreateReqDto,
     });
     await this.questionRepository.save(question);
+    return question.identifier;
   }
 }

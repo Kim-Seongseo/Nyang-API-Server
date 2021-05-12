@@ -11,6 +11,9 @@ import { ConfigModule } from '@nestjs/config';
 import { RoleModule } from './modules/role/role.module';
 import { ImpressionModule } from 'src/modules/impression/impression.module';
 import { QuestionModule } from './modules/question/question.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RoleGuard } from './modules/role/guard/role.guard';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -30,16 +33,22 @@ import { QuestionModule } from './modules/question/question.module';
         logging: true,
       }),
     }),
-    MemberModule,
     QuestionModule,
     AnswerModule,
     BoardModule,
     CommentModule,
     FileModule,
     RoleModule,
+    AuthModule,
     ImpressionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    },
+  ],
 })
 export class AppModule {}
