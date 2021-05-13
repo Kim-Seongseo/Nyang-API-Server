@@ -38,8 +38,8 @@ export class QuestionRepository extends Repository<Question> {
   async getPaginatedQuestion(
     skippedItems: number,
     perPage: number,
-  ): Promise<QuestionViewResDto | undefined> {
-    const data = await this.createQueryBuilder('q')
+  ): Promise<QuestionViewResDto[] | undefined> {
+    const datas = await this.createQueryBuilder('q')
       .select('q.identifier', 'identifier')
       .addSelect('q.title', 'title')
       .addSelect('q.content', 'content')
@@ -57,15 +57,17 @@ export class QuestionRepository extends Repository<Question> {
       .limit(perPage)
       .getRawMany();
 
-    return plainToClass(QuestionViewResDto, classToPlain(data));
+    return datas.map((data) => {
+      return plainToClass(QuestionViewResDto, classToPlain(data));
+    });
   }
 
   async getPaginatedQuestionByKeyword(
     skippedItems: number,
     perPage: number,
     keyword: string,
-  ): Promise<QuestionViewResDto | undefined> {
-    const data = await this.createQueryBuilder('q')
+  ): Promise<QuestionViewResDto[] | undefined> {
+    const datas = await this.createQueryBuilder('q')
       .select('q.identifier', 'identifier')
       .addSelect('q.title', 'title')
       .addSelect('q.content', 'content')
@@ -85,6 +87,9 @@ export class QuestionRepository extends Repository<Question> {
       .offset(skippedItems)
       .limit(perPage)
       .getRawMany();
-    return plainToClass(QuestionViewResDto, classToPlain(data));
+
+    return datas.map((data) => {
+      return plainToClass(QuestionViewResDto, classToPlain(data));
+    });
   }
 }

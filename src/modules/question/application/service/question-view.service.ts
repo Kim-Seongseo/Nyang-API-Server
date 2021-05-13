@@ -1,5 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { classToPlain, plainToClass } from 'class-transformer';
+import { Injectable } from '@nestjs/common';
 import { QuestionRepository } from '../../infrastructure/repository/question.repository';
 import { QuestionViewResDto } from '../dto/question-view.dto';
 
@@ -10,8 +9,8 @@ export class QuestionViewService {
   async paginatedView(
     perPage: number,
     skippedItems: number,
-  ): Promise<QuestionViewResDto | undefined> {
-    const questions = await this.questionRepository.getPaginatedQuestion(
+  ): Promise<QuestionViewResDto[] | undefined> {
+    const questions: QuestionViewResDto[] = await this.questionRepository.getPaginatedQuestion(
       skippedItems,
       perPage,
     );

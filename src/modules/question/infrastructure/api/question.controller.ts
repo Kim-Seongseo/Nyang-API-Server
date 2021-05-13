@@ -28,7 +28,7 @@ import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto'
 import { QuestionSearchReqDto } from '../../application/dto/question-search.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
-import { NotAIssuer } from '../../application/exception/not-a-issuer.exception';
+import { NotAIssuerException } from '../../application/exception/not-a-issuer.exception';
 import { QuestionCheckIssuerService } from '../../application/service/question-check-issuer.service';
 import { QuestionCreateService } from '../../application/service/question-create.service';
 import { QuestionDeleteService } from '../../application/service/question-delete.service';
@@ -93,7 +93,7 @@ export class QuestionController {
       if (
         !this.questionCheckIssuerService.isIssuer(memberIdentifier, identifier)
       ) {
-        throw new NotAIssuer();
+        throw new NotAIssuerException();
       }
 
       const questionIdentifier: string = (
@@ -124,7 +124,7 @@ export class QuestionController {
       if (
         !this.questionCheckIssuerService.isIssuer(memberIdentifier, identifier)
       ) {
-        throw new NotAIssuer();
+        throw new NotAIssuerException();
       }
 
       const questionIdentifier: string = (
@@ -163,14 +163,14 @@ export class QuestionController {
         page,
         perPage,
       );
-      const questions: QuestionViewResDto = await this.questionViewService.paginatedView(
+      const questions: QuestionViewResDto[] = await this.questionViewService.paginatedView(
         perPage,
         skippedItems,
       );
       return this.responseService.success(
         '질문을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
-        { questions },
+        questions,
       );
     } catch (error) {
       return this.responseService.error(error.response, error.status);
@@ -227,7 +227,7 @@ export class QuestionController {
         page,
         perPage,
       );
-      const questionInfo: QuestionViewResDto = await this.questionSearchService.searchQuestion(
+      const questionInfo: QuestionViewResDto[] = await this.questionSearchService.searchQuestion(
         skippedItems,
         perPage,
         questionSearchReqDto,

@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Common } from 'src/modules/common/domain/entity/common.entity';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { Question } from 'src/modules/question/domain/entity/question.entity';
+import { AnswerState } from '../type/answer-state.type';
 
 @Entity()
 export class Answer {
@@ -17,8 +18,8 @@ export class Answer {
   /*properties*/
   @Column({ type: 'text' })
   content: string;
-  @Column({ type: 'varchar', length: 20 })
-  select_state: string;
+  @Column({ type: 'enum', enum: AnswerState, default: AnswerState.NONE })
+  select_state: AnswerState;
   @Column((type) => Common)
   common: Common;
 }
