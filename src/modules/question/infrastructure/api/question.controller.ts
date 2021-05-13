@@ -7,8 +7,16 @@ import {
   Put,
   Delete,
   HttpStatus,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { MemberIsAdmin } from 'src/modules/member/decorator/member-isAdmin.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
@@ -27,7 +35,9 @@ import { QuestionDeleteService } from '../../application/service/question-delete
 import { QuestionDetailViewService } from '../../application/service/question-detail-view.service';
 import { QuestionSearchService } from '../../application/service/question-search.service';
 import { QuestionUpdateService } from '../../application/service/question-update.service';
+import { QuestionUtilService } from '../../application/service/question-util-service';
 import { QuestionViewService } from '../../application/service/question-view.service';
+import { PAGE, PER_PAGE } from '../../domain/constant/pagination.constant';
 
 @ApiTags('공개 QnA 질문 관리')
 @Controller('question')
@@ -40,6 +50,7 @@ export class QuestionController {
     private readonly questionDetailViewService: QuestionDetailViewService,
     private readonly questionSearchService: QuestionSearchService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
+    private readonly quesitonUtileService: QuestionUtilService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -130,15 +141,36 @@ export class QuestionController {
   }
 
   @ApiOperation({ summary: '질문 조회' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
   @Permissions()
   @Get('/')
-  async viewQuestion(): Promise<Response | undefined> {
+  async viewQuestion(
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
+  ): Promise<Response | undefined> {
     try {
-      const questionInfo: QuestionViewResDto = await this.questionViewService.view();
+      const skippedItems: number = await this.quesitonUtileService.skip(
+        page,
+        perPage,
+      );
+      const questions: QuestionViewResDto = await this.questionViewService.paginatedView(
+        perPage,
+        skippedItems,
+      );
       return this.responseService.success(
         '질문을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
-        { questionInfo },
+        { questions },
       );
     } catch (error) {
       return this.responseService.error(error.response, error.status);
@@ -172,13 +204,32 @@ export class QuestionController {
   }
 
   @ApiOperation({ summary: '질문 검색' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
   @Permissions()
   @Post('/search')
   async searchQuestion(
     @Body() questionSearchReqDto: QuestionSearchReqDto,
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
   ): Promise<any | undefined> {
     try {
+      const skippedItems: number = await this.quesitonUtileService.skip(
+        page,
+        perPage,
+      );
       const questionInfo: QuestionViewResDto = await this.questionSearchService.searchQuestion(
+        skippedItems,
+        perPage,
         questionSearchReqDto,
       );
       return this.responseService.success(

@@ -12,6 +12,7 @@ import { QuestionDeleteService } from './application/service/question-delete.ser
 import { QuestionDetailViewService } from './application/service/question-detail-view.service';
 import { QuestionSearchService } from './application/service/question-search.service';
 import { QuestionUpdateService } from './application/service/question-update.service';
+import { QuestionUtilService } from './application/service/question-util-service';
 import { QuestionViewService } from './application/service/question-view.service';
 import { QuestionRepository } from './infrastructure/repository/question.repository';
 
@@ -26,6 +27,7 @@ import { QuestionRepository } from './infrastructure/repository/question.reposit
     QuestionDetailViewService,
     QuestionSearchService,
     QuestionCheckIssuerService,
+    QuestionUtilService,
   ],
 })
 export class QuestionModule {}

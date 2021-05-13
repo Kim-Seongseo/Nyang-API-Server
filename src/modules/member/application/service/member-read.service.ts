@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { classToPlain, plainToClass } from 'class-transformer';
-import { UnexpectedErrorException } from 'src/modules/common/application/exception/unexpected-error-exception';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { MemberRepository } from '../../infrastructure/repository/member.repository';
 import { MemberReadResDto } from '../dto/member-read.dto';
 

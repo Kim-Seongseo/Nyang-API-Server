@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UnexpectedErrorException } from 'src/modules/common/application/exception/unexpected-error-exception';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
 import { RoleInitializationFailed } from 'src/modules/role/application/exception/initialization-failed.exception';
 import { RoleCreateService } from './role-create.service';

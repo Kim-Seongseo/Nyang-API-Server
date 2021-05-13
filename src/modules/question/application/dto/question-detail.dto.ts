@@ -1,5 +1,11 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { QuestionIssuer } from '../../domain/type/question-issuer.type';
 
 //Request
@@ -7,6 +13,10 @@ import { QuestionIssuer } from '../../domain/type/question-issuer.type';
 //Response
 @Exclude()
 export class QuestionDetailViewResDto {
+  @Expose()
+  @IsNumber()
+  readonly identifier: number;
+
   @Expose()
   @IsString()
   readonly title: string;

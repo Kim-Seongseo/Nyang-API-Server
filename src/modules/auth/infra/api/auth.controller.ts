@@ -9,9 +9,7 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from 'src/modules/auth/guard/local/local-auth.guard';
 import { AuthService } from 'src/modules/auth/application/service/auth.service';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt/jwt-auth.guard';
-import { Public } from '../../decorator/skip-auth.decorator';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
-import { Permission } from 'src/modules/role/domain/entity/permission.entity';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 
 @ApiTags('로그인 관리')
