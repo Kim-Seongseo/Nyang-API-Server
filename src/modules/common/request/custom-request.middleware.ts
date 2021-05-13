@@ -9,5 +9,6 @@ export function customRequestMiddleware(
 ) {
   const customReq: CustomRequest = (req as any) as CustomRequest;
   customReq.account = -1;
+  customReq.isAdmin = false;
   next();
 }

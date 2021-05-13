@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UnexpectedErrorException } from 'src/modules/common/application/exception/unexpected-error-exception';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { Member } from '../../domain/entity/member.entity';
 import { MemberRepository } from '../../infrastructure/repository/member.repository';
 import { MemberModifyPasswordReqDto } from '../dto/member-update-password.dto';

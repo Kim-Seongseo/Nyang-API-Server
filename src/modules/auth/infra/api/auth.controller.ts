@@ -1,26 +1,62 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from 'src/modules/auth/guard/local/local-auth.guard';
 import { AuthService } from 'src/modules/auth/application/service/auth.service';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt/jwt-auth.guard';
-import { Public } from '../../decorator/skip-auth.decorator';
+import { Permissions } from 'src/modules/role/decorator/role.decorator';
+import { ResponseService } from 'src/modules/response/application/service/response.service';
 
 @ApiTags('로그인 관리')
-@Controller('auth')
+@Controller()
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly responseService: ResponseService,
+  ) {}
 
+  @ApiOperation({ summary: '로그인' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        account: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        },
+      },
+    },
+    required: true,
+  })
   @UseGuards(LocalAuthGuard)
-  @Public()
+  @Permissions()
   @Post('/login')
   async login(@Request() req) {
-    return await this.authService.createAccessToken({
-      identifier: req.user['identifier'],
-      account: req.user['account'],
-    });
+    try {
+      const token: string = await this.authService.createAccessToken({
+        identifier: req.user['identifier'],
+        account: req.user['account'],
+      });
+      return this.responseService.success(
+        '로그인이 성공적으로 수행되었습니다.',
+        HttpStatus.CREATED,
+        { token },
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
+  @ApiOperation({ summary: '로그아웃' })
   @UseGuards(JwtAuthGuard)
+  @Permissions()
   @Post('/logout')
   async logout() {
     return 'ok';

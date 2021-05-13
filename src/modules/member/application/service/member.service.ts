@@ -25,7 +25,7 @@ import { CertificationCodeService } from 'src/modules/certification-code/applica
 import { CertificationCodeEmailCreateReqDto } from 'src/modules/certification-code/application/dto/certification-code-email-create.dto';
 import { MailSendCertificationCodeReqDto } from 'src/modules/mail/application/dto/mail-send-certification-code.dto';
 import { MemberModifyPasswordReqDto } from '../dto/member-update-password.dto';
-import { UnexpectedErrorException } from 'src/modules/common/application/exception/unexpected-error-exception';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { Member } from '../../domain/entity/member.entity';
 
 @Injectable()

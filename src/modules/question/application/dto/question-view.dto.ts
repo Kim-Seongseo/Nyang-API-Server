@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { IsNumber, IsString } from 'class-validator';
 import { QuestionState } from '../../domain/entity/question-state.enum';
@@ -7,6 +8,10 @@ import { QuestionState } from '../../domain/entity/question-state.enum';
 //Response
 @Exclude()
 export class QuestionViewResDto {
+  @Expose()
+  @IsNumber()
+  readonly identifier: number;
+
   @Expose()
   @IsString()
   readonly title: string;

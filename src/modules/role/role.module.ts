@@ -40,12 +40,8 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
   providers: [
     // {
     //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
+    //   useClass: RoleGuard,
     // },
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
-    },
     RoleExistService,
     RoleCreateService,
     RoleDeleteService,
@@ -62,6 +58,8 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
     RolePermissionMappingCreateService,
     RolePermissionMappingReadService,
     RolePermissionMappingInitService,
+    RoleGuard,
   ],
+  exports: [RoleGuard, PermissionReadByMemberService],
 })
 export class RoleModule {}

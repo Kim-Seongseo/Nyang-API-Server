@@ -5,12 +5,13 @@ import { QuestionRepository } from '../../infrastructure/repository/question.rep
 export class QuestionDeleteService {
   constructor(private questionRepository: QuestionRepository) {}
 
-  async delete(identifier: number): Promise<any | undefined> {
+  async delete(identifier: number): Promise<number | undefined> {
     try {
       await this.questionRepository.update(
         { identifier: identifier },
         { common: { is_deleted: 'deleted' } },
       );
+      return identifier;
     } catch (error) {
       throw new RequestTimeoutException();
     }

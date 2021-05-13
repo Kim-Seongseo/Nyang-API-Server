@@ -28,13 +28,13 @@ async function bootstrap() {
     .setVersion('0.0.1')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'Token' },
-      'access-token',
+      'token',
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
   app.use(customRequestMiddleware); // request expansion for account info
-  await app.listen(8091);
+  await app.listen(8092);
 }
 bootstrap();

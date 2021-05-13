@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
-import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
@@ -42,8 +42,8 @@ import { PermissionType } from 'src/modules/role/domain/type/permission-type.enu
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/response.interface';
-import { Member } from '../../decorator/member.decorator';
 import { ExceptionInterceptor } from 'src/modules/common/interceptor/exception.interceptor';
+import { MemberIdentifier } from '../../decorator/member-identifier.decorator';
 
 @ApiTags('회원 관리')
 @UseInterceptors(ExceptionInterceptor)
@@ -99,10 +99,11 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @ApiBearerAuth('token')
   @Permissions(PermissionType.MEMBER_ACCESS)
   @Put('/')
   async modifyMember(
-    @Member() memberIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
     @Body() memberUpdateReqDto: MemberUpdateReqDto,
   ): Promise<any | undefined> {
     // params: dto / done
@@ -129,10 +130,11 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @ApiBearerAuth('token')
   @Permissions(PermissionType.MEMBER_ACCESS)
   @Delete('/')
   async removeMember(
-    @Member() memberIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
   ): Promise<any | undefined> {
     // handle: account -> uuid4, isdeleted: true
     try {
@@ -155,10 +157,11 @@ export class MemberController {
     description: 'success',
     type: [MemberReadResDto],
   })
+  @ApiBearerAuth('token')
   @Permissions(PermissionType.MEMBER_ACCESS)
   @Get('/')
   async getOne(
-    @Member() memberIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
   ): Promise<Response | undefined> {
     try {
       const memberInfo: MemberReadResDto = await this.memberReadService.read(
@@ -213,9 +216,10 @@ export class MemberController {
     description: 'success',
     // schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @ApiBearerAuth('token')
   @Permissions(PermissionType.MEMBER_ACCESS)
   @Post('/history')
-  async getHistory(@Member() memberIdentifier) {
+  async getHistory(@MemberIdentifier() memberIdentifier) {
     // need: board, question, comment, answer, page 고려하여 api분리
     return;
   }
@@ -282,6 +286,7 @@ export class MemberController {
     description: 'success',
     schema: { type: 'object', properties: { identifier: { type: 'string' } } },
   })
+  @ApiBearerAuth('token')
   @Permissions(PermissionType.MEMBER_ACCESS)
   @Patch('/find/password')
   async modifyPassword(

@@ -11,4 +11,5 @@ export enum PermissionType {
   COMMNET_MANAGE = 'commnet_manage',
   FILE_ACCESS = 'file_access',
   FILE_MANAGE = 'file_manage',
+  OPTION = 'option',
 }
