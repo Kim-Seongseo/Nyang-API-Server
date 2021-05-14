@@ -6,7 +6,7 @@ export interface Response {
   data?: Record<string, any> | Record<string, any>[];
 }
 
-export interface ResponsePaging extends Omit<Response, 'status' | 'data'> {
+export interface ResponsePaging extends Omit<Response, 'data'> {
   readonly totalData: number;
   readonly totalPage: number;
   readonly currentPage: number;

@@ -9,7 +9,14 @@ export class QuestionUtilService {
     return (page - 1) * perPage;
   }
 
-  async total(): Promise<number | undefined> {
+  async totalData(): Promise<number | undefined> {
     return await this.questionRepository.count();
+  }
+
+  async totalPage(
+    totalData: number,
+    perPage: number,
+  ): Promise<number | undefined> {
+    return Math.ceil(totalData / perPage);
   }
 }

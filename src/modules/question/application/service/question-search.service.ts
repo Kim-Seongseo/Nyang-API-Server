@@ -12,14 +12,14 @@ export class QuestionSearchService {
     skippedItems: number,
     perPage: number,
     questionSearchReqDto: QuestionSearchReqDto,
-  ): Promise<QuestionViewResDto | undefined> {
-    const result: QuestionViewResDto = await this.questionRepository.getPaginatedQuestionByKeyword(
+  ): Promise<QuestionViewResDto[] | undefined> {
+    const questions: QuestionViewResDto[] = await this.questionRepository.getPaginatedQuestionByKeyword(
       skippedItems,
       perPage,
       questionSearchReqDto.keyword,
     );
 
-    if (!result) throw new NotFoundException();
-    return plainToClass(QuestionViewResDto, classToPlain(result));
+    if (!questions || !questions.length) throw new NotFoundException();
+    return questions;
   }
 }
