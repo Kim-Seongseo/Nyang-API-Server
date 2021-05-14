@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import * as morgan from 'morgan';
 import { customRequestMiddleware } from './modules/common/request/custom-request.middleware';
+import { ExceptionInterceptor } from './modules/common/interceptor/exception.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +15,8 @@ async function bootstrap() {
   });
   // app.setGlobalPrefix('')
   // 수신 데이터 유효성 검사
+
+  // validator
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // validation을 위한 decorator가 붙어있지 않은 속성들은 제거
@@ -21,7 +24,9 @@ async function bootstrap() {
       transform: true, // 요청에서 넘어온 자료들의 형변환
     }),
   );
+  // morgan
   app.use(morgan('dev'));
+  // swagger
   const config = new DocumentBuilder()
     .setTitle('Nyang API')
     .setDescription('Nyang dev Api docs')
@@ -31,10 +36,13 @@ async function bootstrap() {
       'token',
     )
     .build();
-
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
+  // custom middleware for custom request
   app.use(customRequestMiddleware); // request expansion for account info
+  // exception interceptor
+  app.useGlobalInterceptors(new ExceptionInterceptor());
+
   await app.listen(8092);
 }
 bootstrap();

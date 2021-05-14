@@ -15,12 +15,13 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { MemberIsAdmin } from 'src/modules/member/decorator/member-isAdmin.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
-import { Response } from 'src/modules/response/response.interface';
+import { Response } from 'src/modules/response/application/domain/response.interface';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
@@ -55,6 +56,11 @@ export class QuestionController {
   ) {}
 
   @ApiOperation({ summary: '질문 등록' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @ApiBearerAuth('token')
   @Permissions(PermissionType.QUESTION_ACCESS, PermissionType.QUESTION_MANAGE)
   @Post('/')
@@ -81,6 +87,11 @@ export class QuestionController {
   }
 
   @ApiOperation({ summary: '질문 수정' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @ApiBearerAuth('token')
   @Permissions(PermissionType.QUESTION_ACCESS, PermissionType.QUESTION_MANAGE)
   @Put('/:identifier')
@@ -113,6 +124,11 @@ export class QuestionController {
   }
 
   @ApiOperation({ summary: '질문 삭제' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
   @ApiBearerAuth('token')
   @Permissions(PermissionType.QUESTION_ACCESS, PermissionType.QUESTION_MANAGE)
   @Delete('/:identifier')
@@ -151,6 +167,11 @@ export class QuestionController {
     type: 'string',
     required: true,
   })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [QuestionViewResDto],
+  })
   @Permissions()
   @Get('/')
   async viewQuestion(
@@ -159,6 +180,11 @@ export class QuestionController {
     perPage: number,
   ): Promise<Response | undefined> {
     try {
+      // 현재 페이지: page
+      // 페이지당 게시물 수 : perPage
+      // 페이지 내 게시물: questions
+      // 총 게시물 수: totalData
+      // 총 페이지 수: totalPage
       const skippedItems: number = await this.quesitonUtileService.skip(
         page,
         perPage,
@@ -167,9 +193,19 @@ export class QuestionController {
         perPage,
         skippedItems,
       );
-      return this.responseService.success(
+
+      const totalData = await this.quesitonUtileService.totalData();
+      const totalPage = await this.quesitonUtileService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
         '질문을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
+        totalData,
+        totalPage,
+        page,
+        perPage,
         questions,
       );
     } catch (error) {
@@ -178,6 +214,11 @@ export class QuestionController {
   }
 
   @ApiOperation({ summary: '질문 상세 조회' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [QuestionDetailViewResDto],
+  })
   @ApiBearerAuth('token')
   @Permissions(PermissionType.OPTION, PermissionType.QUESTION_MANAGE)
   @Get('/:identifier')
@@ -196,7 +237,7 @@ export class QuestionController {
       return this.responseService.success(
         '질문을 성공적으로 조회했습니다.',
         HttpStatus.OK,
-        { questionInfo },
+        questionInfo,
       );
     } catch (error) {
       return this.responseService.error(error.response, error.status);
@@ -214,6 +255,11 @@ export class QuestionController {
     type: 'string',
     required: true,
   })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [QuestionViewResDto],
+  })
   @Permissions()
   @Post('/search')
   async searchQuestion(
@@ -227,15 +273,25 @@ export class QuestionController {
         page,
         perPage,
       );
-      const questionInfo: QuestionViewResDto[] = await this.questionSearchService.searchQuestion(
+      const questions: QuestionViewResDto[] = await this.questionSearchService.searchQuestion(
         skippedItems,
         perPage,
         questionSearchReqDto,
       );
-      return this.responseService.success(
+
+      const totalData = await this.quesitonUtileService.totalData();
+      const totalPage = await this.quesitonUtileService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
         '질문이 성공적으로 검색되었습니다.',
         HttpStatus.OK,
-        { questionInfo },
+        totalData,
+        totalPage,
+        page,
+        perPage,
+        questions,
       );
     } catch (error) {
       return this.responseService.error(error.response, error.status);

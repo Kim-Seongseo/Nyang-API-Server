@@ -8,10 +8,11 @@ import {
 } from '@nestjs/swagger';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
-import { Response } from 'src/modules/response/response.interface';
+import { Response } from 'src/modules/response/application/domain/response.interface';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { AnswerCreateReqDto } from '../../application/dto/answer-create.dto';
+import { AnswerFindResDto } from '../../application/dto/answer-find.dto';
 import { AnswerUpdateReqDto } from '../../application/dto/answer-update.dto';
 import { AnswerCreateService } from '../../application/service/answer-create.service';
 import { AnswerDeleteService } from '../../application/service/answer-delete.service';
@@ -115,6 +116,7 @@ export class AnswerController {
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -123,10 +125,26 @@ export class AnswerController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'success',
-    // schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+    type: [AnswerFindResDto],
   })
+  @Permissions()
   @Get('/:postIdentifier')
-  async viewAnswer() {
-    return;
+  async viewAnswer(
+    @Param('postIdentifier') postIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
+  ): Promise<Response | undefined> {
+    try {
+      const answers = await this.answerFindService.find(
+        postIdentifier,
+        memberIdentifier,
+      );
+      return this.responseService.success(
+        '답변을 성공적으로 조회하였습니다.',
+        HttpStatus.OK,
+        answers,
+      );
+    } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
   }
 }

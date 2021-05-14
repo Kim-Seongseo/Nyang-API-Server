@@ -11,10 +11,11 @@ export class AnswerDeleteService {
     memberIdentifier: number,
   ): Promise<number | undefined> {
     const comment = await this.answerRepository.findOne({ identifier });
-    if (comment.member_identifier.identifier === memberIdentifier) {
+    const member = await comment.member_identifier;
+    if (member.identifier !== memberIdentifier) {
       throw new NotAIssuerException();
     }
-    await this.answerRepository.delete(comment);
-    return comment.identifier;
+    await this.answerRepository.delete({ identifier });
+    return identifier;
   }
 }

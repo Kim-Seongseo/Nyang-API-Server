@@ -13,12 +13,14 @@ export class AnswerUpdateService {
     memberIdentifier: number,
     answerUpdateReqDto: AnswerUpdateReqDto,
   ): Promise<number | undefined> {
+    console.log(memberIdentifier);
     const comment = await this.answerRepository.findOne({ identifier });
 
     if (!comment) {
       throw new NotExistException();
     }
-    if (comment.member_identifier.identifier !== memberIdentifier) {
+    const member = await comment.member_identifier;
+    if (member.identifier !== memberIdentifier) {
       // querybuilder 이용하여 최적화 필요
       throw new NotAIssuerException();
     }
