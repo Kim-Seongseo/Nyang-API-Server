@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RoleRepository } from '../../../infrastructure/repository/role.repository';
+import { RoleRepository } from '../../../infrastructure/persistence/repository/role.repository';
 import { DuplicatedRoleException } from '../../exception/duplicated-name.exception';
 import { RoleExistService } from './role-exist.service';
 

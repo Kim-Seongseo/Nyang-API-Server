@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RoleRepository } from 'src/modules/role/infrastructure/repository/role.repository';
+import { RoleRepository } from 'src/modules/role/infrastructure/persistence/repository/role.repository';
 
 @Injectable()
 export class RoleExistService {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
-import { PermissionRepository } from 'src/modules/role/infrastructure/repository/permission.repository';
+import { PermissionRepository } from 'src/modules/role/infrastructure/persistence/repository/permission.repository';
 import { DuplicatedPermissionException } from '../../exception/duplicated-name.exception';
 import { PermissionExistService } from './permission-exist.service';
 

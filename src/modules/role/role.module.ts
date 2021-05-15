@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { JwtAuthGuard } from '../auth/guard/jwt/jwt-auth.guard';
 import { MemberModule } from '../member/member.module';
 import { PermissionCreateService } from './application/service/permission/permission-create.service';
 import { PermissionDeleteService } from './application/service/permission/permission-delete.service';
@@ -20,17 +18,21 @@ import { RoleDeleteService } from './application/service/role/role-delete.servic
 import { RoleExistService } from './application/service/role/role-exist.service';
 import { RoleInitService } from './application/service/role/role-init.service';
 import { RoleReadAllService } from './application/service/role/role-read-all.service';
+import { PERMISSION_PORT } from './domain/port/permissions.port';
 import { RoleGuard } from './guard/role.guard';
 import { RoleController } from './infrastructure/api/role.controller';
-import { PermissionRepository } from './infrastructure/repository/permission.repository';
-import { RoleMemberMappingRepository } from './infrastructure/repository/role-member-mapping.repository';
-import { RolePermissionMappingRepository } from './infrastructure/repository/role-permission-mapping-repository';
-import { RoleRepository } from './infrastructure/repository/role.repository';
+import { PersistenceAdapter } from './infrastructure/persistence/persistence.adapter';
+import { PermissionQueryRepository } from './infrastructure/persistence/repository/permission.query.repository';
+import { PermissionRepository } from './infrastructure/persistence/repository/permission.repository';
+import { RoleMemberMappingRepository } from './infrastructure/persistence/repository/role-member-mapping.repository';
+import { RolePermissionMappingRepository } from './infrastructure/persistence/repository/role-permission-mapping-repository';
+import { RoleRepository } from './infrastructure/persistence/repository/role.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([RoleRepository]),
     TypeOrmModule.forFeature([PermissionRepository]),
+    TypeOrmModule.forFeature([PermissionQueryRepository]),
     TypeOrmModule.forFeature([RoleMemberMappingRepository]),
     TypeOrmModule.forFeature([RolePermissionMappingRepository]),
     AuthModule,
@@ -38,10 +40,6 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
   ],
   controllers: [RoleController],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RoleGuard,
-    // },
     RoleExistService,
     RoleCreateService,
     RoleDeleteService,
@@ -59,6 +57,10 @@ import { RoleRepository } from './infrastructure/repository/role.repository';
     RolePermissionMappingReadService,
     RolePermissionMappingInitService,
     RoleGuard,
+    {
+      provide: PERMISSION_PORT,
+      useClass: PersistenceAdapter,
+    },
   ],
   exports: [RoleGuard, PermissionReadByMemberService],
 })

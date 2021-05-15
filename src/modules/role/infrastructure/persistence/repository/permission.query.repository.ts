@@ -1,10 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Permission } from '../../domain/entity/permission.entity';
-import { RoleMemberMapping } from '../../domain/entity/role-member-mapping.entity';
-import { RolePermissionMapping } from '../../domain/entity/role-permission-mapping.entity';
+import { Permission } from '../../../domain/entity/permission.entity';
+import { RoleMemberMapping } from '../../../domain/entity/role-member-mapping.entity';
+import { RolePermissionMapping } from '../../../domain/entity/role-permission-mapping.entity';
 
 @EntityRepository(Permission)
-export class PermissionRepository extends Repository<Permission> {
+export class PermissionQueryRepository extends Repository<Permission> {
   async findPermissionsByMember(
     memberIdentifier: number,
   ): Promise<Permission[] | undefined> {

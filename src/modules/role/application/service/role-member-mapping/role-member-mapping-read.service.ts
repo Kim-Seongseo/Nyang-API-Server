@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from 'src/modules/role/domain/entity/role.entity';
-import { RoleMemberMappingRepository } from '../../../infrastructure/repository/role-member-mapping.repository';
+import { RoleMemberMappingRepository } from '../../../infrastructure/persistence/repository/role-member-mapping.repository';
 
 @Injectable()
 export class RoleMemberMappingReadService {

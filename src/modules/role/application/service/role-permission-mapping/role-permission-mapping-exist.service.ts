@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/repository/role-permission-mapping-repository';
+import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/persistence/repository/role-permission-mapping-repository';
 
 @Injectable()
 export class RolePermissionMappingExistService {
