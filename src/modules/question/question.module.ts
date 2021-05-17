@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionController } from 'src/modules/question/infrastructure/api/question.controller';
-import { AuthModule } from '../auth/auth.module';
 import { ResponseModule } from '../response/response.module';
-import { RoleGuard } from '../role/guard/role.guard';
-import { RoleModule } from '../role/role.module';
 import { QuestionCheckIssuerService } from './application/service/question-check-issuer.service';
 import { QuestionCreateService } from './application/service/question-create.service';
 import { QuestionDeleteService } from './application/service/question-delete.service';
@@ -14,10 +10,17 @@ import { QuestionSearchService } from './application/service/question-search.ser
 import { QuestionUpdateService } from './application/service/question-update.service';
 import { QuestionUtilService } from './application/service/question-util-service';
 import { QuestionViewService } from './application/service/question-view.service';
-import { QuestionRepository } from './infrastructure/repository/question.repository';
+import { QUESTION_PORT } from './domain/port/question.port';
+import { QuestionAdapter } from './infrastructure/persistence/question.adapter';
+import { QuestionQueryRepository } from './infrastructure/persistence/repository/question-query.repository';
+import { QuestionRepository } from './infrastructure/persistence/repository/question.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([QuestionRepository]), ResponseModule],
+  imports: [
+    TypeOrmModule.forFeature([QuestionRepository]),
+    TypeOrmModule.forFeature([QuestionQueryRepository]),
+    ResponseModule,
+  ],
   controllers: [QuestionController],
   providers: [
     QuestionCreateService,
@@ -28,6 +31,10 @@ import { QuestionRepository } from './infrastructure/repository/question.reposit
     QuestionSearchService,
     QuestionCheckIssuerService,
     QuestionUtilService,
+    {
+      provide: QUESTION_PORT,
+      useClass: QuestionAdapter,
+    },
   ],
 })
 export class QuestionModule {}

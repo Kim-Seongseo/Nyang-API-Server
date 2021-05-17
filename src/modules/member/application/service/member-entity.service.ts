@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Member } from '../../domain/entity/member.entity';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 
 @Injectable()
 export class MemberEntityService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
   async getEntity(account: string): Promise<Member | undefined> {
-    return await this.memberRepository.findOne({ account: account });
+    return await this.memberPort.findMemberByAccount(account);
   }
 }

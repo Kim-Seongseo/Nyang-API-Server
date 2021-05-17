@@ -1,13 +1,13 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { Question } from 'src/modules/question/domain/entity/question.entity';
-import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
+import { QuestionDetailViewResDto } from '../../../application/dto/question-detail.dto';
 import { classToPlain, plainToClass } from 'class-transformer';
-import { QuestionIssuer } from '../../domain/type/question-issuer.type';
-import { QuestionViewResDto } from '../../application/dto/question-view.dto';
+import { QuestionIssuer } from '../../../domain/type/question-issuer.type';
+import { QuestionViewResDto } from '../../../application/dto/question-view.dto';
 
 @EntityRepository(Question)
-export class QuestionRepository extends Repository<Question> {
-  async getQuestionDetailByIdentifier(
+export class QuestionQueryRepository extends Repository<Question> {
+  async findQuestionDetailByIdentifier(
     memberIdentifier: number,
     memberIsAdmin: boolean,
     identifier: number,
@@ -35,7 +35,7 @@ export class QuestionRepository extends Repository<Question> {
     return questionDetailViewResDto;
   }
 
-  async getPaginatedQuestion(
+  async findPaginatedQuestion(
     skippedItems: number,
     perPage: number,
   ): Promise<QuestionViewResDto[] | undefined> {
@@ -62,7 +62,7 @@ export class QuestionRepository extends Repository<Question> {
     });
   }
 
-  async getPaginatedQuestionByKeyword(
+  async findPaginatedQuestionByKeyword(
     skippedItems: number,
     perPage: number,
     keyword: string,

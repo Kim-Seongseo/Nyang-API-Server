@@ -2,8 +2,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   Response,
   ResponsePaging,
-} from 'src/modules/response/application/domain/response.interface';
-import { MESSAGE, STATUS } from '../domain/response.constant';
+} from 'src/modules/response/domain/response.interface';
+import { MESSAGE, STATUS } from '../../domain/response.constant';
 
 @Injectable()
 export class ResponseService {

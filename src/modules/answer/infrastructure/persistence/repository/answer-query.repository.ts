@@ -2,11 +2,11 @@ import { Repository, EntityRepository } from 'typeorm';
 import { Answer } from 'src/modules/answer/domain/entity/answer.entity';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { classToPlain, plainToClass } from 'class-transformer';
-import { AnswerFindResDto } from '../../application/dto/answer-find.dto';
+import { AnswerFindResDto } from '../../../application/dto/answer-find.dto';
 
 @EntityRepository(Answer)
-export class AnswerRepository extends Repository<Answer> {
-  async getAnswersByPostIdentifier(
+export class AnswerQueryRepository extends Repository<Answer> {
+  async findAnswersByPostIdentifier(
     postIdentifier: number,
     memberIdentifier: number,
   ): Promise<AnswerFindResDto[] | undefined> {

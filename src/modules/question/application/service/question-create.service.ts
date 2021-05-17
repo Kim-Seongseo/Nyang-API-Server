@@ -1,20 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionCreateReqDto } from '../dto/question-enroll.dto';
 
 @Injectable()
 export class QuestionCreateService {
-  constructor(private questionRepository: QuestionRepository) {}
+  constructor(
+    @Inject(QUESTION_PORT) private readonly questionPort: QuestionPort,
+  ) {}
 
   async create(
     memberIdentifier: number,
     questionCreateReqDto: QuestionCreateReqDto,
   ): Promise<number | undefined> {
-    const question = await this.questionRepository.create({
-      member_identifier: { identifier: memberIdentifier },
-      ...questionCreateReqDto,
-    });
-    await this.questionRepository.save(question);
-    return question.identifier;
+    const questionIdentifier = await this.questionPort.createQuestion(
+      memberIdentifier,
+      questionCreateReqDto,
+    );
+
+    return questionIdentifier;
   }
 }

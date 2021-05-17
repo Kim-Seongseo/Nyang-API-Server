@@ -1,18 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ROLE_PERMISSION_MAPPING_PORT } from 'src/modules/role/domain/port/port.constant';
+import { RolePermissionMappingPort } from 'src/modules/role/domain/port/role-permission-mapping.port';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { PermissionRepository } from 'src/modules/role/infrastructure/repository/permission.repository';
-import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/repository/role-permission-mapping-repository';
-import { RoleRepository } from 'src/modules/role/infrastructure/repository/role.repository';
 import { DuplicatedPermissionPerRoleException } from '../../exception/duplicated-name.exception';
 import { RolePermissionMappingExistService } from './role-permission-mapping-exist.service';
 
 @Injectable()
 export class RolePermissionMappingCreateService {
   constructor(
-    private readonly roleRepository: RoleRepository,
-    private readonly permissionRepository: PermissionRepository,
-    private readonly rolePermissionMappingRepository: RolePermissionMappingRepository,
+    @Inject(ROLE_PERMISSION_MAPPING_PORT)
+    private readonly rolePermissionMappingPort: RolePermissionMappingPort,
     private readonly rolePermissionMappingExistService: RolePermissionMappingExistService,
   ) {}
 
@@ -29,17 +27,10 @@ export class RolePermissionMappingCreateService {
       throw new DuplicatedPermissionPerRoleException();
     }
 
-    const permissionPerRole = await this.rolePermissionMappingRepository.create(
-      {
-        role: await this.roleRepository.findOne({
-          role_name: roleName,
-        }),
-        permission: await this.permissionRepository.findOne({
-          permission_name: permissionName,
-        }),
-      },
+    const rolePermissionIdentifier: number = await this.rolePermissionMappingPort.createRolePermissionMapping(
+      roleName,
+      permissionName,
     );
-    await this.rolePermissionMappingRepository.save(permissionPerRole);
-    return permissionPerRole.identifier;
+    return rolePermissionIdentifier;
   }
 }

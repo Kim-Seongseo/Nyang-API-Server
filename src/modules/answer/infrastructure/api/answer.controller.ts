@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
-import { Response } from 'src/modules/response/application/domain/response.interface';
+import { Response } from 'src/modules/response/domain/response.interface';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { AnswerCreateReqDto } from '../../application/dto/answer-create.dto';

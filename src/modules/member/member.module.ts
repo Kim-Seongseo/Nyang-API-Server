@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberController } from 'src/modules/member/infrastructure/api/member.controller';
-import { MemberRepository } from 'src/modules/member/infrastructure/repository/member.repository';
+import { MemberRepository } from 'src/modules/member/infrastructure/persistence/repository/member.repository';
 import { MailModule } from '../mail/mail.module';
 import { CertificationCodeModule } from '../certification-code/certification-code.module';
 import { MemberCheckDuplicationService } from './application/service/member-check-duplication.service';
@@ -16,6 +16,9 @@ import { MemberUpdateService } from './application/service/member-update.service
 import { MemberVerifyService } from './application/service/member-verify.service';
 import { MemberEntityService } from './application/service/member-entity.service';
 import { ResponseModule } from '../response/response.module';
+import { MEMBER_PORT } from './domain/port/member.port';
+import { MemberAdapter } from './infrastructure/persistence/member.adapter';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
@@ -23,6 +26,7 @@ import { ResponseModule } from '../response/response.module';
     MailModule,
     CertificationCodeModule,
     ResponseModule,
+    forwardRef(() => RoleModule),
   ],
   controllers: [MemberController],
   providers: [
@@ -37,14 +41,10 @@ import { ResponseModule } from '../response/response.module';
     MemberUpdateService,
     MemberVerifyService,
     MemberEntityService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RoleGuard,
-    // },
+    {
+      provide: MEMBER_PORT,
+      useClass: MemberAdapter,
+    },
   ],
   exports: [MemberVerifyService, MemberEntityService],
 })

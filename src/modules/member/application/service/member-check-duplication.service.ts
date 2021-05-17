@@ -1,15 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { DuplicatedAccountException } from '../exception/duplicated-account.exception';
 
 @Injectable()
 export class MemberCheckDuplicationService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
   async checkDuplication(account: string): Promise<void | undefined> {
-    const result = await this.memberRepository.find({
-      account: account,
-    });
-    if (result.length > 0) throw new DuplicatedAccountException();
+    const count: number = await this.memberPort.countMemberByAccount(account);
+    if (count > 0) throw new DuplicatedAccountException();
   }
 }

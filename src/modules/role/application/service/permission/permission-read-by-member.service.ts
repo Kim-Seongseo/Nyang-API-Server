@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { Permission } from 'src/modules/role/domain/entity/permission.entity';
-import { PermissionRepository } from 'src/modules/role/infrastructure/repository/permission.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { PermissionPort } from 'src/modules/role/domain/port/permission.port';
+import { PERMISSION_PORT } from 'src/modules/role/domain/port/port.constant';
 
 @Injectable()
 export class PermissionReadByMemberService {
-  constructor(private permissionRepository: PermissionRepository) {}
+  constructor(
+    @Inject(PERMISSION_PORT) private permissionPort: PermissionPort,
+  ) {}
 
   async readByMember(memberIdentifier: number): Promise<string[]> {
-    const permissionList = await this.permissionRepository.findPermissionsByMember(
+    const permissionList = await this.permissionPort.findPermissionsByMember(
       memberIdentifier,
     );
     const permissions: string[] = permissionList.map((permission) => {

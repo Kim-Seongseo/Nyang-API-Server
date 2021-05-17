@@ -1,25 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
-import { AnswerRepository } from '../../infrastructure/repository/answer.repository';
+import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerCreateReqDto } from '../dto/answer-create.dto';
 
 @Injectable()
 export class AnswerCreateService {
-  constructor(private readonly answerRepository: AnswerRepository) {}
+  constructor(@Inject(ANSWER_PORT) private readonly answerPort: AnswerPort) {}
 
   async create(
     memberIdentifier: number,
     answerCreateReqDto: AnswerCreateReqDto,
   ): Promise<number | undefined> {
     try {
-      const comment = await this.answerRepository.create({
-        member_identifier: { identifier: memberIdentifier },
-        question_identifier: { identifier: answerCreateReqDto.postIdentifier },
-        content: answerCreateReqDto.content,
-      });
-
-      await this.answerRepository.save(comment);
-      return comment.identifier;
+      const answerIdentifier: number = await this.answerPort.createAnswer(
+        memberIdentifier,
+        answerCreateReqDto,
+      );
+      return answerIdentifier;
     } catch (error) {
       throw new UnexpectedErrorException();
     }
