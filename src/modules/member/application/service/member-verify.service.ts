@@ -1,23 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { classToPlain, plainToClass } from 'class-transformer';
 import {
   LoginReqDto,
   LoginResDto,
 } from 'src/modules/auth/application/dto/login.dto';
 import { Member } from '../../domain/entity/member.entity';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
+import { MemberRepository } from '../../infrastructure/persistence/repository/member.repository';
 
 @Injectable()
 export class MemberVerifyService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
   async verify(loginReqDto: LoginReqDto): Promise<LoginResDto | undefined> {
-    const result = await this.memberRepository.findOne({
-      account: loginReqDto.account,
-    });
-    console.log(result);
-    const cryptogram = await Member.encryptToHash(result.password);
-    if (!result.comparePassword(cryptogram)) return null;
-    return plainToClass(LoginResDto, classToPlain(result));
+    const member: Member = await this.memberPort.findMemberByAccount(
+      loginReqDto.account,
+    );
+
+    const cryptogram = await Member.encryptToHash(member.password);
+    if (!member.comparePassword(cryptogram)) {
+      return null;
+    }
+    return plainToClass(LoginResDto, classToPlain(member));
   }
 }

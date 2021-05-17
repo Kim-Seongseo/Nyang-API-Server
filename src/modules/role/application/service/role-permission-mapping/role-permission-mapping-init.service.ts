@@ -6,7 +6,6 @@ import {
   MemberPermission,
 } from 'src/modules/role/domain/type/role-permission-type.enum';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/persistence/repository/role-permission-mapping-repository';
 import { PermissionPerRoleInitializationFailed } from '../../exception/initialization-failed.exception';
 import { RolePermissionMappingCreateService } from './role-permission-mapping-create.service';
 

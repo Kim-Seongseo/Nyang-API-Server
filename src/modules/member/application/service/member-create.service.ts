@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { RoleMemberMappingCreateService } from 'src/modules/role/application/service/role-member-mapping/role-member-mapping-create.service';
+import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
 import { Member } from '../../domain/entity/member.entity';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { MemberCreateReqDto } from '../dto/member-signIn.dto';
 import { MemberCheckDuplicationService } from './member-check-duplication.service';
 
 @Injectable()
 export class MemberCreateService {
   constructor(
-    private memberRepository: MemberRepository,
+    @Inject(MEMBER_PORT) private readonly memberPort: MemberPort,
     private readonly memberCheckDuplicationService: MemberCheckDuplicationService,
+    private readonly roleMemberMappingCreateService: RoleMemberMappingCreateService,
   ) {}
 
   async create(
@@ -17,11 +20,17 @@ export class MemberCreateService {
     await this.memberCheckDuplicationService.checkDuplication(
       memberCreateReqDto.account,
     );
-    const member = await this.memberRepository.create({
-      ...memberCreateReqDto,
-      password: await Member.encryptToHash(memberCreateReqDto.password),
-    });
-    await this.memberRepository.save(member);
+
+    const member: Member = await this.memberPort.createMember(
+      memberCreateReqDto,
+      await Member.encryptToHash(memberCreateReqDto.password),
+    );
+
+    // role - member
+    await this.roleMemberMappingCreateService.createMemberRoleMapping(
+      member,
+      RoleType.MEMBER,
+    );
     return member.identifier;
   }
 }

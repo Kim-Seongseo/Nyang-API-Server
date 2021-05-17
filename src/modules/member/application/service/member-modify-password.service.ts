@@ -1,25 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { Member } from '../../domain/entity/member.entity';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { MemberModifyPasswordReqDto } from '../dto/member-update-password.dto';
 
 @Injectable()
 export class MemberModifyPasswordService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
   async modifyPassword(
     memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
   ): Promise<number | undefined> {
     try {
-      const member = await this.memberRepository.findOne({
-        account: memberModifyPasswordReqDto.account,
-      });
+      const member: Member = await this.memberPort.findMemberByAccount(
+        memberModifyPasswordReqDto.account,
+      );
       member.password = await Member.encryptToHash(
         memberModifyPasswordReqDto.password,
       );
-      await this.memberRepository.save(member);
-      return member.identifier;
+      const memberIdentifier: number = await this.memberPort.saveMember(member);
+      return memberIdentifier;
     } catch (error) {
       throw new UnexpectedErrorException();
     }

@@ -1,19 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { classToPlain, plainToClass } from 'class-transformer';
-import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
+import { QuestionQueryRepository } from '../../infrastructure/persistence/repository/question-query.repository';
 import { QuestionSearchReqDto } from '../dto/question-search.dto';
 import { QuestionViewResDto } from '../dto/question-view.dto';
 
 @Injectable()
 export class QuestionSearchService {
-  constructor(private questionRepository: QuestionRepository) {}
+  constructor(
+    @Inject(QUESTION_PORT) private readonly questionPort: QuestionPort,
+  ) {}
 
   async searchQuestion(
     skippedItems: number,
     perPage: number,
     questionSearchReqDto: QuestionSearchReqDto,
   ): Promise<QuestionViewResDto[] | undefined> {
-    const questions: QuestionViewResDto[] = await this.questionRepository.getPaginatedQuestionByKeyword(
+    const questions: QuestionViewResDto[] = await this.questionPort.findPaginatedQuestionByKeyword(
       skippedItems,
       perPage,
       questionSearchReqDto.keyword,

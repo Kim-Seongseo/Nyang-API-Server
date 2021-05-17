@@ -1,17 +1,18 @@
-import { Injectable, RequestTimeoutException } from '@nestjs/common';
-import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
+import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 
 @Injectable()
 export class QuestionDeleteService {
-  constructor(private questionRepository: QuestionRepository) {}
+  constructor(
+    @Inject(QUESTION_PORT) private readonly questionPort: QuestionPort,
+  ) {}
 
   async delete(identifier: number): Promise<number | undefined> {
     try {
-      await this.questionRepository.update(
-        { identifier: identifier },
-        { common: { is_deleted: 'deleted' } },
+      const questionIdentifier = await this.questionPort.deleteQuestionByIdentifier(
+        identifier,
       );
-      return identifier;
+      return questionIdentifier;
     } catch (error) {
       throw new RequestTimeoutException();
     }

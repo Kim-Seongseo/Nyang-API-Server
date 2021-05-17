@@ -1,32 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { AnswerRepository } from '../../infrastructure/repository/answer.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { Member } from 'src/modules/member/domain/entity/member.entity';
+import { Answer } from '../../domain/entity/answer.entity';
+import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerUpdateReqDto } from '../dto/answer-update.dto';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
 import { NotExistException } from '../exception/Not-Exist.exception';
 
 @Injectable()
 export class AnswerUpdateService {
-  constructor(private readonly answerRepository: AnswerRepository) {}
+  constructor(
+    @Inject(ANSWER_PORT)
+    private readonly answerPort: AnswerPort,
+  ) {}
 
   async update(
     identifier: number,
     memberIdentifier: number,
     answerUpdateReqDto: AnswerUpdateReqDto,
   ): Promise<number | undefined> {
-    console.log(memberIdentifier);
-    const comment = await this.answerRepository.findOne({ identifier });
-
-    if (!comment) {
+    const answer: Answer = await this.answerPort.findAnswerByIdentifier(
+      identifier,
+    );
+    if (!answer) {
       throw new NotExistException();
     }
-    const member = await comment.member_identifier;
+    const member: Member = await answer.member_identifier;
     if (member.identifier !== memberIdentifier) {
       // querybuilder 이용하여 최적화 필요
       throw new NotAIssuerException();
     }
 
-    comment.content = answerUpdateReqDto.content;
-    await this.answerRepository.save(comment);
-    return identifier;
+    answer.content = answerUpdateReqDto.content;
+    const answerIdentifier: number = await this.answerPort.saveAnswer(answer);
+    return answerIdentifier;
   }
 }

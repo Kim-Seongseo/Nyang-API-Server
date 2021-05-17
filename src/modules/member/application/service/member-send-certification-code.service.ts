@@ -4,7 +4,7 @@ import { CertificationCodeEmailCreateReqDto } from 'src/modules/certification-co
 import { CertificationCodeService } from 'src/modules/certification-code/application/service/certification-code.service';
 import { MailSendCertificationCodeReqDto } from 'src/modules/mail/application/dto/mail-send-certification-code.dto';
 import { MailService } from 'src/modules/mail/application/service/mail.service';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { MemberRepository } from '../../infrastructure/persistence/repository/member.repository';
 import { uuid } from 'uuidv4';
 
 @Injectable()

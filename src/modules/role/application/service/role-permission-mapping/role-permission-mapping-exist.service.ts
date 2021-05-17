@@ -1,23 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
-import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/persistence/repository/role-permission-mapping-repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { ROLE_PERMISSION_MAPPING_PORT } from 'src/modules/role/domain/port/port.constant';
+import { RolePermissionMappingPort } from 'src/modules/role/domain/port/role-permission-mapping.port';
 
 @Injectable()
 export class RolePermissionMappingExistService {
   constructor(
-    private readonly rolePermissionMappingRepository: RolePermissionMappingRepository,
+    @Inject(ROLE_PERMISSION_MAPPING_PORT)
+    private readonly rolePermissionMappingPort: RolePermissionMappingPort,
   ) {}
 
   async isExist(
     roleName: string,
     permissionName: string,
   ): Promise<boolean | undefined> {
-    const permissionPerRoles = await this.rolePermissionMappingRepository.find({
-      role: { role_name: RoleType[roleName] },
-      permission: { permission_name: PermissionType[permissionName] },
-    });
-    if (permissionPerRoles.length === 0) {
+    const countRolePermissionMapping: number = await this.rolePermissionMappingPort.CountRolePermissionMappingByName(
+      roleName,
+      permissionName,
+    );
+    if (countRolePermissionMapping === 0) {
       return false;
     }
     return true;

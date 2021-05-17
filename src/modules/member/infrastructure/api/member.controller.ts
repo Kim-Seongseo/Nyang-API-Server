@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors,
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
@@ -41,8 +40,7 @@ import { MemberSendCertificationCodeService } from '../../application/service/me
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
-import { Response } from 'src/modules/response/application/domain/response.interface';
-import { ExceptionInterceptor } from 'src/modules/common/interceptor/exception.interceptor';
+import { Response } from 'src/modules/response/domain/response.interface';
 import { MemberIdentifier } from '../../decorator/member-identifier.decorator';
 
 @ApiTags('회원 관리')

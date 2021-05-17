@@ -1,19 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RolePermissionMapping } from 'src/modules/role/domain/entity/role-permission-mapping.entity';
-import { RolePermissionMappingRepository } from 'src/modules/role/infrastructure/persistence/repository/role-permission-mapping-repository';
+import { ROLE_PERMISSION_MAPPING_PORT } from 'src/modules/role/domain/port/port.constant';
+import { RolePermissionMappingPort } from 'src/modules/role/domain/port/role-permission-mapping.port';
 
 @Injectable()
 export class RolePermissionMappingReadService {
   constructor(
-    private rolePermissionMappingRepository: RolePermissionMappingRepository,
+    @Inject(ROLE_PERMISSION_MAPPING_PORT)
+    private readonly rolePermissionMappingPort: RolePermissionMappingPort,
   ) {}
 
   async readPermissions(roleIdentifier: number): Promise<string[]> {
-    const permissions: RolePermissionMapping[] = await this.rolePermissionMappingRepository.find(
-      {
-        role: { identifier: roleIdentifier },
-      },
+    const permissions: RolePermissionMapping[] = await this.rolePermissionMappingPort.findRolePermissionMappingByRoleIndentifier(
+      roleIdentifier,
     );
+
     const result = await Promise.all(
       permissions.map(
         async (permission): Promise<string | undefined> => {

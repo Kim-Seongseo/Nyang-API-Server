@@ -1,16 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
-import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
-import { RoleRepository } from '../../../infrastructure/persistence/repository/role.repository';
+import { ROLE_PORT } from 'src/modules/role/domain/port/port.constant';
+import { RolePort } from 'src/modules/role/domain/port/role.port';
 
 @Injectable()
 export class RoleDeleteService {
-  constructor(private roleRepository: RoleRepository) {}
+  constructor(@Inject(ROLE_PORT) private rolePort: RolePort) {}
 
-  async delete(roleName: string): Promise<boolean> | undefined {
+  async delete(roleName: string): Promise<number | undefined> {
     try {
-      await this.roleRepository.delete({ role_name: RoleType[roleName] });
-      return true;
+      return await this.rolePort.deleteRoleByName(roleName);
     } catch (error) {}
     throw new UnexpectedErrorException();
   }

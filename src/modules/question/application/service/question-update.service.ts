@@ -1,21 +1,25 @@
-import { Injectable, RequestTimeoutException } from '@nestjs/common';
-import { QuestionRepository } from '../../infrastructure/repository/question.repository';
+import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
+import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
+import { QuestionRepository } from '../../infrastructure/persistence/repository/question.repository';
 import { QuestionUpdateReqDto } from '../dto/question-update.dto';
 
 @Injectable()
 export class QuestionUpdateService {
-  constructor(private questionRepository: QuestionRepository) {}
+  constructor(
+    @Inject(QUESTION_PORT) private readonly questionPort: QuestionPort,
+  ) {}
 
   async update(
     identifier: number,
     questionUpdateReqDto: QuestionUpdateReqDto,
   ): Promise<number | undefined> {
     try {
-      await this.questionRepository.update(
-        { identifier: identifier },
-        { ...questionUpdateReqDto },
+      const questionIdentifier = await this.questionPort.updateQuestion(
+        identifier,
+        questionUpdateReqDto,
       );
-      return identifier;
+
+      return questionIdentifier;
     } catch (error) {
       throw new RequestTimeoutException();
     }

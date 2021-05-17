@@ -28,7 +28,6 @@ export class RoleGuard implements CanActivate {
     const token = parseBearerToken(
       context.switchToHttp().getRequest<CustomRequest>(),
     );
-
     if (token) {
       // 토큰이 있는 경우
       const decodeToken = await this.authDecodeAccessTokenService.decodeAccessToken(
@@ -39,6 +38,7 @@ export class RoleGuard implements CanActivate {
 
       if (Date.now() / 1000 > decodeToken.exp) {
         // 토큰이 만료된 경우
+        console.log('token is expired');
         return false;
       }
 

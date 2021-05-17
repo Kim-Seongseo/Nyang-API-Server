@@ -1,18 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
+import { PermissionPort } from 'src/modules/role/domain/port/permission.port';
+import { PERMISSION_PORT } from 'src/modules/role/domain/port/port.constant';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
-import { PermissionRepository } from 'src/modules/role/infrastructure/persistence/repository/permission.repository';
 
 @Injectable()
 export class PermissionDeleteService {
-  constructor(private permissionRepository: PermissionRepository) {}
+  constructor(
+    @Inject(PERMISSION_PORT) private permissionPort: PermissionPort,
+  ) {}
 
-  async delete(permissionName: string): Promise<boolean> | undefined {
+  async delete(permissionName: string): Promise<number | undefined> {
     try {
-      await this.permissionRepository.delete({
-        permission_name: PermissionType[permissionName],
-      });
-      return true;
+      // 여기
+      const identifier = await this.permissionPort.deletePermissionByName(
+        PermissionType[permissionName],
+      );
+      return identifier;
     } catch (error) {}
     throw new UnexpectedErrorException();
   }

@@ -1,7 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { classToPlain, plainToClass } from 'class-transformer';
-import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
-import { MemberRepository } from '../../infrastructure/repository/member.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import {
   MemberFindAccountReqDto,
   MemberFindAccountResDto,
@@ -9,18 +7,16 @@ import {
 
 @Injectable()
 export class MemberFindAccountService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
   async findAccount(
-    memberFindReqDto: MemberFindAccountReqDto,
+    memberFindAccountReqDto: MemberFindAccountReqDto,
   ): Promise<MemberFindAccountResDto | undefined> {
-    const result = await this.memberRepository.find({
-      email: memberFindReqDto.email,
-      name: memberFindReqDto.name,
-      isDeleted: RecordState.NONE,
-    });
+    const member: MemberFindAccountResDto = await this.memberPort.findAccount(
+      memberFindAccountReqDto,
+    );
 
-    if (result.length == 0) throw new NotFoundException();
-    return plainToClass(MemberFindAccountResDto, classToPlain(result));
+    if (!member) throw new NotFoundException();
+    return member;
   }
 }

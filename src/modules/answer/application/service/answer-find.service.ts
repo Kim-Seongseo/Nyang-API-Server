@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { AnswerRepository } from '../../infrastructure/repository/answer.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerFindResDto } from '../dto/answer-find.dto';
 import { NotExistException } from '../exception/Not-Exist.exception';
 
 @Injectable()
 export class AnswerFindService {
-  constructor(private readonly answerRepository: AnswerRepository) {}
+  constructor(@Inject(ANSWER_PORT) private readonly answerPort: AnswerPort) {}
 
   async find(
     postIdentifier: number,
     memberIdentifier: number,
   ): Promise<AnswerFindResDto[] | undefined> {
-    const answers = await this.answerRepository.getAnswersByPostIdentifier(
+    const answers: AnswerFindResDto[] = await this.answerPort.findAnswersByPostIdentifier(
       postIdentifier,
       memberIdentifier,
     );

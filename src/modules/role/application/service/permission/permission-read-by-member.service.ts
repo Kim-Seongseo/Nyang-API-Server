@@ -1,18 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  PermissionPort,
-  PERMISSION_PORT,
-} from 'src/modules/role/domain/port/permissions.port';
-import { PersistenceAdapter } from 'src/modules/role/infrastructure/persistence/persistence.adapter';
+import { PermissionPort } from 'src/modules/role/domain/port/permission.port';
+import { PERMISSION_PORT } from 'src/modules/role/domain/port/port.constant';
 
 @Injectable()
 export class PermissionReadByMemberService {
   constructor(
-    @Inject(PERMISSION_PORT) private PermissionPort: PermissionPort,
+    @Inject(PERMISSION_PORT) private permissionPort: PermissionPort,
   ) {}
 
   async readByMember(memberIdentifier: number): Promise<string[]> {
-    const permissionList = await this.PermissionPort.findPermissionsByMember(
+    const permissionList = await this.permissionPort.findPermissionsByMember(
       memberIdentifier,
     );
     const permissions: string[] = permissionList.map((permission) => {
