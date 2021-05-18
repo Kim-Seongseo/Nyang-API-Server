@@ -21,7 +21,7 @@ export class CertificationCode {
     default: CertificationType.EMAIL,
   })
   type: CertificationType;
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 100 })
   contact_info: string;
   @Column({ type: 'varchar', length: 20 })
   certification_code: string;
