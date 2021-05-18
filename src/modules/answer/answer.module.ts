@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnswerController } from 'src/modules/answer/infrastructure/api/answer.controller';
+import { QuestionModule } from '../question/question.module';
 import { ResponseModule } from '../response/response.module';
+import { AnswerAdoptService } from './application/service/answer-adopt.service';
 import { AnswerCreateService } from './application/service/answer-create.service';
 import { AnswerDeleteService } from './application/service/answer-delete.service';
 import { AnswerFindService } from './application/service/answer-find.service';
@@ -16,6 +18,7 @@ import { AnswerRepository } from './infrastructure/persistence/repository/answer
     TypeOrmModule.forFeature([AnswerQueryRepository]),
     TypeOrmModule.forFeature([AnswerRepository]),
     ResponseModule,
+    QuestionModule,
   ],
   controllers: [AnswerController],
   providers: [
@@ -23,6 +26,7 @@ import { AnswerRepository } from './infrastructure/persistence/repository/answer
     AnswerDeleteService,
     AnswerFindService,
     AnswerUpdateService,
+    AnswerAdoptService,
     {
       provide: ANSWER_PORT,
       useClass: AsnwerAdapter,
