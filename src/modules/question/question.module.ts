@@ -36,5 +36,6 @@ import { QuestionRepository } from './infrastructure/persistence/repository/ques
       useClass: QuestionAdapter,
     },
   ],
+  exports: [QuestionCheckIssuerService],
 })
 export class QuestionModule {}

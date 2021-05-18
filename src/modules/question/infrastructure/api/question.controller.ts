@@ -98,11 +98,16 @@ export class QuestionController {
   async updateQuestion(
     @Param('identifier') identifier: number,
     @MemberIdentifier() memberIdentifier: number,
+    @MemberIsAdmin() memberIsAdmin: boolean,
     @Body() questionUpdateReqDto: QuestionUpdateReqDto,
   ): Promise<Response | undefined> {
     try {
       if (
-        !this.questionCheckIssuerService.isIssuer(memberIdentifier, identifier)
+        !this.questionCheckIssuerService.isIssuer(
+          memberIdentifier,
+          memberIsAdmin,
+          identifier,
+        )
       ) {
         throw new NotAIssuerException();
       }
@@ -134,11 +139,16 @@ export class QuestionController {
   @Delete('/:identifier')
   async deleteQuestion(
     @MemberIdentifier() memberIdentifier: number,
+    @MemberIsAdmin() memberIsAdmin: boolean,
     @Param('identifier') identifier: number,
   ): Promise<any | undefined> {
     try {
       if (
-        !this.questionCheckIssuerService.isIssuer(memberIdentifier, identifier)
+        !this.questionCheckIssuerService.isIssuer(
+          memberIdentifier,
+          memberIsAdmin,
+          identifier,
+        )
       ) {
         throw new NotAIssuerException();
       }
