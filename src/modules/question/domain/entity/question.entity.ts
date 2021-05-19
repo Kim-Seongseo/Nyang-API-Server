@@ -9,11 +9,6 @@ export class Question extends Post {
   /*relations*/
   @ManyToOne(() => Member, { lazy: true, cascade: false })
   member_identifier: Member;
-  @OneToMany(() => File, (file) => file.board_identifier, {
-    lazy: true,
-    onDelete: 'CASCADE',
-  })
-  files: File[];
 
   /*properties*/
   @Column({ type: 'varchar', length: 40 })

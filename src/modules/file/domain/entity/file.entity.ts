@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Question } from 'src/modules/question/domain/entity/question.entity';
 import { Board } from 'src/modules/board/domain/entity/board.entity';
+import { Post } from 'src/modules/post/domain/entity/post.entity';
 
 @Entity()
 export class File {
@@ -14,14 +15,12 @@ export class File {
   identifier: number;
 
   /*relations*/
-  @ManyToOne(() => Question, (question) => question.files)
-  question_identifier: Question;
-  @ManyToOne(() => Board, (board) => board.files)
-  board_identifier: Board;
+  @ManyToOne(() => Post, (post) => post.files)
+  post_identifier: Post;
 
   /*properties*/
-  @Column({ type: 'text' })
-  file_path: string;
+  @Column({ type: 'bigint' })
+  server_identifier: string;
 
   /*timestamps*/
   @CreateDateColumn()
