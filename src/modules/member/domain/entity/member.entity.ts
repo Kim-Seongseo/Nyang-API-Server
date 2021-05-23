@@ -2,16 +2,23 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { MemberType } from './member-type.enum';
 import * as bcrypt from 'bcryptjs';
+import { File } from 'src/modules/file/domain/entity/file.entity';
 
 @Entity()
 export class Member {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   identifier: number;
+
+  @OneToOne(() => File, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
+  @JoinColumn()
+  member_photo: File;
 
   /*properties*/
   @Column({ type: 'varchar', length: 20, unique: true })

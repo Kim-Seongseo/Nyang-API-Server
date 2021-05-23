@@ -13,6 +13,9 @@ import { QuestionModule } from './modules/question/question.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './modules/role/guard/role.guard';
 import { AuthModule } from './modules/auth/auth.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -31,6 +34,12 @@ import { AuthModule } from './modules/auth/auth.module';
         synchronize: true,
         logging: true,
       }),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '/images'),
+    }),
+    MulterModule.register({
+      dest: './uploads',
     }),
     QuestionModule,
     AnswerModule,

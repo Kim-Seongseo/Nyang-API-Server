@@ -9,6 +9,11 @@ export class Question extends Post {
   /*relations*/
   @ManyToOne(() => Member, { lazy: true, cascade: false })
   member_identifier: Member;
+  @OneToMany(() => File, (file) => file.question, {
+    lazy: true,
+    cascade: true,
+  })
+  files: File[];
 
   /*properties*/
   @Column({ type: 'varchar', length: 40 })

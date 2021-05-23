@@ -5,6 +5,9 @@ import { AppModule } from 'src/app.module';
 import * as morgan from 'morgan';
 import { customRequestMiddleware } from './modules/common/request/custom-request.middleware';
 import { ExceptionInterceptor } from './modules/common/interceptor/exception.interceptor';
+import * as express from 'express';
+import { join } from 'path';
+import * as favicon from 'serve-favicon';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -42,6 +45,10 @@ async function bootstrap() {
   app.use(customRequestMiddleware); // request expansion for account info
   // exception interceptor
   app.useGlobalInterceptors(new ExceptionInterceptor());
+  // file
+  app.use('/images', express.static(join(__dirname, '..', '/images')));
+  // favicon
+  app.use(favicon(join(__dirname, '..', '/images/icons/favicon.ico')));
 
   await app.listen(8092);
 }

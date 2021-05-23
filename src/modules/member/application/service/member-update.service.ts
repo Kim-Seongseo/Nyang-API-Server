@@ -10,14 +10,17 @@ export class MemberUpdateService {
   async update(
     identifier: number,
     memberUpdateReqDto: MemberUpdateReqDto,
+    fileIdentifier,
   ): Promise<any | undefined> {
     try {
       const memberIdentifier: number = await this.memberPort.updateMember(
         identifier,
         memberUpdateReqDto,
+        fileIdentifier,
       );
       return memberIdentifier;
     } catch (error) {
+      console.log(error);
       throw new RequestTimeoutException();
     }
   }

@@ -19,14 +19,18 @@ import { ResponseModule } from '../response/response.module';
 import { MEMBER_PORT } from './domain/port/member.port';
 import { MemberAdapter } from './infrastructure/persistence/member.adapter';
 import { RoleModule } from '../role/role.module';
+import { FileModule } from '../file/file.module';
+import { MemberQueryRepository } from './infrastructure/persistence/repository/member-query-repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([MemberRepository]),
+    TypeOrmModule.forFeature([MemberQueryRepository]),
     MailModule,
     CertificationCodeModule,
     ResponseModule,
     forwardRef(() => RoleModule),
+    FileModule,
   ],
   controllers: [MemberController],
   providers: [

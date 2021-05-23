@@ -2,6 +2,7 @@ import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { json } from 'express';
 import { Public } from 'src/modules/auth/decorator/skip-auth.decorator';
+import * as fetch from 'node-fetch';
 
 @ApiTags('예진 관리')
 @Controller('/impression')

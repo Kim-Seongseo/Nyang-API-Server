@@ -5,17 +5,26 @@ import {
   MemberFindAccountReqDto,
   MemberFindAccountResDto,
 } from '../../application/dto/member-find-account.dto';
+import { MemberReadResDto } from '../../application/dto/member-read.dto';
 import { MemberCreateReqDto } from '../../application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from '../../application/dto/member-update.dto';
 import { Member } from '../../domain/entity/member.entity';
 import { MemberPort } from '../../domain/port/member.port';
+import { MemberQueryRepository } from './repository/member-query-repository';
 import { MemberRepository } from './repository/member.repository';
 
 @Injectable()
 export class MemberAdapter implements MemberPort {
-  constructor(private readonly memberRepository: MemberRepository) {}
-  async findMemberByIdentifier(identifier: number): Promise<Member> {
-    const member: Member = await this.memberRepository.findOne({ identifier });
+  constructor(
+    private readonly memberRepository: MemberRepository,
+    private readonly memberQueryRepository: MemberQueryRepository,
+  ) {}
+  async findMemberByIdentifier(
+    identifier: number,
+  ): Promise<MemberReadResDto | undefined> {
+    const member: MemberReadResDto = await this.memberQueryRepository.findMemberByIdentifier(
+      identifier,
+    );
     return member;
   }
   async countMemberByAccount(account: string): Promise<number | undefined> {
@@ -63,10 +72,11 @@ export class MemberAdapter implements MemberPort {
   async updateMember(
     identifier: number,
     memberUpdateReqDtoo: MemberUpdateReqDto,
+    fileIdentifier: number,
   ): Promise<number | undefined> {
     await this.memberRepository.update(
       { identifier },
-      { ...memberUpdateReqDtoo },
+      { ...memberUpdateReqDtoo, member_photo: { identifier: fileIdentifier } },
     );
     return identifier;
   }

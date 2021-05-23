@@ -11,10 +11,10 @@ export class MemberReadService {
 
   async read(identifier: number): Promise<MemberReadResDto | undefined> {
     try {
-      const member: Member = await this.memberPort.findMemberByIdentifier(
+      const member: MemberReadResDto = await this.memberPort.findMemberByIdentifier(
         identifier,
       );
-      return plainToClass(MemberReadResDto, classToPlain(member));
+      return member;
     } catch (error) {
       throw new UnexpectedErrorException();
     }

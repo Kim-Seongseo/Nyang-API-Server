@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionController } from 'src/modules/question/infrastructure/api/question.controller';
+import { FileModule } from '../file/file.module';
 import { ResponseModule } from '../response/response.module';
 import { QuestionCheckIssuerService } from './application/service/question-check-issuer.service';
 import { QuestionCreateService } from './application/service/question-create.service';
@@ -20,6 +21,7 @@ import { QuestionRepository } from './infrastructure/persistence/repository/ques
     TypeOrmModule.forFeature([QuestionRepository]),
     TypeOrmModule.forFeature([QuestionQueryRepository]),
     ResponseModule,
+    FileModule,
   ],
   controllers: [QuestionController],
   providers: [

@@ -8,12 +8,17 @@ import {
   Patch,
   Post,
   Put,
+  Req,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from 'src/modules/member/application/dto/member-update.dto';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -42,6 +47,12 @@ import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/domain/response.interface';
 import { MemberIdentifier } from '../../decorator/member-identifier.decorator';
+import { object } from 'joi';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Member } from '../../domain/entity/member.entity';
+import { request } from 'express';
+import { FileUploadService } from 'src/modules/file/application/service/file-upload.service';
+import { multerOptions } from 'src/modules/file/domain/utils/multer-options';
 
 @ApiTags('회원 관리')
 @Controller('member')
@@ -57,6 +68,7 @@ export class MemberController {
     private readonly memberFindPasswordService: MemberFindPasswordService,
     private readonly memberModifyPasswordService: MemberModifyPasswordService,
     private readonly memberSendCertificationCodeService: MemberSendCertificationCodeService,
+    private readonly fileUploadService: FileUploadService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -91,6 +103,8 @@ export class MemberController {
   }
 
   @ApiOperation({ summary: '회원 개인정보 수정' })
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'success',
@@ -101,14 +115,18 @@ export class MemberController {
   @Put('/')
   async modifyMember(
     @MemberIdentifier() memberIdentifier: number,
-    @Body() memberUpdateReqDto: MemberUpdateReqDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Body()
+    memberUpdateReqDto: MemberUpdateReqDto,
   ): Promise<any | undefined> {
     // params: dto / done
     // 필수 입력정보 검증 -> validator & optional / done
     try {
+      const fileIdentifier: number = await this.fileUploadService.upload(file);
       const identifier: string = await this.memberUpdateService.update(
         memberIdentifier,
         memberUpdateReqDto,
+        fileIdentifier,
       );
       return this.responseService.success(
         '계정이 성공적으로 수정되었습니다.',
