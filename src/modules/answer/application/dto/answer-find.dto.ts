@@ -16,7 +16,7 @@ export class AnswerFindResDto {
 
   @Expose()
   @IsEnum({ type: 'enum', enum: AnswerState })
-  selects_state: AnswerState;
+  select_state: AnswerState;
 
   @Expose()
   @IsDate()
@@ -30,8 +30,9 @@ export class AnswerFindResDto {
   @IsString()
   nickname: string;
 
-  //   @Expose()
-  //   @사진()
+  @Expose()
+  @IsString()
+  profile_photo_path: string;
 
   @Expose()
   @IsBoolean()

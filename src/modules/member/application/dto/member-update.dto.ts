@@ -3,25 +3,29 @@ import { IsOptional, IsString } from 'class-validator';
 
 // Request
 export class MemberUpdateReqDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   readonly nickname: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   readonly phone_number: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   readonly date_birth: Date;
+
+  @ApiProperty({ type: 'file', format: 'binary', required: false })
+  // @IsOptional()
+  profile_picture: Express.Multer.File;
 }
 
 // response: state

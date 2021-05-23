@@ -42,6 +42,10 @@ export class QuestionDetailViewResDto {
   readonly nickname: string;
 
   @Expose()
+  @IsString()
+  readonly profile_photo_path: string;
+
+  @Expose()
   @IsDate()
   readonly createDate: Date;
 

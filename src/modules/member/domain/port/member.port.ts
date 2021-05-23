@@ -3,6 +3,7 @@ import {
   MemberFindAccountReqDto,
   MemberFindAccountResDto,
 } from '../../application/dto/member-find-account.dto';
+import { MemberReadResDto } from '../../application/dto/member-read.dto';
 import { MemberCreateReqDto } from '../../application/dto/member-signIn.dto';
 import { MemberUpdateReqDto } from '../../application/dto/member-update.dto';
 import { Member } from '../entity/member.entity';
@@ -28,6 +29,9 @@ export interface MemberPort {
   updateMember(
     identifier: number,
     memberUpdateReqDtoo: MemberUpdateReqDto,
+    fileIdentifier: number,
   ): Promise<number | undefined>;
-  findMemberByIdentifier(identifier: number): Promise<Member | undefined>;
+  findMemberByIdentifier(
+    identifier: number,
+  ): Promise<MemberReadResDto | undefined>;
 }

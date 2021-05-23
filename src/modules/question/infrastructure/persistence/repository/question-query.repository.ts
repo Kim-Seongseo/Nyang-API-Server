@@ -4,6 +4,7 @@ import { QuestionDetailViewResDto } from '../../../application/dto/question-deta
 import { classToPlain, plainToClass } from 'class-transformer';
 import { QuestionIssuer } from '../../../domain/type/question-issuer.type';
 import { QuestionViewResDto } from '../../../application/dto/question-view.dto';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 
 @EntityRepository(Question)
 export class QuestionQueryRepository extends Repository<Question> {
@@ -12,27 +13,40 @@ export class QuestionQueryRepository extends Repository<Question> {
     memberIsAdmin: boolean,
     identifier: number,
   ): Promise<QuestionDetailViewResDto | undefined> {
-    const data = await this.createQueryBuilder('q')
-      .select('q.title', 'title')
-      .addSelect('q.content', 'content')
-      .addSelect('q.genus', 'genus')
-      .addSelect('q.species', 'species')
-      .addSelect('q.age', 'age')
-      .addSelect('m.nickname', 'nickname')
-      .addSelect('q.commonCreate_date', 'createDate')
-      .addSelect('m.identifier', 'memberIdentifier')
-      .innerJoin('member', 'm', 'q.memberIdentifierIdentifier = m.identifier')
-      .where('q.identifier = :identifier', { identifier })
-      .getRawOne();
+    try {
+      const data = await this.createQueryBuilder('q')
+        .select('q.title', 'title')
+        .addSelect('q.content', 'content')
+        .addSelect('q.genus', 'genus')
+        .addSelect('q.species', 'species')
+        .addSelect('q.age', 'age')
+        .addSelect('m.nickname', 'nickname')
+        .addSelect('q.commonCreate_date', 'createDate')
+        .addSelect('m.identifier', 'memberIdentifier')
+        .addSelect('m.member_photo')
+        .where('q.identifier = :identifier', { identifier })
+        .addSelect('f.path', 'profile_photo_path')
+        .innerJoin('q.member_identifier', 'm', 'm.isDeleted = :isDeleted', {
+          isDeleted: RecordState.NONE,
+        })
+        .leftJoin('file', 'f', 'm.member_photo = f.identifier')
+        .getRawOne();
 
-    console.log(data);
-    const questionDetailViewResDto = plainToClass(
-      QuestionDetailViewResDto,
-      classToPlain(data),
-    );
-    if (data.memberIdentifier === memberIdentifier || memberIsAdmin)
-      questionDetailViewResDto.isIssuer = QuestionIssuer.ISSUER;
-    return questionDetailViewResDto;
+      console.log(data);
+      const questionDetailViewResDto = plainToClass(
+        QuestionDetailViewResDto,
+        classToPlain(data),
+      );
+      if (
+        data &&
+        (data.memberIdentifier === memberIdentifier || memberIsAdmin)
+      ) {
+        questionDetailViewResDto.isIssuer = QuestionIssuer.ISSUER;
+      }
+      return questionDetailViewResDto;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findPaginatedQuestion(
