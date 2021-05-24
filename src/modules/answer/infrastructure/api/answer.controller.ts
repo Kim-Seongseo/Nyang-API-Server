@@ -144,7 +144,8 @@ export class AnswerController {
     description: 'success',
     type: [AnswerFindResDto],
   })
-  @Permissions()
+  @ApiBearerAuth('token')
+  @Permissions(PermissionType.OPTION)
   @Get('/:postIdentifier')
   async viewAnswer(
     @Param('postIdentifier') postIdentifier: number,
