@@ -74,7 +74,7 @@ export class InfoBoardController {
         await this.boardCreateService.create(
           memberIdentifier,
           boardCreateReqDto,
-          BoardType.FREE_BOARD,
+          BoardType.INFO_BOARD,
         )
       ).toString();
       return this.responseService.success(
@@ -203,10 +203,10 @@ export class InfoBoardController {
       const boards: BoardViewResDto[] = await this.boardViewService.paginatedView(
         perPage,
         skippedItems,
-        BoardType.FREE_BOARD,
+        BoardType.INFO_BOARD,
       );
       const totalData: number = await this.boardUtilService.totalData(
-        BoardType.FREE_BOARD,
+        BoardType.INFO_BOARD,
       );
       const totalPage = await this.boardUtilService.totalPage(
         totalData,
@@ -246,7 +246,7 @@ export class InfoBoardController {
         memberIdentifier,
         memberIsAdmin,
         identifier,
-        BoardType.FREE_BOARD,
+        BoardType.INFO_BOARD,
       );
 
       return this.responseService.success(
@@ -293,11 +293,11 @@ export class InfoBoardController {
         skippedItems,
         perPage,
         boardSearchReqDto.keyword,
-        BoardType.FREE_BOARD,
+        BoardType.INFO_BOARD,
       );
 
       const totalData = await this.boardUtilService.totalData(
-        BoardType.FREE_BOARD,
+        BoardType.INFO_BOARD,
       );
       const totalPage = await this.boardUtilService.totalPage(
         totalData,
