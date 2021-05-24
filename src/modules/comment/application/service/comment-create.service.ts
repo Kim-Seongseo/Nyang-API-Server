@@ -1,11 +1,13 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { UnexpectedErrorException } from "src/modules/common/exception/unexpected-error-exception";
-import { CommentPort, COMMENT_PORT } from "../../domain/port/comment.port";
-import { CommentCreateReqDto } from "../dto/comment-create.dto";
+import { Inject, Injectable } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
+import { CommentPort, COMMENT_PORT } from '../../domain/port/comment.port';
+import { CommentCreateReqDto } from '../dto/comment-create.dto';
 
 @Injectable()
 export class CommentCreateService {
-  constructor(@Inject(COMMENT_PORT) private readonly commentPort: CommentPort) {}
+  constructor(
+    @Inject(COMMENT_PORT) private readonly commentPort: CommentPort,
+  ) {}
 
   async create(
     memberIdentifier: number,

@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-//request
-export class CommentUpdateReqDto {
+//Request
+export class BoardSearchReqDto {
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly keyword: string;
 }
+
+//Response

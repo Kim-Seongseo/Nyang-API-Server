@@ -1,5 +1,19 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/domain/response.interface';
@@ -37,8 +51,6 @@ export class CommentController {
     @MemberIdentifier() memberIdentifier: number,
     @Body() commentCreateReqDto: CommentCreateReqDto,
   ) {
-    console.log(memberIdentifier);
-    console.log(commentCreateReqDto);
     try {
       const commentIdentifier: string = (
         await this.commentCreateService.create(
@@ -83,8 +95,8 @@ export class CommentController {
       return this.responseService.success(
         '댓글이 성공적으로 수정되었습니다.',
         HttpStatus.OK,
-        { commentIdentifier }
-      )
+        { commentIdentifier },
+      );
     } catch (error) {
       return this.responseService.error(error.response, error.status);
     }
@@ -105,10 +117,7 @@ export class CommentController {
   ): Promise<Response | undefined> {
     try {
       const commentIdentifier: string = (
-        await this.commentDeleteService.delete(
-          identifier,
-          memberIdentifier,
-        )
+        await this.commentDeleteService.delete(identifier, memberIdentifier)
       ).toString();
 
       return this.responseService.success(
@@ -127,13 +136,18 @@ export class CommentController {
     description: 'success',
     type: [CommentViewResDto],
   })
-  @Permissions()
+  @ApiBearerAuth('token')
+  @Permissions(PermissionType.OPTION)
   @Get('/:postIdentifier')
   async viewComment(
     @Param('postIdentifier') postIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
   ): Promise<Response | undefined> {
     try {
-      const comments = await this.commentViewService.view(postIdentifier);
+      const comments: CommentViewResDto[] = await this.commentViewService.view(
+        memberIdentifier,
+        postIdentifier,
+      );
 
       return this.responseService.success(
         '댓글을 성공적으로 조회했습니다.',

@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
-//request
-export class CommentCreateReqDto {
+//Request
+export class BoardUpdateReqDto {
   @ApiProperty()
-  @IsNumber()
-  postIdentifier: number;
+  @IsString()
+  readonly title: string;
 
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 }
+
+// Response state

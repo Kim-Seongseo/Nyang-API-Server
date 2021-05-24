@@ -27,7 +27,7 @@ export class AnswerQueryRepository extends Repository<Answer> {
         })
         .leftJoin('file', 'f', 'm.member_photo = f.identifier')
         .getRawMany();
-
+      console.log(memberIdentifier);
       return datas.map((data) => {
         const isEditable =
           data.memberIdentifier === memberIdentifier ? true : false;

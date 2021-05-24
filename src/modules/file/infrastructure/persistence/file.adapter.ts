@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FileRepository } from 'src/modules/comment/infrastructure/repository/comment.repository';
 import { FilePort } from '../../domain/port/file.port';
+import { FileRepository } from './repository/file.repository';
 
 @Injectable()
 export class FileAdapter implements FilePort {

@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Post } from 'src/modules/post/domain/entity/post.entity';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { File } from 'src/modules/file/domain/entity/file.entity';
+import { BoardType } from '../type/board.type';
 @Entity()
 export class Board extends Post {
   /*relations*/
@@ -14,6 +15,6 @@ export class Board extends Post {
   files: File[];
 
   /*properties*/
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'enum', enum: BoardType, nullable: false })
   category: string;
 }

@@ -1,11 +1,12 @@
-import { Repository, EntityRepository } from "typeorm";
-import { Comment } from "src/modules/comment/domain/entity/comment.entity";
-import { CommentViewResDto } from "src/modules/comment/application/dto/comment-view.dto";
-import { classToPlain, plainToClass } from "class-transformer";
+import { Repository, EntityRepository } from 'typeorm';
+import { Comment } from 'src/modules/comment/domain/entity/comment.entity';
+import { CommentViewResDto } from 'src/modules/comment/application/dto/comment-view.dto';
+import { classToPlain, plainToClass } from 'class-transformer';
 
 @EntityRepository(Comment)
 export class CommentQueryRepository extends Repository<Comment> {
   async findCommentByPostIdentifier(
+    memberIdentifier: number,
     postIdentifier: number,
   ): Promise<CommentViewResDto[] | undefined> {
     const datas = await this.createQueryBuilder('c')
@@ -14,13 +15,17 @@ export class CommentQueryRepository extends Repository<Comment> {
       .addSelect('c.content', 'content')
       .addSelect('c.commonCreate_date', 'create_date')
       .addSelect('c.commonUpdate_date', 'update_date')
-      .innerJoin('member', 'm', 'c.memberIdentifier = m.identifier')
-      .where('c.boardIdentifierIdentifier = :postIdentifier', { postIdentifier })
+      .addSelect('m.identifier', 'member_identifier')
+      .leftJoin('member', 'm', 'c.memberIdentifier = m.identifier')
+      .where('c.boardIdentifierIdentifier = :postIdentifier', {
+        postIdentifier,
+      })
       .orderBy('create_date', 'ASC')
       .getRawMany();
-    
+
     return datas.map((data) => {
-      const isEditable = (data.create_date).toString() !== (data.update_date).toString();
+      const isEditable =
+        data.member_identifier === memberIdentifier.toString() ? true : false;
       return plainToClass(
         CommentViewResDto,
         classToPlain({ ...data, isEditable }),
