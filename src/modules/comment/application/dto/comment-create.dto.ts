@@ -5,9 +5,9 @@ import { IsNumber, IsString } from 'class-validator';
 export class CommentCreateReqDto {
   @ApiProperty()
   @IsNumber()
-  postIdentifier: number;
+  readonly postIdentifier: number;
 
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 }

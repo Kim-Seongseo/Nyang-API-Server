@@ -6,23 +6,25 @@ import { IsBoolean, IsDate, IsNumber, IsString } from 'class-validator';
 export class CommentViewResDto {
   @Expose()
   @IsNumber()
-  identifier: number;
+  readonly identifier: number;
 
   @Expose()
   @IsString()
-  content: string;
+  readonly content: string;
 
   @Expose()
   @IsString()
-  nickname: string;
+  readonly nickname: string;
 
   @Expose()
   @IsDate()
-  create_date: Date;
+  readonly create_date: Date;
 
   @Expose()
   @IsBoolean()
-  isEditable: boolean;
+  readonly isEditable: boolean;
 
-  // 프로필 이미지
+  @Expose()
+  @IsString()
+  readonly profile_photo_path: string;
 }
