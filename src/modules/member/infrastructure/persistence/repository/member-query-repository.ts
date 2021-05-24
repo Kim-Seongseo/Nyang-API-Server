@@ -16,7 +16,7 @@ export class MemberQueryRepository extends Repository<Member> {
       .addSelect('m.phone_number', 'phone_number')
       .addSelect('m.date_birth', 'date_birth')
       .addSelect('f.path', 'profile_photo_path')
-      .innerJoin('file', 'f', 'm.memberPhotoIdentifier = f.identifier')
+      .leftJoin('file', 'f', 'm.memberPhotoIdentifier = f.identifier')
       .where('m.identifier = :identifier', { identifier })
       .getRawOne();
     return plainToClass(MemberReadResDto, classToPlain(data));
