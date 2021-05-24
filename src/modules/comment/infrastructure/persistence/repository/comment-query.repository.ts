@@ -16,10 +16,12 @@ export class CommentQueryRepository extends Repository<Comment> {
       .addSelect('c.commonCreate_date', 'create_date')
       .addSelect('c.commonUpdate_date', 'update_date')
       .addSelect('m.identifier', 'member_identifier')
-      .leftJoin('member', 'm', 'c.memberIdentifier = m.identifier')
+      .addSelect('f.path', 'profile_photo_path')
       .where('c.boardIdentifierIdentifier = :postIdentifier', {
         postIdentifier,
       })
+      .innerJoin('member', 'm', 'c.memberIdentifier = m.identifier')
+      .leftJoin('file', 'f', 'm.member_photo = f.identifier')
       .orderBy('create_date', 'ASC')
       .getRawMany();
 

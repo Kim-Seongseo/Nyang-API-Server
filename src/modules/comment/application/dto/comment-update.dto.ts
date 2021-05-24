@@ -5,5 +5,5 @@ import { IsString } from 'class-validator';
 export class CommentUpdateReqDto {
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 }
