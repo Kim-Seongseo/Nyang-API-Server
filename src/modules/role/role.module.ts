@@ -35,7 +35,6 @@ import { RoleMemberMappingAdapter } from './infrastructure/persistence/role-memb
 import { RoleAdapter } from './infrastructure/persistence/role.adapter';
 import { RolePermissionMappingAdapter } from './infrastructure/persistence/role-permission-mapping.adapter';
 import { RoleMemberMappingCreateService } from './application/service/role-member-mapping/role-member-mapping-create.service';
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([RoleRepository]),

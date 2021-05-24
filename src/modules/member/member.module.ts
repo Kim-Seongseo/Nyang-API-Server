@@ -21,6 +21,7 @@ import { MemberAdapter } from './infrastructure/persistence/member.adapter';
 import { RoleModule } from '../role/role.module';
 import { FileModule } from '../file/file.module';
 import { MemberQueryRepository } from './infrastructure/persistence/repository/member-query-repository';
+import { MemberReadRoleNameService } from './application/service/member-read-role-name.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MemberQueryRepository } from './infrastructure/persistence/repository/m
   controllers: [MemberController],
   providers: [
     MemberCheckDuplicationService,
+    MemberReadRoleNameService,
     MemberCreateService,
     MemberDeleteService,
     MemberFindAccountService,
@@ -50,6 +52,10 @@ import { MemberQueryRepository } from './infrastructure/persistence/repository/m
       useClass: MemberAdapter,
     },
   ],
-  exports: [MemberVerifyService, MemberEntityService],
+  exports: [
+    MemberVerifyService,
+    MemberEntityService,
+    MemberReadRoleNameService,
+  ],
 })
 export class MemberModule {}

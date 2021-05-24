@@ -21,4 +21,18 @@ export class MemberQueryRepository extends Repository<Member> {
       .getRawOne();
     return plainToClass(MemberReadResDto, classToPlain(data));
   }
+
+  async findRoleByIdentifier(identifier: number): Promise<string | undefined> {
+    const data = await this.createQueryBuilder('m')
+      .select('r.role_name', 'role_name')
+      .where('m.identifier = :identifier', { identifier })
+      .innerJoin(
+        'role_member_mapping',
+        'r_m',
+        'r_m.memberIdentifier = m.identifier',
+      )
+      .innerJoin('role', 'r', 'r.identifier = r_m.roleIdentifier')
+      .getRawOne();
+    return data.role_name;
+  }
 }

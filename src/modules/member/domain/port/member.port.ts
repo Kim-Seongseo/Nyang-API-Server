@@ -34,4 +34,5 @@ export interface MemberPort {
   findMemberByIdentifier(
     identifier: number,
   ): Promise<MemberReadResDto | undefined>;
+  findRoleByIdentifier(identifier: number): Promise<string | undefined>;
 }
