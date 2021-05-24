@@ -29,6 +29,7 @@ export class BoardQueryRepository extends Repository<Board> {
         .select('b.title', 'title')
         .addSelect('b.content', 'content')
         .addSelect('m.nickname', 'nickname')
+        .addSelect('b.category', 'category')
         .addSelect('b.commonCreate_date', 'createDate')
         .addSelect('m.identifier', 'memberIdentifier')
         .addSelect('m.member_photo')

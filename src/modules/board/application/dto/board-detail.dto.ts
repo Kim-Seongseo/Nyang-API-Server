@@ -7,6 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { BoardIssuer } from '../../domain/type/board-issuer.type';
+import { BoardType } from '../../domain/type/board.type';
 
 //Request
 
@@ -36,6 +37,10 @@ export class BoardDetailViewResDto {
   @Expose()
   @IsDate()
   readonly createDate: Date;
+
+  @Expose()
+  @IsEnum({ type: 'enum', enum: BoardType })
+  readonly category: BoardType;
 
   @Expose()
   @IsEnum(BoardIssuer)
