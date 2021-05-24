@@ -16,6 +16,10 @@ export class BoardViewResDto {
 
   @Expose()
   @IsString()
+  readonly nickname: string;
+
+  @Expose()
+  @IsString()
   readonly content: string;
 
   @Expose()
