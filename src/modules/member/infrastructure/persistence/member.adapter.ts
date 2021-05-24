@@ -19,6 +19,7 @@ export class MemberAdapter implements MemberPort {
     private readonly memberRepository: MemberRepository,
     private readonly memberQueryRepository: MemberQueryRepository,
   ) {}
+
   async findMemberByIdentifier(
     identifier: number,
   ): Promise<MemberReadResDto | undefined> {
@@ -79,5 +80,9 @@ export class MemberAdapter implements MemberPort {
       { ...memberUpdateReqDtoo, member_photo: { identifier: fileIdentifier } },
     );
     return identifier;
+  }
+
+  async findRoleByIdentifier(identifier: number): Promise<string | undefined> {
+    return await this.memberQueryRepository.findRoleByIdentifier(identifier);
   }
 }

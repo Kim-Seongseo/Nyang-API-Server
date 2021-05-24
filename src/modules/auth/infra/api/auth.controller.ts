@@ -11,12 +11,14 @@ import { AuthService } from 'src/modules/auth/application/service/auth.service';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt/jwt-auth.guard';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
+import { MemberReadRoleNameService } from 'src/modules/member/application/service/member-read-role-name.service';
 
 @ApiTags('로그인 관리')
 @Controller()
 export class AuthController {
   constructor(
-    private authService: AuthService,
+    private readonly authService: AuthService,
+    private readonly memberReadRoleNameService: MemberReadRoleNameService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -40,25 +42,23 @@ export class AuthController {
   @Post('/login')
   async login(@Request() req) {
     try {
+      const identifier = req.user['identifier'];
+      const account = req.user['account'];
       const token: string = await this.authService.createAccessToken({
-        identifier: req.user['identifier'],
-        account: req.user['account'],
+        identifier,
+        account,
       });
+      const roleName: string = await this.memberReadRoleNameService.readRoleNameByIdentifier(
+        identifier,
+      );
+
       return this.responseService.success(
         '로그인이 성공적으로 수행되었습니다.',
         HttpStatus.CREATED,
-        { token },
+        { token, roleName },
       );
     } catch (error) {
       return this.responseService.error(error.response, error.status);
     }
-  }
-
-  @ApiOperation({ summary: '로그아웃' })
-  @UseGuards(JwtAuthGuard)
-  @Permissions()
-  @Post('/logout')
-  async logout() {
-    return 'ok';
   }
 }
