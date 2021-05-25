@@ -8,6 +8,7 @@ export enum MemberPermission {
 }
 export enum AdminPermission {
   MEMBER_ACCESS = 'member_access',
+  MEMBER_MANAGE = 'member_manage',
   QUESTION_MANAGE = 'question_manage',
   ANSWER_MANAGE = 'answer_manage',
   BOARD_MANAGE = 'board_manage',

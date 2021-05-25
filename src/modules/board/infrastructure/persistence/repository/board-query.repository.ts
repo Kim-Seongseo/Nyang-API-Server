@@ -74,7 +74,7 @@ export class BoardQueryRepository extends Repository<Board> {
       .where('b.commonIs_deleted = :none', { none: 'none' })
       .andWhere('b.category = :category', { category });
     if (keyword) {
-      query.andWhere('q.title like :keyword', {
+      query.andWhere('b.title like :keyword', {
         keyword: `%${keyword}%`,
       });
     }

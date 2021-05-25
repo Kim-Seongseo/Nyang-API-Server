@@ -5,7 +5,7 @@ import { RolePermissionMappingInitService } from '../../application/service/role
 import { RoleInitService } from '../../application/service/role/role-init.service';
 import { Permissions } from '../../decorator/role.decorator';
 
-@ApiTags('권한 관리')
+@ApiTags('Server Init: 권한 관리')
 @Controller('role')
 export class RoleController {
   constructor(
