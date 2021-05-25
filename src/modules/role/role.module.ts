@@ -35,18 +35,26 @@ import { RoleMemberMappingAdapter } from './infrastructure/persistence/role-memb
 import { RoleAdapter } from './infrastructure/persistence/role.adapter';
 import { RolePermissionMappingAdapter } from './infrastructure/persistence/role-permission-mapping.adapter';
 import { RoleMemberMappingCreateService } from './application/service/role-member-mapping/role-member-mapping-create.service';
+import { RoleMemberMappingQueryRepository } from './infrastructure/persistence/repository/role-member-mapping-query-repository';
+import { RoleMemberMappingController } from './infrastructure/api/role-member-mapping.controller';
+import { RoleMemberMappingSearchService } from './application/service/role-member-mapping/role-member-mapping-search.service';
+import { RoleMemberMappingUpdateService } from './application/service/role-member-mapping/role-member-mapping-update.service';
+import { RoleMemberMappingUtilService } from './application/service/role-member-mapping/role-member-mapping-util.service';
+import { RoleMemberMappingViewService } from './application/service/role-member-mapping/role-member-mapping-view.service';
+import { ResponseModule } from '../response/response.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([RoleRepository]),
     TypeOrmModule.forFeature([PermissionRepository]),
     TypeOrmModule.forFeature([PermissionQueryRepository]),
     TypeOrmModule.forFeature([RoleMemberMappingRepository]),
+    TypeOrmModule.forFeature([RoleMemberMappingQueryRepository]),
     TypeOrmModule.forFeature([RolePermissionMappingRepository]),
     AuthModule,
     forwardRef(() => MemberModule),
-    // MemberModule,
+    ResponseModule,
   ],
-  controllers: [RoleController],
+  controllers: [RoleController, RoleMemberMappingController],
   providers: [
     RoleExistService,
     RoleCreateService,
@@ -60,6 +68,10 @@ import { RoleMemberMappingCreateService } from './application/service/role-membe
     PermissionReadByMemberService,
     RoleMemberMappingCreateService,
     RoleMemberMappingReadService,
+    RoleMemberMappingSearchService,
+    RoleMemberMappingUpdateService,
+    RoleMemberMappingUtilService,
+    RoleMemberMappingViewService,
     RolePermissionMappingExistService,
     RolePermissionMappingCreateService,
     RolePermissionMappingReadService,
