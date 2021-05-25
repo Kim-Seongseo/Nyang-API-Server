@@ -24,8 +24,8 @@ export class MemberUpdateReqDto {
   readonly date_birth: Date;
 
   @ApiProperty({ type: 'file', format: 'binary', required: false })
-  // @IsOptional()
-  profile_picture: Express.Multer.File;
+  @IsOptional()
+  file: Express.Multer.File;
 }
 
 // response: state
