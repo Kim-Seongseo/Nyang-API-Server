@@ -290,8 +290,8 @@ export class InfoBoardController {
         perPage,
       );
       const boards: BoardViewResDto[] = await this.boardSearchService.searchBoard(
-        skippedItems,
         perPage,
+        skippedItems,
         boardSearchReqDto.keyword,
         BoardType.INFO_BOARD,
       );
