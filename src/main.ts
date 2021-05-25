@@ -8,6 +8,7 @@ import { ExceptionInterceptor } from './modules/common/interceptor/exception.int
 import * as express from 'express';
 import { join } from 'path';
 import * as favicon from 'serve-favicon';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -45,6 +46,8 @@ async function bootstrap() {
   app.use(customRequestMiddleware); // request expansion for account info
   // exception interceptor
   app.useGlobalInterceptors(new ExceptionInterceptor());
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   // file
   app.use('/images', express.static(join(__dirname, '..', '/images')));
   // favicon
