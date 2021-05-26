@@ -22,7 +22,6 @@ export class ExceptionInterceptor
     return next.handle().pipe(
       map(async (response: Promise<Record<string, any> | string>) => {
         const data: Record<string, any> | string = await response;
-        console.log(data);
 
         if (typeof data !== 'object') {
           throw new InternalServerErrorException();

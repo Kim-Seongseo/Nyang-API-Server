@@ -58,6 +58,7 @@ export class AuthController {
         { token, roleName },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
