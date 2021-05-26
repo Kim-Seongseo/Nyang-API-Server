@@ -18,7 +18,7 @@ export class QuestionViewResDto {
 
   @Expose()
   @IsString()
-  readonly content: string;
+  readonly summary: string;
 
   @Expose()
   @IsString()

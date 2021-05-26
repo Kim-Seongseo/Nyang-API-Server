@@ -6,7 +6,8 @@ import { BoardIssuer } from 'src/modules/board/domain/type/board-issuer.type';
 import { BoardType } from 'src/modules/board/domain/type/board.type';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { EntityRepository, Repository } from 'typeorm';
-
+import htmlToText from 'html-to-text';
+import { LEN_OF_SUMMARY } from 'src/modules/board/domain/constant/content.constant';
 @EntityRepository(Board)
 export class BoardQueryRepository extends Repository<Board> {
   async findIssuerByIdentifier(
@@ -86,7 +87,13 @@ export class BoardQueryRepository extends Repository<Board> {
       .getRawMany();
 
     return datas.map((data) => {
-      return plainToClass(BoardViewResDto, classToPlain(data));
+      const { content, ...dataExceptContent } = data;
+      const summary = content.replace(/<[^>]+>/g, '').slice(0, LEN_OF_SUMMARY);
+      const board: BoardViewResDto = plainToClass(
+        BoardViewResDto,
+        classToPlain({ ...dataExceptContent, summary }),
+      );
+      return board;
     });
   }
 }

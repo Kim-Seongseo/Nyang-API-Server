@@ -5,6 +5,7 @@ import { classToPlain, plainToClass } from 'class-transformer';
 import { QuestionIssuer } from '../../../domain/type/question-issuer.type';
 import { QuestionViewResDto } from '../../../application/dto/question-view.dto';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
+import { LEN_OF_SUMMARY } from 'src/modules/question/domain/constant/content.constant';
 
 @EntityRepository(Question)
 export class QuestionQueryRepository extends Repository<Question> {
@@ -72,7 +73,13 @@ export class QuestionQueryRepository extends Repository<Question> {
       .getRawMany();
 
     return datas.map((data) => {
-      return plainToClass(QuestionViewResDto, classToPlain(data));
+      const { content, ...dataExceptContent } = data;
+      const summary = content.replace(/<[^>]+>/g, '').slice(0, LEN_OF_SUMMARY);
+      const question: QuestionViewResDto = plainToClass(
+        QuestionViewResDto,
+        classToPlain({ ...dataExceptContent, summary }),
+      );
+      return question;
     });
   }
 
@@ -103,7 +110,13 @@ export class QuestionQueryRepository extends Repository<Question> {
       .getRawMany();
 
     return datas.map((data) => {
-      return plainToClass(QuestionViewResDto, classToPlain(data));
+      const { content, ...dataExceptContent } = data;
+      const summary = content.replace(/<[^>]+>/g, '').slice(0, LEN_OF_SUMMARY);
+      const question: QuestionViewResDto = plainToClass(
+        QuestionViewResDto,
+        classToPlain({ ...dataExceptContent, summary }),
+      );
+      return question;
     });
   }
 }

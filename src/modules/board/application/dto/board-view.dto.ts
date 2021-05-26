@@ -20,7 +20,7 @@ export class BoardViewResDto {
 
   @Expose()
   @IsString()
-  readonly content: string;
+  readonly summary: string;
 
   @Expose()
   @IsNumber()
