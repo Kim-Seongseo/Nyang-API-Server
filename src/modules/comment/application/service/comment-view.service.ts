@@ -10,8 +10,8 @@ export class CommentViewService {
   ) {}
 
   async view(
-    postIdentifier: number,
     memberIdentifier: number,
+    postIdentifier: number,
   ): Promise<CommentViewResDto[] | undefined> {
     const comments: CommentViewResDto[] = await this.commentPort.findCommentByPostIdentifier(
       memberIdentifier,
