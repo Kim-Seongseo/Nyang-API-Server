@@ -18,7 +18,7 @@ export abstract class Post {
   /*properties*/
   @Column({ type: 'varchar', length: 100 })
   title: string;
-  @Column({ type: 'text' })
+  @Column({ type: 'longtext' })
   content: string;
   @Column((type) => Common)
   common: Common;
