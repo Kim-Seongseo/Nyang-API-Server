@@ -19,6 +19,7 @@ import {
 import { response } from 'express';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { MemberIsAdmin } from 'src/modules/member/decorator/member-isAdmin.decorator';
+import { QuestionAdoptService } from 'src/modules/question/application/service/question-adopt.service';
 import { QuestionCheckIssuerService } from 'src/modules/question/application/service/question-check-issuer.service';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/domain/response.interface';
@@ -45,6 +46,7 @@ export class AnswerController {
     private readonly answerAdoptService: AnswerAdoptService,
     private readonly responseService: ResponseService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
+    private readonly questionAdoptService: QuestionAdoptService,
   ) {}
 
   @ApiOperation({ summary: '답변 등록' })
@@ -199,6 +201,8 @@ export class AnswerController {
       const identifier: string = (
         await this.answerAdoptService.adopt(answerIdentifier)
       ).toString();
+
+      await this.questionAdoptService.adopt(Number(identifier));
 
       return this.responseService.success(
         '답변을 성공적으로 채택하였습니다.',

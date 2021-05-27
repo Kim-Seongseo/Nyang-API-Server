@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionController } from 'src/modules/question/infrastructure/api/question.controller';
 import { FileModule } from '../file/file.module';
 import { ResponseModule } from '../response/response.module';
+import { QuestionAdoptService } from './application/service/question-adopt.service';
 import { QuestionCheckIssuerService } from './application/service/question-check-issuer.service';
 import { QuestionCreateService } from './application/service/question-create.service';
 import { QuestionDeleteService } from './application/service/question-delete.service';
@@ -32,12 +33,16 @@ import { QuestionRepository } from './infrastructure/persistence/repository/ques
     QuestionDetailViewService,
     QuestionSearchService,
     QuestionCheckIssuerService,
+    QuestionAdoptService,
     QuestionUtilService,
     {
       provide: QUESTION_PORT,
       useClass: QuestionAdapter,
     },
   ],
-  exports: [QuestionCheckIssuerService],
+  exports: [
+    QuestionCheckIssuerService,
+    QuestionAdoptService,
+  ],
 })
 export class QuestionModule {}
