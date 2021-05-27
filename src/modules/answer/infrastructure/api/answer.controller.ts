@@ -202,7 +202,7 @@ export class AnswerController {
         await this.answerAdoptService.adopt(answerIdentifier)
       ).toString();
 
-      await this.questionAdoptService.adopt(Number(identifier));
+      await this.questionAdoptService.adopt(postIdentifier);
 
       return this.responseService.success(
         '답변을 성공적으로 채택하였습니다.',

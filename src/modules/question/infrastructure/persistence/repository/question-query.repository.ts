@@ -122,18 +122,17 @@ export class QuestionQueryRepository extends Repository<Question> {
     });
   }
 
-  async updateQuestionState(answerIdentifier: number): Promise<void | undefined> {
+  async updateQuestionState(postIdentifier: number): Promise<void | undefined> {
     const question = await this.createQueryBuilder('q')
       .select('q.identifier', 'identifier')
       .addSelect('q.state', 'state')
-      .innerJoin('answer', 'a', 'q.identifier = a.questionIdentifierIdentifier')
       .where('a.select_state = :state', { state: AnswerState.SELECTED })
-      .andWhere('a.identifier = :answerIdentifier', { answerIdentifier: answerIdentifier })
+      .andWhere('q.identifier = :postIdentifier', { postIdentifier })
       .getRawOne();
-    
+
     await this.update(
       { identifier: question.identifier },
-      { state: QuestionState.ADOPTED }
+      { state: QuestionState.ADOPTED },
     );
   }
 }
