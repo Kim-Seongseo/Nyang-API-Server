@@ -94,4 +94,8 @@ export class QuestionAdapter implements QuestionPort {
     );
     return questions;
   }
+
+  async updateQuestionState(answerIdentifier: number): Promise<void | undefined> {
+    await this.questionQueryRepository.updateQuestionState(answerIdentifier);
+  }
 }

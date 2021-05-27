@@ -39,4 +39,6 @@ export interface QuestionPort {
   ): Promise<QuestionViewResDto[] | undefined>;
 
   countQuestion(): Promise<number | undefined>;
+
+  updateQuestionState(answerIdentifier: number): Promise<void | undefined>;
 }

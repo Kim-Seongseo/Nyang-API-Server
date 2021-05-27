@@ -6,6 +6,8 @@ import { QuestionIssuer } from '../../../domain/type/question-issuer.type';
 import { QuestionViewResDto } from '../../../application/dto/question-view.dto';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { LEN_OF_SUMMARY } from 'src/modules/question/domain/constant/content.constant';
+import { AnswerState } from 'src/modules/answer/domain/type/answer-state.type';
+import { QuestionState } from 'src/modules/question/domain/entity/question-state.enum';
 
 @EntityRepository(Question)
 export class QuestionQueryRepository extends Repository<Question> {
@@ -118,5 +120,20 @@ export class QuestionQueryRepository extends Repository<Question> {
       );
       return question;
     });
+  }
+
+  async updateQuestionState(answerIdentifier: number): Promise<void | undefined> {
+    const question = await this.createQueryBuilder('q')
+      .select('q.identifier', 'identifier')
+      .addSelect('q.state', 'state')
+      .innerJoin('answer', 'a', 'q.identifier = a.questionIdentifierIdentifier')
+      .where('a.select_state = :state', { state: AnswerState.SELECTED })
+      .andWhere('a.identifier = :answerIdentifier', { answerIdentifier: answerIdentifier })
+      .getRawOne();
+    
+    await this.update(
+      { identifier: question.identifier },
+      { state: QuestionState.ADOPTED }
+    );
   }
 }
