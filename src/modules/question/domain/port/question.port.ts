@@ -40,5 +40,5 @@ export interface QuestionPort {
 
   countQuestion(): Promise<number | undefined>;
 
-  updateQuestionState(answerIdentifier: number): Promise<void | undefined>;
+  updateQuestionState(postIdentifier: number): Promise<void | undefined>;
 }
