@@ -14,8 +14,8 @@ import { readFileSync } from 'fs';
 async function bootstrap() {
 
   const httpsOptions = {
-    key: readFileSync('./etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/privkey.pem'),
-    cert: readFileSync('./etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/cert.pem'),
+    key: readFileSync('/etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/privkey.pem'),
+    cert: readFileSync('/etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/cert.pem'),
   };
 
   const app = await NestFactory.create(AppModule, {
