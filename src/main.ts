@@ -9,13 +9,18 @@ import * as express from 'express';
 import { join } from 'path';
 import * as favicon from 'serve-favicon';
 import * as bodyParser from 'body-parser';
+import { readFileSync } from 'fs';
 
 async function bootstrap() {
+
+  const httpsOptions = {
+    key: readFileSync('./etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/privkey.pem'),
+    cert: readFileSync('./etc/letsencrypt/live/www.aws-ec2-project-haejun.xyz/cert.pem'),
+  };
+
   const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: process.env.CORS_ORIGIN,
-      credentials: true,
-    },
+    cors: true,
+    httpsOptions,
   });
   // app.setGlobalPrefix('')
   // 수신 데이터 유효성 검사
@@ -30,6 +35,7 @@ async function bootstrap() {
   );
   // morgan
   app.use(morgan('dev'));
+
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Nyang API')
@@ -42,14 +48,18 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
+
   // custom middleware for custom request
   app.use(customRequestMiddleware); // request expansion for account info
+
   // exception interceptor
   app.useGlobalInterceptors(new ExceptionInterceptor());
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
   // file
   app.use('/images', express.static(join(__dirname, '..', '/images')));
+
   // favicon
   app.use(favicon(join(__dirname, '..', '/images/icons/favicon.ico')));
 

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerFindResDto } from '../dto/answer-find.dto';
-import { NotExistException } from '../exception/Not-Exist.exception';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class AnswerFindService {
