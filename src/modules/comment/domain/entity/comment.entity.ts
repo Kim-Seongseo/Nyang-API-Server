@@ -9,9 +9,9 @@ export class Comment {
   identifier: number;
 
   /*relations*/
-  @ManyToOne(() => Member, { lazy: true, cascade: false })
+  @ManyToOne(() => Member, { lazy: true, cascade: false, onDelete: 'CASCADE' })
   member: Member;
-  @ManyToOne(() => Board, { lazy: true, cascade: false })
+  @ManyToOne(() => Board, { lazy: true, cascade: false, onDelete: 'CASCADE' })
   board_identifier: Board;
 
   /*properties*/
