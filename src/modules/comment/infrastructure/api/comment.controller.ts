@@ -1,16 +1,20 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -26,6 +30,13 @@ import { CommentCreateService } from '../../application/service/comment-create.s
 import { CommentDeleteService } from '../../application/service/comment-delete.service';
 import { CommentViewService } from '../../application/service/comment-view.service';
 import { CommentUpdateService } from '../../application/service/comment-update.service';
+import { CommentHistoryResDto } from '../../application/dto/commnet-history.dto';
+import {
+  PAGE,
+  PER_PAGE,
+} from 'src/modules/board/domain/constant/pagination.constant';
+import { CommentUtilService } from '../../application/service/comment-util.service';
+import { CommentHistoryService } from '../../application/service/comment-history.service';
 
 @ApiTags('댓글 관리')
 @Controller('comment')
@@ -35,6 +46,8 @@ export class CommentController {
     private readonly commentUpdateService: CommentUpdateService,
     private readonly commentDeleteService: CommentDeleteService,
     private readonly commentViewService: CommentViewService,
+    private readonly commentUtilService: CommentUtilService,
+    private readonly commentHistoryService: CommentHistoryService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -126,6 +139,65 @@ export class CommentController {
         { commentIdentifier },
       );
     } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '회원별 댓글 기록 조회' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [CommentHistoryResDto],
+  })
+  @ApiBearerAuth('token')
+  @Permissions(PermissionType.COMMENT_ACCESS, PermissionType.COMMNET_MANAGE)
+  @Get('/history')
+  async viewFreeBoardHistory(
+    @MemberIdentifier() memberIdentifier: number,
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
+  ): Promise<Response | undefined> {
+    try {
+      const skippedItems: number = await this.commentUtilService.skip(
+        page,
+        perPage,
+      );
+      const boards: CommentHistoryResDto[] = await this.commentHistoryService.history(
+        memberIdentifier,
+        perPage,
+        skippedItems,
+      );
+
+      const totalData: number = await this.commentUtilService.totalDataPerMember(
+        memberIdentifier,
+      );
+
+      const totalPage = await this.commentUtilService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
+        '게시물 기록을 성공적으로 조회하였습니다.',
+        HttpStatus.OK,
+        totalData,
+        totalPage,
+        page,
+        perPage,
+        boards,
+      );
+    } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

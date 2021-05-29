@@ -10,6 +10,8 @@ import { CommentController } from './infrastructure/api/comment.controller';
 import { CommentAdapter } from './infrastructure/persistence/comment.adapter';
 import { CommentQueryRepository } from './infrastructure/persistence/repository/comment-query.repository';
 import { CommentRepository } from './infrastructure/persistence/repository/comment.repository';
+import { CommentUtilService } from './application/service/comment-util.service';
+import { CommentHistoryService } from './application/service/comment-history.service';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { CommentRepository } from './infrastructure/persistence/repository/comme
     CommentUpdateService,
     CommentDeleteService,
     CommentViewService,
+    CommentUtilService,
+    CommentHistoryService,
     {
       provide: COMMENT_PORT,
       useClass: CommentAdapter,
