@@ -10,9 +10,9 @@ export class Answer {
   identifier: number;
 
   /* relations */
-  @ManyToOne(() => Member, { lazy: true, cascade: false })
+  @ManyToOne(() => Member, { lazy: true, cascade: false, onDelete: 'CASCADE' })
   member_identifier: Member;
-  @ManyToOne(() => Question, { lazy: true, cascade: false })
+  @ManyToOne(() => Question, { lazy: true, cascade: false, onDelete: 'CASCADE' })
   question_identifier: Question;
 
   /*properties*/
