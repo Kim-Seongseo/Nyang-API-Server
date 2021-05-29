@@ -1,4 +1,5 @@
 import { classToPlain, plainToClass } from 'class-transformer';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { RoleMemberMappingFindResDto } from 'src/modules/role/application/dto/role-member-mapping-find.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { RoleMemberMapping } from '../../../domain/entity/role-member-mapping.entity';
@@ -16,7 +17,7 @@ export class RoleMemberMappingQueryRepository extends Repository<RoleMemberMappi
       .addSelect('m.nickname', 'nickname')
       .addSelect('m.date_register', 'date_register')
       .addSelect('r.role_name', 'role')
-      .innerJoin('member', 'm', 'm.identifier = r_m.member')
+      .innerJoin('member', 'm', 'm.identifier = r_m.member and m.isDeleted = :isDeleted', { isDeleted : RecordState.NONE})
       .innerJoin('role', 'r', 'r.identifier = r_m.role');
     if (keyword) {
       query.where('m.account like :keyword', {
@@ -33,5 +34,13 @@ export class RoleMemberMappingQueryRepository extends Repository<RoleMemberMappi
     return datas.map((data) => {
       return plainToClass(RoleMemberMappingFindResDto, classToPlain(data));
     });
+  }
+
+  async countQuestion(): Promise<number | undefined>{
+    const count = await this.createQueryBuilder('r_m')
+    .innerJoin('member', 'm', 'm.identifier = r_m.member and m.isDeleted = :isDeleted', { isDeleted : RecordState.NONE})
+    .getCount();
+    
+    return count;
   }
 }
