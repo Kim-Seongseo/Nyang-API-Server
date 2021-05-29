@@ -14,6 +14,16 @@ export class BoardUtilService {
     return await this.questionPort.countBoard(category);
   }
 
+  async totalDataPerMember(
+    memberIdentifier: number,
+    category: BoardType,
+  ): Promise<number | undefined> {
+    return await this.questionPort.countBoardByMemberIdentifier(
+      memberIdentifier,
+      category,
+    );
+  }
+
   async totalPage(
     totalData: number,
     perPage: number,

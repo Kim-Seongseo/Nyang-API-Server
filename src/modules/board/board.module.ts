@@ -5,6 +5,7 @@ import { BoardCheckIssuerService } from './application/service/board-check-issue
 import { BoardCreateService } from './application/service/board-create.service';
 import { BoardDeleteService } from './application/service/board-delete.service';
 import { BoardDetailViewService } from './application/service/board-detail-view.service';
+import { BoardHistoryService } from './application/service/board-history.service';
 import { BoardSearchService } from './application/service/board-search.service';
 import { BoardUpdateService } from './application/service/board-update.service';
 import { BoardUtilService } from './application/service/board-util.service';
@@ -31,6 +32,7 @@ import { BoardRepository } from './infrastructure/persistence/repository/board.r
     BoardUpdateService,
     BoardUtilService,
     BoardViewService,
+    BoardHistoryService,
     {
       provide: BOARD_PORT,
       useClass: BoardAdapter,

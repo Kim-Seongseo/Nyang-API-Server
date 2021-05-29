@@ -16,5 +16,5 @@ export class Board extends Post {
 
   /*properties*/
   @Column({ type: 'enum', enum: BoardType, nullable: false })
-  category: string;
+  category: BoardType;
 }

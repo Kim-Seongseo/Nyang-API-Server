@@ -6,8 +6,8 @@ import { BoardIssuer } from 'src/modules/board/domain/type/board-issuer.type';
 import { BoardType } from 'src/modules/board/domain/type/board.type';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { EntityRepository, Repository } from 'typeorm';
-import htmlToText from 'html-to-text';
 import { LEN_OF_SUMMARY } from 'src/modules/board/domain/constant/content.constant';
+import { BoardHistoryResDto } from 'src/modules/board/application/dto/board-history.dto';
 @EntityRepository(Board)
 export class BoardQueryRepository extends Repository<Board> {
   async findIssuerByIdentifier(
@@ -94,6 +94,32 @@ export class BoardQueryRepository extends Repository<Board> {
         classToPlain({ ...dataExceptContent, summary }),
       );
       return board;
+    });
+  }
+
+  async findPaginatedBoardByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+    category: BoardType,
+  ): Promise<BoardHistoryResDto[]> {
+    const datas = await this.createQueryBuilder('b')
+      .select('b.identifier', 'identifier')
+      .addSelect('b.title', 'title')
+      .addSelect('b.commonCreate_date', 'created_date')
+      .addSelect('count(c.identifier)', 'comment_number')
+      .leftJoin('comment', 'c', 'c.board_identifier = b.identifier')
+      .where('b.member_identifier = :memberIdentifier', { memberIdentifier })
+      .andWhere('b.category = :category', { category })
+      .andWhere('b.commonIs_deleted = :isDeleted', { isDeleted: 'none' })
+      .groupBy('b.identifier')
+      .orderBy('b.create_date', 'DESC')
+      .offset(skippedItems)
+      .limit(perPage)
+      .getRawMany();
+
+    return datas.map((data) => {
+      return plainToClass(BoardHistoryResDto, classToPlain(data));
     });
   }
 }

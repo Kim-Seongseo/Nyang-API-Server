@@ -1,13 +1,16 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
+  Query,
   Req,
   UploadedFile,
   UploadedFiles,
@@ -53,6 +56,7 @@ import { Member } from '../../domain/entity/member.entity';
 import { request } from 'express';
 import { FileUploadService } from 'src/modules/file/application/service/file-upload.service';
 import { multerOptions } from 'src/modules/file/domain/utils/multer-options';
+import { AuthService } from 'src/modules/auth/application/service/auth.service';
 
 @ApiTags('회원 관리')
 @Controller('member')
@@ -68,6 +72,7 @@ export class MemberController {
     private readonly memberFindPasswordService: MemberFindPasswordService,
     private readonly memberModifyPasswordService: MemberModifyPasswordService,
     private readonly memberSendCertificationCodeService: MemberSendCertificationCodeService,
+    private readonly authService: AuthService,
     private readonly fileUploadService: FileUploadService,
     private readonly responseService: ResponseService,
   ) {}
@@ -225,20 +230,6 @@ export class MemberController {
     }
   }
 
-  @ApiOperation({ summary: '회원 활동 조회' }) // 추후 작업
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'success',
-    // schema: { type: 'object', properties: { identifier: { type: 'string' } } },
-  })
-  @ApiBearerAuth('token')
-  @Permissions(PermissionType.MEMBER_ACCESS)
-  @Post('/history')
-  async getHistory(@MemberIdentifier() memberIdentifier) {
-    // need: board, question, comment, answer, page 고려하여 api분리
-    return;
-  }
-
   @ApiOperation({ summary: '계정 찾기' }) // done
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -366,15 +357,18 @@ export class MemberController {
     // params: email, certification_code
     // need: dto
     try {
-      const identifier: string = (
-        await this.certificationCodeService.verify(
-          certificationCodeEmailFindReqDto,
-        )
-      ).toString();
+      await this.certificationCodeService.verify(
+        certificationCodeEmailFindReqDto,
+      );
+
+      const tempToken = await this.authService.createAccessToken({
+        identifier: process.env.IDENTIFIER_FOR_E_MAIL_AUTH,
+        account: process.env.ACCOUNT_FOR_E_MAIL_AUTH,
+      });
       return this.responseService.success(
         '이메일 인증이 완료되었습니다.',
         HttpStatus.CREATED,
-        { identifier },
+        { token: tempToken, roleName: 'NONE' },
       );
     } catch (error) {
       console.log(error);

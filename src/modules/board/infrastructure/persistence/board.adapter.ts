@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardCreateReqDto } from '../../application/dto/board-create.dto';
 import { BoardDetailViewResDto } from '../../application/dto/board-detail.dto';
+import { BoardHistoryResDto } from '../../application/dto/board-history.dto';
 import { BoardUpdateReqDto } from '../../application/dto/board-update.dto';
 import { BoardViewResDto } from '../../application/dto/board-view.dto';
 import { Board } from '../../domain/entity/board.entity';
@@ -100,8 +101,34 @@ export class BoardAdapter implements BoardPort {
     return boards;
   }
 
+  async findPaginatedBoardByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+    category: BoardType,
+  ): Promise<BoardHistoryResDto[] | undefined> {
+    const boards: BoardHistoryResDto[] = await this.boardQueryRepostiory.findPaginatedBoardByMemberIdentifier(
+      memberIdentifier,
+      skippedItems,
+      perPage,
+      category,
+    );
+    return boards;
+  }
+
   async countBoard(category: BoardType): Promise<number | undefined> {
     const count: number = await this.boardRepository.count({ category });
+    return count;
+  }
+
+  async countBoardByMemberIdentifier(
+    memberIdentifier: any,
+    category: any,
+  ): Promise<number | undefined> {
+    const count: number = await this.boardRepository.count({
+      category,
+      member_identifier: { identifier: memberIdentifier },
+    });
     return count;
   }
 }
