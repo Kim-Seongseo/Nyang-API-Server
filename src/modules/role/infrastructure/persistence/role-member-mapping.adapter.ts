@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { RoleMemberMappingFindResDto } from '../../application/dto/role-member-mapping-find.dto';
 import { RoleMemberMappingUpdateReqDto } from '../../application/dto/role-member-mapping-update.dto';
 import { RoleMemberMapping } from '../../domain/entity/role-member-mapping.entity';
@@ -76,6 +77,6 @@ export class RoleMemberMappingAdapter implements RoleMemberMappingPort {
   }
 
   async countQuestion(): Promise<number | undefined> {
-    return await this.roleMemberMappingRepository.count();
+    return await this.roleMemberMappingQueryRepository.countQuestion();
   }
 }
