@@ -40,6 +40,8 @@ import { BoardViewService } from '../../application/service/board-view.service';
 import { PAGE, PER_PAGE } from '../../domain/constant/pagination.constant';
 import { BoardSearchService } from '../../application/service/board-search.service';
 import { BoardType } from '../../domain/type/board.type';
+import { BoardHistoryResDto } from '../../application/dto/board-history.dto';
+import { BoardHistoryService } from '../../application/service/board-history.service';
 
 @ApiTags('정보게시판 관리')
 @Controller('info')
@@ -54,6 +56,7 @@ export class InfoBoardController {
     private readonly boardUtilService: BoardUtilService,
     private readonly boardCheckIssuerService: BoardCheckIssuerService,
     private readonly boardSearchService: BoardSearchService,
+    private readonly boardHistoryService: BoardHistoryService,
   ) {}
 
   @ApiOperation({ summary: '지식정보 등록' })
@@ -65,7 +68,7 @@ export class InfoBoardController {
   @ApiBearerAuth('token')
   @Permissions(PermissionType.BOARD_MANAGE, PermissionType.BOARD_INFO_PUBLISH)
   @Post('/')
-  async registerQuestion(
+  async registerInfoBoard(
     @MemberIdentifier() memberIdentifier: number,
     @Body() boardCreateReqDto: BoardCreateReqDto,
   ): Promise<Response | undefined> {
@@ -97,7 +100,7 @@ export class InfoBoardController {
   @ApiBearerAuth('token')
   @Permissions(PermissionType.BOARD_MANAGE, PermissionType.BOARD_INFO_PUBLISH)
   @Put('/:identifier')
-  async updateQuestion(
+  async updateInfoBoard(
     @Param('identifier') identifier: number,
     @MemberIdentifier() memberIdentifier: number,
     @MemberIsAdmin() memberIsAdmin: boolean,
@@ -137,7 +140,7 @@ export class InfoBoardController {
   @ApiBearerAuth('token')
   @Permissions(PermissionType.BOARD_MANAGE, PermissionType.BOARD_INFO_PUBLISH)
   @Delete('/:identifier')
-  async deleteQuestion(
+  async deleteInfoBoard(
     @MemberIdentifier() memberIdentifier: number,
     @MemberIsAdmin() memberIsAdmin: boolean,
     @Param('identifier') identifier: number,
@@ -185,7 +188,7 @@ export class InfoBoardController {
   })
   @Permissions()
   @Get('/')
-  async viewQuestion(
+  async viewInfoBoard(
     @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
     perPage: number,
@@ -227,6 +230,70 @@ export class InfoBoardController {
     }
   }
 
+  @ApiOperation({ summary: '회원별 지식정보 기록 조회' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [BoardHistoryResDto],
+  })
+  @ApiBearerAuth('token')
+  @Permissions(
+    PermissionType.BOARD_ACCESS,
+    PermissionType.BOARD_INFO_PUBLISH,
+    PermissionType.BOARD_MANAGE,
+  )
+  @Get('/history')
+  async viewFreeBoardHistory(
+    @MemberIdentifier() memberIdentifier: number,
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
+  ): Promise<Response | undefined> {
+    try {
+      const skippedItems: number = await this.boardUtilService.skip(
+        page,
+        perPage,
+      );
+      const boards: BoardHistoryResDto[] = await this.boardHistoryService.history(
+        memberIdentifier,
+        perPage,
+        skippedItems,
+        BoardType.INFO_BOARD,
+      );
+
+      const totalData: number = await this.boardUtilService.totalDataPerMember(
+        memberIdentifier,
+        BoardType.INFO_BOARD,
+      );
+      const totalPage = await this.boardUtilService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
+        '게시물 기록을 성공적으로 조회하였습니다.',
+        HttpStatus.OK,
+        totalData,
+        totalPage,
+        page,
+        perPage,
+        boards,
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
   @ApiOperation({ summary: '지식정보 상세 조회' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -236,7 +303,7 @@ export class InfoBoardController {
   @ApiBearerAuth('token')
   @Permissions(PermissionType.OPTION, PermissionType.BOARD_MANAGE)
   @Get('/:identifier')
-  async viewDetail(
+  async viewDetailInfoBoard(
     @MemberIdentifier() memberIdentifier: number,
     @MemberIsAdmin() memberIsAdmin: boolean,
     @Param('identifier') identifier: number,
@@ -278,7 +345,7 @@ export class InfoBoardController {
   })
   @Permissions()
   @Post('/search')
-  async searchQuestion(
+  async searchInfoBoard(
     @Body() boardSearchReqDto: BoardSearchReqDto,
     @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
     @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
