@@ -1,5 +1,6 @@
 import {
   Body,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -21,19 +22,26 @@ import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier
 import { MemberIsAdmin } from 'src/modules/member/decorator/member-isAdmin.decorator';
 import { QuestionAdoptService } from 'src/modules/question/application/service/question-adopt.service';
 import { QuestionCheckIssuerService } from 'src/modules/question/application/service/question-check-issuer.service';
+import {
+  PAGE,
+  PER_PAGE,
+} from 'src/modules/question/domain/constant/pagination.constant';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/domain/response.interface';
 import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { AnswerCreateReqDto } from '../../application/dto/answer-create.dto';
 import { AnswerFindResDto } from '../../application/dto/answer-find.dto';
+import { AnswerHistoryResDto } from '../../application/dto/answer-history.dto';
 import { AnswerUpdateReqDto } from '../../application/dto/answer-update.dto';
 import { NotAIssuerException } from '../../application/exception/not-a-issuer.exception';
 import { AnswerAdoptService } from '../../application/service/answer-adopt.service';
 import { AnswerCreateService } from '../../application/service/answer-create.service';
 import { AnswerDeleteService } from '../../application/service/answer-delete.service';
 import { AnswerFindService } from '../../application/service/answer-find.service';
+import { AnswerHistoryService } from '../../application/service/answer-history.service';
 import { AnswerUpdateService } from '../../application/service/answer-update.service';
+import { AnswerUtilService } from '../../application/service/answer-util.service';
 
 @ApiTags('공개 QnA 답변 관리')
 @Controller('answer')
@@ -44,6 +52,8 @@ export class AnswerController {
     private readonly answerUpdateService: AnswerUpdateService,
     private readonly answerFindService: AnswerFindService,
     private readonly answerAdoptService: AnswerAdoptService,
+    private readonly answerUtilService: AnswerUtilService,
+    private readonly answerHistoryService: AnswerHistoryService,
     private readonly responseService: ResponseService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
     private readonly questionAdoptService: QuestionAdoptService,
@@ -133,6 +143,65 @@ export class AnswerController {
         '답변을 성공적으로 삭제했습니다.',
         HttpStatus.OK,
         { commentIdentifier },
+      );
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '회원별 댓글 기록 조회' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [AnswerHistoryResDto],
+  })
+  @ApiBearerAuth('token')
+  @Permissions(PermissionType.COMMENT_ACCESS, PermissionType.COMMNET_MANAGE)
+  @Get('/history')
+  async viewFreeBoardHistory(
+    @MemberIdentifier() memberIdentifier: number,
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
+  ): Promise<Response | undefined> {
+    try {
+      const skippedItems: number = await this.answerUtilService.skip(
+        page,
+        perPage,
+      );
+      const boards: AnswerHistoryResDto[] = await this.answerHistoryService.history(
+        memberIdentifier,
+        perPage,
+        skippedItems,
+      );
+
+      const totalData: number = await this.answerUtilService.totalDataPerMember(
+        memberIdentifier,
+      );
+
+      const totalPage = await this.answerUtilService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
+        '게시물 기록을 성공적으로 조회하였습니다.',
+        HttpStatus.OK,
+        totalData,
+        totalPage,
+        page,
+        perPage,
+        boards,
       );
     } catch (error) {
       console.log(error);
