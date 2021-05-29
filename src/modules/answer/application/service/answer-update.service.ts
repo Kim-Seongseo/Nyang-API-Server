@@ -4,7 +4,7 @@ import { Answer } from '../../domain/entity/answer.entity';
 import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerUpdateReqDto } from '../dto/answer-update.dto';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
-import { NotExistException } from '../exception/Not-Exist.exception';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class AnswerUpdateService {
