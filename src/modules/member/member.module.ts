@@ -22,6 +22,7 @@ import { RoleModule } from '../role/role.module';
 import { FileModule } from '../file/file.module';
 import { MemberQueryRepository } from './infrastructure/persistence/repository/member-query-repository';
 import { MemberReadRoleNameService } from './application/service/member-read-role-name.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MemberReadRoleNameService } from './application/service/member-read-rol
     CertificationCodeModule,
     ResponseModule,
     forwardRef(() => RoleModule),
+    forwardRef(() => AuthModule),
     FileModule,
   ],
   controllers: [MemberController],
