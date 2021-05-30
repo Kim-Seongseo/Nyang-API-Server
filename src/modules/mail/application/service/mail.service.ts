@@ -17,7 +17,6 @@ export class MailService {
         template: 'certification_code',
         context: {
           code: mailSendCertificationCodeReqDto.certification_code,
-          username: 'you',
         },
       });
     } catch (error) {

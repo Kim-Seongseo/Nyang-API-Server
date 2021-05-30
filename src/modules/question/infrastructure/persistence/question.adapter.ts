@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
 import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
+import { QuestionState } from '../../domain/entity/question-state.enum';
 import { Question } from '../../domain/entity/question.entity';
 import { QuestionPort } from '../../domain/port/question.port';
 import { QuestionQueryRepository } from './repository/question-query.repository';
@@ -104,18 +106,28 @@ export class QuestionAdapter implements QuestionPort {
     );
     return questions;
   }
-  async updateQuestionState(postIdentifier: number): Promise<void | undefined> {
-    await this.questionQueryRepository.updateQuestionState(postIdentifier);
+  async updateQuestionState(
+    postIdentifier: number,
+    questionState: QuestionState,
+  ): Promise<number | undefined> {
+    await this.questionRepository.update(
+      { identifier: postIdentifier },
+      { state: questionState },
+    );
+    return postIdentifier;
   }
 
   async countQuestion(): Promise<number | undefined> {
-    return await this.questionRepository.count();
+    return await this.questionRepository.count({
+      common: { is_deleted: RecordState.NONE },
+    });
   }
 
   async countQuestionByMemberIdentifier(
     memberIdentifier: number,
-  ): Promise<number> {
+  ): Promise<number | undefined> {
     const count: number = await this.questionRepository.count({
+      common: { is_deleted: RecordState.NONE },
       member_identifier: { identifier: memberIdentifier },
     });
     return count;

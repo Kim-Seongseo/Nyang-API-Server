@@ -1,19 +1,14 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Put,
-  Query,
-  Req,
   UploadedFile,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { MemberCreateReqDto } from 'src/modules/member/application/dto/member-signIn.dto';
@@ -50,10 +45,7 @@ import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { ResponseService } from 'src/modules/response/application/service/response.service';
 import { Response } from 'src/modules/response/domain/response.interface';
 import { MemberIdentifier } from '../../decorator/member-identifier.decorator';
-import { object } from 'joi';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Member } from '../../domain/entity/member.entity';
-import { request } from 'express';
 import { FileUploadService } from 'src/modules/file/application/service/file-upload.service';
 import { multerOptions } from 'src/modules/file/domain/utils/multer-options';
 import { AuthService } from 'src/modules/auth/application/service/auth.service';
@@ -133,6 +125,7 @@ export class MemberController {
         memberUpdateReqDto,
         fileIdentifier,
       );
+
       return this.responseService.success(
         '계정이 성공적으로 수정되었습니다.',
         HttpStatus.OK,
@@ -161,12 +154,14 @@ export class MemberController {
       const identifier: string = await this.memberDeleteService
         .delete(memberIdentifier)
         .toString();
+
       return this.responseService.success(
         '계정이 성공적으로 삭제되었습니다.',
         HttpStatus.OK,
         { identifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -187,12 +182,14 @@ export class MemberController {
       const memberInfo: MemberReadResDto = await this.memberReadService.read(
         memberIdentifier,
       );
+
       return this.responseService.success(
         '계정이 성공적으로 조회되었습니다.',
         HttpStatus.OK,
         { memberInfo },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -220,6 +217,7 @@ export class MemberController {
   ): Promise<Response | undefined> {
     try {
       await this.memberCheckDuplicationService.checkDuplication(account);
+
       return this.responseService.success(
         '사용가능한 계정입니다.',
         HttpStatus.CREATED,
@@ -247,12 +245,14 @@ export class MemberController {
       const memberInfo: MemberFindAccountResDto = await this.memberFindAccountService.findAccount(
         memberFindAccountReqDto,
       );
+
       return this.responseService.success(
         '계정을 성공적으로 조회했습니다.',
         HttpStatus.CREATED,
         { memberInfo },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -276,12 +276,14 @@ export class MemberController {
       const identifier: string = await this.memberFindPasswordService
         .findPassword(memberFindPasswordReqDto)
         .toString();
+
       return this.responseService.success(
         '비밀번호 찾기를 위한 이메일이 발송되었습니다.',
         HttpStatus.CREATED,
         { identifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -303,12 +305,14 @@ export class MemberController {
       const identifier: string = await this.memberModifyPasswordService
         .modifyPassword(memberModifyPasswordReqDto)
         .toString();
+
       return this.responseService.success(
         '비밀번호가 성공적으로 수정되었습니다.',
         HttpStatus.OK,
         { identifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -333,11 +337,15 @@ export class MemberController {
       await this.memberSendCertificationCodeService.sendCertificationCode(
         email['email'],
       );
+
       return this.responseService.success(
         '성공적으로 이메일이 발송되었습니다.',
         HttpStatus.OK,
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
   }
 
   @ApiOperation({
@@ -365,6 +373,7 @@ export class MemberController {
         identifier: process.env.IDENTIFIER_FOR_E_MAIL_AUTH,
         account: process.env.ACCOUNT_FOR_E_MAIL_AUTH,
       });
+
       return this.responseService.success(
         '이메일 인증이 완료되었습니다.',
         HttpStatus.CREATED,

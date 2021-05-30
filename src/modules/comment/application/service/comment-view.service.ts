@@ -17,7 +17,6 @@ export class CommentViewService {
       memberIdentifier,
       postIdentifier,
     );
-
     if (!comments) {
       throw new NotExistException();
     }

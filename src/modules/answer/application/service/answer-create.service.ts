@@ -11,14 +11,14 @@ export class AnswerCreateService {
     memberIdentifier: number,
     answerCreateReqDto: AnswerCreateReqDto,
   ): Promise<number | undefined> {
-    try {
-      const answerIdentifier: number = await this.answerPort.createAnswer(
-        memberIdentifier,
-        answerCreateReqDto,
-      );
-      return answerIdentifier;
-    } catch (error) {
+    const answerIdentifier: number = await this.answerPort.createAnswer(
+      memberIdentifier,
+      answerCreateReqDto,
+    );
+    if (!answerIdentifier) {
       throw new UnexpectedErrorException();
     }
+
+    return answerIdentifier;
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { CommentCreateReqDto } from '../../application/dto/comment-create.dto';
 import { CommentViewResDto } from '../../application/dto/comment-view.dto';
 import { CommentHistoryResDto } from '../../application/dto/commnet-history.dto';

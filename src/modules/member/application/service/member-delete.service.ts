@@ -11,16 +11,15 @@ export class MemberDeleteService {
   async delete(identifier: number): Promise<number | undefined> {
     let alternate = uuid();
     alternate = alternate.slice(-20, alternate.length);
-    try {
-      const memberIdentifier = await this.memberPort.deleteMember(
-        identifier,
-        alternate,
-        RecordState.DELETED,
-      );
-
-      return memberIdentifier;
-    } catch (error) {
+    const memberIdentifier = await this.memberPort.deleteMember(
+      identifier,
+      alternate,
+      RecordState.DELETED,
+    );
+    if (!memberIdentifier) {
       throw new UnexpectedErrorException();
     }
+
+    return memberIdentifier;
   }
 }

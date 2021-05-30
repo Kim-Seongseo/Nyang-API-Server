@@ -4,15 +4,15 @@ import { QuestionState } from '../../domain/entity/question-state.enum';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 
 @Injectable()
-export class QuestionAdoptService {
+export class QuestionRelegationService {
   constructor(
     @Inject(QUESTION_PORT) private readonly questionPort: QuestionPort,
   ) {}
 
-  async adopt(postIdentifier: number): Promise<number | undefined> {
+  async relegation(postIdentifier: number): Promise<number | undefined> {
     const identifier: number = await this.questionPort.updateQuestionState(
       postIdentifier,
-      QuestionState.ADOPTED,
+      QuestionState.NONE,
     );
     if (!identifier) {
       throw new UnexpectedErrorException();

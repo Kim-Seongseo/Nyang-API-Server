@@ -123,20 +123,6 @@ export class QuestionQueryRepository extends Repository<Question> {
     });
   }
 
-  async updateQuestionState(postIdentifier: number): Promise<void | undefined> {
-    const question = await this.createQueryBuilder('q')
-      .select('q.identifier', 'identifier')
-      .addSelect('q.state', 'state')
-      .where('a.select_state = :state', { state: AnswerState.SELECTED })
-      .andWhere('q.identifier = :postIdentifier', { postIdentifier })
-      .getRawOne();
-
-    await this.update(
-      { identifier: question.identifier },
-      { state: QuestionState.ADOPTED },
-    );
-  }
-
   async findPaginatedQuestionByMemberIdentifier(
     memberIdentifier: number,
     skippedItems: number,
@@ -148,15 +134,16 @@ export class QuestionQueryRepository extends Repository<Question> {
       .addSelect('q.create_date', 'created_date')
       .addSelect('count(a.identifier)', 'answer_number')
       .addSelect('q.state', 'state')
-      .innerJoin('answer', 'a', 'a.question_identifier = q.identifier')
+      .leftJoin('answer', 'a', 'a.question_identifier = q.identifier')
       .where('q.member_identifier = :memberIdentifier', { memberIdentifier })
-      .andWhere('q.commonIs_deleted = :isDeleted', { isDeleted: 'none' })
+      .andWhere('q.commonIs_deleted = :none', { none: 'none' })
       .groupBy('q.identifier')
       .orderBy('q.create_date', 'DESC')
       .offset(skippedItems)
       .limit(perPage)
       .getRawMany();
 
+    console.log(datas);
     return datas.map((data) => {
       return plainToClass(QuestionHistoryResDto, classToPlain(data));
     });

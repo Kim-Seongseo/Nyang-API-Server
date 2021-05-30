@@ -3,6 +3,7 @@ import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionQueryRepository } from '../../infrastructure/persistence/repository/question-query.repository';
 import { QuestionSearchReqDto } from '../dto/question-search.dto';
 import { QuestionViewResDto } from '../dto/question-view.dto';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class QuestionSearchService {
@@ -20,8 +21,10 @@ export class QuestionSearchService {
       perPage,
       questionSearchReqDto.keyword,
     );
+    if (!questions) {
+      throw new NotExistException();
+    }
 
-    if (!questions || !questions.length) throw new NotFoundException();
     return questions;
   }
 }

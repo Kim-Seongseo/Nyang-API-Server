@@ -84,6 +84,7 @@ export class RoleMemberMappingController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '회원별 권한목록이 성공적으로 조회되었습니다.',
         HttpStatus.OK,
@@ -151,6 +152,7 @@ export class RoleMemberMappingController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '회원별 권한목록이 성공적으로 검색되었습니다.',
         HttpStatus.OK,
@@ -184,6 +186,7 @@ export class RoleMemberMappingController {
           roleMemberMappingUpdateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '질문이 성공적으로 수정되었습니다.',
         HttpStatus.OK,

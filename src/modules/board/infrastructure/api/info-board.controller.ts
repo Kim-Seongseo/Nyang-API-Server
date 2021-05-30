@@ -80,6 +80,7 @@ export class InfoBoardController {
           BoardType.INFO_BOARD,
         )
       ).toString();
+
       return this.responseService.success(
         '지식정보를 정상적으로 등록했습니다',
         HttpStatus.CREATED,
@@ -120,6 +121,7 @@ export class InfoBoardController {
       const boardIdentifier: string = (
         await this.boardUpdateService.update(identifier, boardUpdateReqDto)
       ).toString();
+
       return this.responseService.success(
         '지식정보가 성공적으로 수정되었습니다.',
         HttpStatus.OK,
@@ -159,6 +161,7 @@ export class InfoBoardController {
       const boardIdentifier: string = (
         await this.boardDeleteService.delete(identifier)
       ).toString();
+
       return this.responseService.success(
         '지식정보가 성공적으로 삭제되었습니다.',
         HttpStatus.OK,
@@ -215,6 +218,7 @@ export class InfoBoardController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '지식정보를 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -279,6 +283,7 @@ export class InfoBoardController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '게시물 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -370,6 +375,7 @@ export class InfoBoardController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '지식정보가 성공적으로 검색되었습니다.',
         HttpStatus.OK,

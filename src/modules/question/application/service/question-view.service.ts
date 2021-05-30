@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionViewResDto } from '../dto/question-view.dto';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class QuestionViewService {
@@ -14,6 +15,10 @@ export class QuestionViewService {
       skippedItems,
       perPage,
     );
+    if (!questions) {
+      throw new NotExistException();
+    }
+
     return questions;
   }
 }

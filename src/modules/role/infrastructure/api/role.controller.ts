@@ -18,10 +18,12 @@ export class RoleController {
   @Permissions()
   @Get('/init')
   async initRole(): Promise<boolean | undefined> {
-    return (
-      (await this.roleInitService.init()) &&
-      (await this.permissionInitService.init()) &&
-      (await this.rolePermissionMappingInitService.init())
-    );
+    try {
+      return (
+        (await this.roleInitService.init()) &&
+        (await this.permissionInitService.init()) &&
+        (await this.rolePermissionMappingInitService.init())
+      );
+    } catch (error) {}
   }
 }

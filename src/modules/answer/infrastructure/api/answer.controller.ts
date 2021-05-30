@@ -22,6 +22,7 @@ import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier
 import { MemberIsAdmin } from 'src/modules/member/decorator/member-isAdmin.decorator';
 import { QuestionAdoptService } from 'src/modules/question/application/service/question-adopt.service';
 import { QuestionCheckIssuerService } from 'src/modules/question/application/service/question-check-issuer.service';
+import { QuestionRelegationService } from 'src/modules/question/application/service/question-relegation.service';
 import {
   PAGE,
   PER_PAGE,
@@ -40,6 +41,7 @@ import { AnswerCreateService } from '../../application/service/answer-create.ser
 import { AnswerDeleteService } from '../../application/service/answer-delete.service';
 import { AnswerFindService } from '../../application/service/answer-find.service';
 import { AnswerHistoryService } from '../../application/service/answer-history.service';
+import { AnswerRelegationService } from '../../application/service/answer-relegation.service';
 import { AnswerUpdateService } from '../../application/service/answer-update.service';
 import { AnswerUtilService } from '../../application/service/answer-util.service';
 
@@ -52,11 +54,13 @@ export class AnswerController {
     private readonly answerUpdateService: AnswerUpdateService,
     private readonly answerFindService: AnswerFindService,
     private readonly answerAdoptService: AnswerAdoptService,
+    private readonly answerRelegationService: AnswerRelegationService,
     private readonly answerUtilService: AnswerUtilService,
     private readonly answerHistoryService: AnswerHistoryService,
     private readonly responseService: ResponseService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
     private readonly questionAdoptService: QuestionAdoptService,
+    private readonly questionRelegationService: QuestionRelegationService,
   ) {}
 
   @ApiOperation({ summary: '답변 등록' })
@@ -79,12 +83,14 @@ export class AnswerController {
           answerCreateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '답변이 성공적으로 등록되었습니다.',
         HttpStatus.CREATED,
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -112,12 +118,14 @@ export class AnswerController {
           answerUpdateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '답변이 성공적으로 수정되었습니다',
         HttpStatus.OK,
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -139,6 +147,7 @@ export class AnswerController {
       const commentIdentifier: string = (
         await this.answerDeleteService.delete(identifier, memberIdentifier)
       ).toString();
+
       return this.responseService.success(
         '답변을 성공적으로 삭제했습니다.',
         HttpStatus.OK,
@@ -194,6 +203,7 @@ export class AnswerController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '답변 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -227,12 +237,61 @@ export class AnswerController {
         postIdentifier,
         memberIdentifier,
       );
+
       return this.responseService.success(
         '답변을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
         answers,
       );
     } catch (error) {
+      console.log(error);
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '답변 좌천' })
+  @ApiQuery({
+    name: 'answerIdentifier',
+    type: 'number',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'success',
+    schema: { type: 'object', properties: { identifier: { type: 'string' } } },
+  })
+  @ApiBearerAuth('token')
+  @Permissions(PermissionType.ANSWER_ACCESS, PermissionType.ANSWER_MANAGE)
+  @Get('/adopt/relegation/:postIdentifier')
+  async relegationAnswer(
+    @Param('postIdentifier') postIdentifier: number,
+    @Query('answerIdentifier', ParseIntPipe) answerIdentifier: number,
+    @MemberIdentifier() memberIdentifier: number,
+    @MemberIsAdmin() MemberIsAdmin: boolean,
+  ): Promise<Response | undefined> {
+    try {
+      const isIssuer: boolean = await this.questionCheckIssuerService.isIssuer(
+        memberIdentifier,
+        MemberIsAdmin,
+        postIdentifier,
+      );
+      if (!isIssuer) {
+        throw new NotAIssuerException();
+      }
+
+      const identifier: string = (
+        await this.answerRelegationService.relegation(answerIdentifier)
+      ).toString();
+
+      await this.questionRelegationService.relegation(postIdentifier);
+
+      return this.responseService.success(
+        '답변을 성공적으로 좌천시켰습니다.',
+        HttpStatus.OK,
+        { identifier },
+      );
+    } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

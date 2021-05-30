@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
-import { QuestionRepository } from '../../infrastructure/persistence/repository/question.repository';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class QuestionCheckIssuerService {
@@ -16,8 +16,10 @@ export class QuestionCheckIssuerService {
     const issuer: number = (
       await this.questionPort.findQuestionByIdentifier(questionIdentifier)
     ).member_identifier.identifier; // have to refactor with querybuilder
+    if (!issuer) {
+      throw new NotExistException();
+    }
 
-    console.log(isAdmin);
     return issuer === memberIdentifier || isAdmin;
   }
 }

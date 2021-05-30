@@ -78,6 +78,7 @@ export class CommentController {
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -111,6 +112,7 @@ export class CommentController {
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -139,6 +141,7 @@ export class CommentController {
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -187,6 +190,7 @@ export class CommentController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '게시물 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -227,6 +231,7 @@ export class CommentController {
         comments,
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

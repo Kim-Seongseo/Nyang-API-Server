@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerHistoryResDto } from '../dto/answer-history.dto';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class AnswerHistoryService {
@@ -16,6 +17,10 @@ export class AnswerHistoryService {
       skippedItems,
       perPage,
     );
+    if (!answers) {
+      throw new NotExistException();
+    }
+
     return answers;
   }
 }

@@ -3,6 +3,7 @@ import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto'
 import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
+import { QuestionState } from '../entity/question-state.enum';
 import { Question } from '../entity/question.entity';
 
 export const QUESTION_PORT = 'QUESTION_PORT';
@@ -51,5 +52,8 @@ export interface QuestionPort {
     memberIdentifier: number,
   ): Promise<number | undefined>;
 
-  updateQuestionState(postIdentifier: number): Promise<void | undefined>;
+  updateQuestionState(
+    postIdentifier: number,
+    questionState: QuestionState,
+  ): Promise<number | undefined>;
 }

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionHistoryResDto } from '../dto/question-history.dto';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class QuestionHistoryService {
@@ -18,6 +19,10 @@ export class QuestionHistoryService {
       skippedItems,
       perPage,
     );
+    if (!questions) {
+      throw new NotExistException();
+    }
+
     return questions;
   }
 }

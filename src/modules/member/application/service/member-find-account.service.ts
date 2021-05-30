@@ -15,8 +15,10 @@ export class MemberFindAccountService {
     const member: MemberFindAccountResDto = await this.memberPort.findAccount(
       memberFindAccountReqDto,
     );
+    if (!member) {
+      throw new NotFoundException();
+    }
 
-    if (!member) throw new NotFoundException();
     return member;
   }
 }

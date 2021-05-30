@@ -17,7 +17,9 @@ export class MemberFindPasswordService {
     const member: Member = await this.memberPort.findMemberByAccount(
       memberFindPasswordReqDto.account,
     );
-    if (!member) throw new NotFoundException();
+    if (!member) {
+      throw new NotFoundException();
+    }
 
     await this.memberSendCertificationCodeService.sendCertificationCode(
       memberFindPasswordReqDto.email,
