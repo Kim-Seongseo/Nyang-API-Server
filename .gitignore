@@ -5,3 +5,6 @@ dist
 # env
 config
 .env
+
+#file
+images
