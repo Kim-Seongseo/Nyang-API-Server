@@ -17,7 +17,7 @@ import { QUESTION_PORT } from './domain/port/question.port';
 import { QuestionAdapter } from './infrastructure/persistence/question.adapter';
 import { QuestionQueryRepository } from './infrastructure/persistence/repository/question-query.repository';
 import { QuestionRepository } from './infrastructure/persistence/repository/question.repository';
-
+import { QuestionRelegationService } from './application/service/question-relegation.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([QuestionRepository]),
@@ -37,11 +37,16 @@ import { QuestionRepository } from './infrastructure/persistence/repository/ques
     QuestionAdoptService,
     QuestionUtilService,
     QuestionHistoryService,
+    QuestionRelegationService,
     {
       provide: QUESTION_PORT,
       useClass: QuestionAdapter,
     },
   ],
-  exports: [QuestionCheckIssuerService, QuestionAdoptService],
+  exports: [
+    QuestionCheckIssuerService,
+    QuestionAdoptService,
+    QuestionRelegationService,
+  ],
 })
 export class QuestionModule {}

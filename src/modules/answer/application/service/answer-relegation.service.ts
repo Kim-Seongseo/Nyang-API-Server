@@ -4,14 +4,14 @@ import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerState } from '../../domain/type/answer-state.type';
 
 @Injectable()
-export class AnswerAdoptService {
+export class AnswerRelegationService {
   constructor(@Inject(ANSWER_PORT) private readonly answerPort: AnswerPort) {}
 
-  async adopt(identifier: number): Promise<number | undefined> {
+  async relegation(identifier: number): Promise<number | undefined> {
     const answer: Answer = await this.answerPort.findAnswerByIdentifier(
       identifier,
     );
-    answer.select_state = AnswerState.SELECTED;
+    answer.select_state = AnswerState.NONE;
 
     const answerIdentifier: number = await this.answerPort.saveAnswer(answer);
     return answerIdentifier;

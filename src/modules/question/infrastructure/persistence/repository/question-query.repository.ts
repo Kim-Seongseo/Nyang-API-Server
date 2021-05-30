@@ -123,20 +123,6 @@ export class QuestionQueryRepository extends Repository<Question> {
     });
   }
 
-  async updateQuestionState(postIdentifier: number): Promise<void | undefined> {
-    const question = await this.createQueryBuilder('q')
-      .select('q.identifier', 'identifier')
-      .addSelect('q.state', 'state')
-      .where('a.select_state = :state', { state: AnswerState.SELECTED })
-      .andWhere('q.identifier = :postIdentifier', { postIdentifier })
-      .getRawOne();
-
-    await this.update(
-      { identifier: question.identifier },
-      { state: QuestionState.ADOPTED },
-    );
-  }
-
   async findPaginatedQuestionByMemberIdentifier(
     memberIdentifier: number,
     skippedItems: number,
