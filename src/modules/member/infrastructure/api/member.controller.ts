@@ -119,7 +119,13 @@ export class MemberController {
     // params: dto / done
     // 필수 입력정보 검증 -> validator & optional / done
     try {
-      const fileIdentifier: number = await this.fileUploadService.upload(file);
+      const fileIdentifier = null;
+      if (file) {
+        const fileIdentifier: number = await this.fileUploadService.upload(
+          file,
+        );
+      }
+
       const identifier: string = await this.memberUpdateService.update(
         memberIdentifier,
         memberUpdateReqDto,
