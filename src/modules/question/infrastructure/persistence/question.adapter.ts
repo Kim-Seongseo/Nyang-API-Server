@@ -17,7 +17,7 @@ export class QuestionAdapter implements QuestionPort {
     private readonly questionRepository: QuestionRepository,
     private readonly questionQueryRepository: QuestionQueryRepository,
   ) {}
-
+  
   async createQuestion(
     memberIdentifier: number,
     questionCreateReqDto: QuestionCreateReqDto,
@@ -47,6 +47,11 @@ export class QuestionAdapter implements QuestionPort {
       { common: { is_deleted: 'deleted' } },
     );
     return identifier;
+  }
+
+  async findQuestionIssuerByIdentifier(identifier: number): Promise<number | undefined> {
+    const issuer:number = await this.questionQueryRepository.findQuestionIssuerByIdentifier(identifier);
+    return issuer;
   }
 
   async findQuestionByIdentifier(

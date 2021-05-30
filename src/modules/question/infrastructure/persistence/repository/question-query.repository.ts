@@ -6,12 +6,22 @@ import { QuestionIssuer } from '../../../domain/type/question-issuer.type';
 import { QuestionViewResDto } from '../../../application/dto/question-view.dto';
 import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { LEN_OF_SUMMARY } from 'src/modules/question/domain/constant/content.constant';
-import { AnswerState } from 'src/modules/answer/domain/type/answer-state.type';
-import { QuestionState } from 'src/modules/question/domain/entity/question-state.enum';
 import { QuestionHistoryResDto } from 'src/modules/question/application/dto/question-history.dto';
 
 @EntityRepository(Question)
 export class QuestionQueryRepository extends Repository<Question> {
+
+  async findQuestionIssuerByIdentifier(identifier:number):Promise<number|undefined>{
+    const data = await this.createQueryBuilder('q').select('m.identifier','identifier')
+    .innerJoin('member','m','m.identifier = q.member_identifier')
+    .where('q.identifier = :identifier',{identifier})
+    .andWhere('q.commonIs_deleted = :none', { none: 'none' })
+    .getRawOne()
+
+    const issuer :number = data.identifier;
+    return issuer;
+  }
+
   async findQuestionDetailByIdentifier(
     memberIdentifier: number,
     memberIsAdmin: boolean,
