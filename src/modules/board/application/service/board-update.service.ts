@@ -11,15 +11,14 @@ export class BoardUpdateService {
     boardIdentifier: number,
     boardUpdateReqDto: BoardUpdateReqDto,
   ): Promise<number | undefined> {
-    try {
-      const identifier: number = await this.boardPort.updateBoard(
-        boardIdentifier,
-        boardUpdateReqDto,
-      );
-      return identifier;
-    } catch (error) {
-      console.log(error);
+    const identifier: number = await this.boardPort.updateBoard(
+      boardIdentifier,
+      boardUpdateReqDto,
+    );
+    if (!identifier) {
       throw new UnexpectedErrorException();
     }
+
+    return identifier;
   }
 }

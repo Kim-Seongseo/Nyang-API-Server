@@ -18,6 +18,7 @@ export class AnswerFindService {
     if (!answers) {
       throw new NotExistException();
     }
+
     return answers;
   }
 }

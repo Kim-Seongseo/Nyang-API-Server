@@ -5,7 +5,7 @@ import encryptFileName from './encrypt-file-name';
 
 export const multerOptions = {
   fileFilter: (request, file, callback) => {
-    if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+    if (file && file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
       callback(null, true);
     } else {
       callback(

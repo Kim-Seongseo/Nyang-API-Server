@@ -83,12 +83,14 @@ export class AnswerController {
           answerCreateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '답변이 성공적으로 등록되었습니다.',
         HttpStatus.CREATED,
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -116,12 +118,14 @@ export class AnswerController {
           answerUpdateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '답변이 성공적으로 수정되었습니다',
         HttpStatus.OK,
         { commentIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -143,6 +147,7 @@ export class AnswerController {
       const commentIdentifier: string = (
         await this.answerDeleteService.delete(identifier, memberIdentifier)
       ).toString();
+
       return this.responseService.success(
         '답변을 성공적으로 삭제했습니다.',
         HttpStatus.OK,
@@ -198,6 +203,7 @@ export class AnswerController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '답변 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -231,12 +237,14 @@ export class AnswerController {
         postIdentifier,
         memberIdentifier,
       );
+
       return this.responseService.success(
         '답변을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
         answers,
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

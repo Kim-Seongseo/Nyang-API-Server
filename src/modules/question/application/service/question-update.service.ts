@@ -1,4 +1,5 @@
 import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionRepository } from '../../infrastructure/persistence/repository/question.repository';
 import { QuestionUpdateReqDto } from '../dto/question-update.dto';
@@ -13,15 +14,13 @@ export class QuestionUpdateService {
     identifier: number,
     questionUpdateReqDto: QuestionUpdateReqDto,
   ): Promise<number | undefined> {
-    try {
-      const questionIdentifier = await this.questionPort.updateQuestion(
-        identifier,
-        questionUpdateReqDto,
-      );
-
-      return questionIdentifier;
-    } catch (error) {
-      throw new RequestTimeoutException();
+    const questionIdentifier = await this.questionPort.updateQuestion(
+      identifier,
+      questionUpdateReqDto,
+    );
+    if (!questionIdentifier) {
+      throw new UnexpectedErrorException();
     }
+    return questionIdentifier;
   }
 }

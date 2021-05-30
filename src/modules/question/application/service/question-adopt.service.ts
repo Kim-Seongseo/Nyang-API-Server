@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { QuestionState } from '../../domain/entity/question-state.enum';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 
@@ -13,6 +14,10 @@ export class QuestionAdoptService {
       postIdentifier,
       QuestionState.ADOPTED,
     );
+    if (!identifier) {
+      throw new UnexpectedErrorException();
+    }
+
     return identifier;
   }
 }

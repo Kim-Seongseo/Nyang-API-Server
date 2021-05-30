@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotExistException } from 'src/modules/answer/application/exception/not-exist.exception';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { BoardPort, BOARD_PORT } from '../../domain/port/board.port';
 import { BoardType } from '../../domain/type/board.type';
@@ -14,17 +15,16 @@ export class BoardSearchService {
     keyword: string,
     category: BoardType,
   ): Promise<BoardViewResDto[] | undefined> {
-    try {
-      const boards: BoardViewResDto[] = await this.boardPort.findPaginatedBoardByKeyword(
-        skippedItems,
-        perPage,
-        keyword,
-        category,
-      );
-      return boards;
-    } catch (error) {
-      console.log(error);
-      throw new UnexpectedErrorException();
+    const boards: BoardViewResDto[] = await this.boardPort.findPaginatedBoardByKeyword(
+      skippedItems,
+      perPage,
+      keyword,
+      category,
+    );
+    if (!boards) {
+      throw new NotExistException();
     }
+
+    return boards;
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
 import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
@@ -117,13 +118,16 @@ export class QuestionAdapter implements QuestionPort {
   }
 
   async countQuestion(): Promise<number | undefined> {
-    return await this.questionRepository.count();
+    return await this.questionRepository.count({
+      common: { is_deleted: RecordState.NONE },
+    });
   }
 
   async countQuestionByMemberIdentifier(
     memberIdentifier: number,
-  ): Promise<number> {
+  ): Promise<number | undefined> {
     const count: number = await this.questionRepository.count({
+      common: { is_deleted: RecordState.NONE },
       member_identifier: { identifier: memberIdentifier },
     });
     return count;

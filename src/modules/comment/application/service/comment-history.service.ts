@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotExistException } from 'src/modules/answer/application/exception/not-exist.exception';
 import { CommentPort, COMMENT_PORT } from '../../domain/port/comment.port';
 import { CommentHistoryResDto } from '../dto/commnet-history.dto';
 
@@ -18,6 +19,10 @@ export class CommentHistoryService {
       skippedItems,
       perPage,
     );
+    if (!comments) {
+      throw new NotExistException();
+    }
+
     return comments;
   }
 }

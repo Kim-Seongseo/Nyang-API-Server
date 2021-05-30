@@ -13,14 +13,14 @@ export class CommentCreateService {
     memberIdentifier: number,
     commentCreateReqDto: CommentCreateReqDto,
   ): Promise<number | undefined> {
-    try {
-      const commentIdentifier: number = await this.commentPort.createComment(
-        memberIdentifier,
-        commentCreateReqDto,
-      );
-      return commentIdentifier;
-    } catch (error) {
+    const commentIdentifier: number = await this.commentPort.createComment(
+      memberIdentifier,
+      commentCreateReqDto,
+    );
+    if (!commentIdentifier) {
       throw new UnexpectedErrorException();
     }
+
+    return commentIdentifier;
   }
 }

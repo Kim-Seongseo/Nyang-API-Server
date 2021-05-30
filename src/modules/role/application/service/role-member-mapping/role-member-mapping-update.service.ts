@@ -14,14 +14,13 @@ export class RoleMemberMappingUpdateService {
   async update(
     roleMemberMappingUpdateReqDto: RoleMemberMappingUpdateReqDto,
   ): Promise<number | undefined> {
-    try {
-      const identifier: number = await this.roleMemberMappingPort.updateRoleMemberMapping(
-        roleMemberMappingUpdateReqDto,
-      );
-      return identifier;
-    } catch (error) {
-      console.log(error);
+    const identifier: number = await this.roleMemberMappingPort.updateRoleMemberMapping(
+      roleMemberMappingUpdateReqDto,
+    );
+    if (!identifier) {
       throw new UnexpectedErrorException();
     }
+
+    return identifier;
   }
 }

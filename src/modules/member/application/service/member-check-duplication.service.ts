@@ -8,6 +8,8 @@ export class MemberCheckDuplicationService {
 
   async checkDuplication(account: string): Promise<void | undefined> {
     const count: number = await this.memberPort.countMemberByAccount(account);
-    if (count > 0) throw new DuplicatedAccountException();
+    if (count > 0) {
+      throw new DuplicatedAccountException();
+    }
   }
 }

@@ -78,6 +78,7 @@ export class QuestionController {
           questionCreateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '질문을 정상적으로 등록했습니다',
         HttpStatus.CREATED,
@@ -121,12 +122,14 @@ export class QuestionController {
           questionUpdateReqDto,
         )
       ).toString();
+
       return this.responseService.success(
         '질문이 성공적으로 수정되었습니다.',
         HttpStatus.OK,
         { questionIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -159,12 +162,14 @@ export class QuestionController {
       const questionIdentifier: string = (
         await this.questionDeleteService.delete(identifier)
       ).toString();
+
       return this.responseService.success(
         '질문이 성공적으로 삭제되었습니다.',
         HttpStatus.OK,
         { questionIdentifier },
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -212,6 +217,7 @@ export class QuestionController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '질문을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -222,6 +228,7 @@ export class QuestionController {
         questions,
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -273,6 +280,7 @@ export class QuestionController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '질문 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
@@ -315,6 +323,7 @@ export class QuestionController {
         questionInfo,
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }
@@ -359,6 +368,7 @@ export class QuestionController {
         totalData,
         perPage,
       );
+
       return this.responseService.paging(
         '질문이 성공적으로 검색되었습니다.',
         HttpStatus.OK,
@@ -369,6 +379,7 @@ export class QuestionController {
         questions,
       );
     } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

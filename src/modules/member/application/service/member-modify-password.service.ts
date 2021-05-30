@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotExistException } from 'src/modules/answer/application/exception/not-exist.exception';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { Member } from '../../domain/entity/member.entity';
 import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
@@ -11,17 +12,21 @@ export class MemberModifyPasswordService {
   async modifyPassword(
     memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
   ): Promise<number | undefined> {
-    try {
-      const member: Member = await this.memberPort.findMemberByAccount(
-        memberModifyPasswordReqDto.account,
-      );
-      member.password = await Member.encryptToHash(
-        memberModifyPasswordReqDto.password,
-      );
-      const memberIdentifier: number = await this.memberPort.saveMember(member);
-      return memberIdentifier;
-    } catch (error) {
+    const member: Member = await this.memberPort.findMemberByAccount(
+      memberModifyPasswordReqDto.account,
+    );
+    if (!member) {
+      throw new NotExistException();
+    }
+
+    member.password = await Member.encryptToHash(
+      memberModifyPasswordReqDto.password,
+    );
+    const memberIdentifier: number = await this.memberPort.saveMember(member);
+    if (!memberIdentifier) {
       throw new UnexpectedErrorException();
     }
+
+    return memberIdentifier;
   }
 }

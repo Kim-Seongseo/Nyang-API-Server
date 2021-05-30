@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
+import { NotExistException } from 'src/modules/member/application/exception/not-exist.exception';
 import { ROLE_MEMBER_MAPPING_PORT } from 'src/modules/role/domain/port/port.constant';
 import { RoleMemberMappingPort } from 'src/modules/role/domain/port/role-member-mapping.port';
 import { RoleMemberMappingFindResDto } from '../../dto/role-member-mapping-find.dto';
@@ -16,16 +17,14 @@ export class RoleMemberMappingSearchService {
     perPage: number,
     keyword: string,
   ): Promise<RoleMemberMappingFindResDto[] | undefined> {
-    try {
-      const roleMemberMappings: RoleMemberMappingFindResDto[] = await this.roleMemberMappingPort.findPaginatedRoleMemberMappingByKeyword(
-        skippedItems,
-        perPage,
-        keyword,
-      );
-      return roleMemberMappings;
-    } catch (error) {
-      console.log(error);
-      throw new UnexpectedErrorException();
+    const roleMemberMappings: RoleMemberMappingFindResDto[] = await this.roleMemberMappingPort.findPaginatedRoleMemberMappingByKeyword(
+      skippedItems,
+      perPage,
+      keyword,
+    );
+    if (!roleMemberMappings) {
+      throw new NotExistException();
     }
+    return roleMemberMappings;
   }
 }

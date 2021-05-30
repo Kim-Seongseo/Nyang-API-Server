@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { RoleMemberMappingCreateService } from 'src/modules/role/application/service/role-member-mapping/role-member-mapping-create.service';
 import { RoleType } from 'src/modules/role/domain/type/role-type.enum';
 import { Member } from '../../domain/entity/member.entity';
@@ -25,12 +26,19 @@ export class MemberCreateService {
       memberCreateReqDto,
       await Member.encryptToHash(memberCreateReqDto.password),
     );
+    if (!member) {
+      throw new UnexpectedErrorException();
+    }
 
     // role - member
-    await this.roleMemberMappingCreateService.createMemberRoleMapping(
+    const mappingIdentifier = await this.roleMemberMappingCreateService.createMemberRoleMapping(
       member,
       RoleType.MEMBER,
     );
+    if (!mappingIdentifier) {
+      throw new UnexpectedErrorException();
+    }
+
     return member.identifier;
   }
 }

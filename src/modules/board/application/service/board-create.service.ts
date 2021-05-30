@@ -13,16 +13,15 @@ export class BoardCreateService {
     boardCreateReqDto: BoardCreateReqDto,
     category: BoardType,
   ): Promise<number | undefined> {
-    try {
-      const identifier: number = await this.boardPort.createBoard(
-        memberIdentifier,
-        boardCreateReqDto,
-        category,
-      );
-      return identifier;
-    } catch (error) {
-      console.log(error);
+    const identifier: number = await this.boardPort.createBoard(
+      memberIdentifier,
+      boardCreateReqDto,
+      category,
+    );
+    if (!identifier) {
       throw new UnexpectedErrorException();
     }
+
+    return identifier;
   }
 }

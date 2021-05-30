@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotExistException } from 'src/modules/answer/application/exception/not-exist.exception';
 import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { BoardPort, BOARD_PORT } from '../../domain/port/board.port';
 import { BoardType } from '../../domain/type/board.type';
@@ -14,16 +15,15 @@ export class BoardDetailViewService {
     identifier: number,
     category: BoardType,
   ): Promise<BoardDetailViewResDto | undefined> {
-    try {
-      const board: BoardDetailViewResDto = await this.boardPort.findBoardDetailByIdentifierAndMember(
-        memberIdentifier,
-        memberIsAdmin,
-        identifier,
-      );
-      return board;
-    } catch (error) {
-      console.log(error);
-      throw new UnexpectedErrorException();
+    const board: BoardDetailViewResDto = await this.boardPort.findBoardDetailByIdentifierAndMember(
+      memberIdentifier,
+      memberIsAdmin,
+      identifier,
+    );
+    if (!board) {
+      throw new NotExistException();
     }
+
+    return board;
   }
 }

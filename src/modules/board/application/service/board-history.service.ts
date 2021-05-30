@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotExistException } from 'src/modules/answer/application/exception/not-exist.exception';
 import { BoardPort, BOARD_PORT } from '../../domain/port/board.port';
 import { BoardType } from '../../domain/type/board.type';
 import { BoardHistoryResDto } from '../dto/board-history.dto';
@@ -19,6 +20,10 @@ export class BoardHistoryService {
       perPage,
       category,
     );
+    if (!boards) {
+      throw new NotExistException();
+    }
+
     return boards;
   }
 }

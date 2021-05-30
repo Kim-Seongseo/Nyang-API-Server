@@ -1,4 +1,5 @@
 import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { MemberRepository } from '../../infrastructure/persistence/repository/member.repository';
 import { MemberUpdateReqDto } from '../dto/member-update.dto';
@@ -12,16 +13,15 @@ export class MemberUpdateService {
     memberUpdateReqDto: MemberUpdateReqDto,
     fileIdentifier,
   ): Promise<any | undefined> {
-    try {
-      const memberIdentifier: number = await this.memberPort.updateMember(
-        identifier,
-        memberUpdateReqDto,
-        fileIdentifier,
-      );
-      return memberIdentifier;
-    } catch (error) {
-      console.log(error);
-      throw new RequestTimeoutException();
+    const memberIdentifier: number = await this.memberPort.updateMember(
+      identifier,
+      memberUpdateReqDto,
+      fileIdentifier,
+    );
+    if (!memberIdentifier) {
+      throw new UnexpectedErrorException();
     }
+
+    return memberIdentifier;
   }
 }

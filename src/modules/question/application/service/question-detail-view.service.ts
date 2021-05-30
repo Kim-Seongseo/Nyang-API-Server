@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { QuestionPort, QUESTION_PORT } from '../../domain/port/question.port';
 import { QuestionDetailViewResDto } from '../dto/question-detail.dto';
+import { NotExistException } from '../exception/not-exist.exception';
 
 @Injectable()
 export class QuestionDetailViewService {
@@ -18,8 +19,10 @@ export class QuestionDetailViewService {
       memberIsAdmin,
       identifier,
     );
+    if (!question) {
+      throw new NotExistException();
+    }
 
-    if (!question) throw new NotFoundException();
     return question;
   }
 }

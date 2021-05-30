@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UnexpectedErrorException } from 'src/modules/common/exception/unexpected-error-exception';
 import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { Comment } from '../../domain/entity/comment.entity';
 import { CommentPort, COMMENT_PORT } from '../../domain/port/comment.port';
@@ -33,6 +34,9 @@ export class CommentUpdateService {
     const commentIdentifier: number = await this.commentPort.saveComment(
       comment,
     );
+    if (!commentIdentifier) {
+      throw new UnexpectedErrorException();
+    }
 
     return commentIdentifier;
   }
