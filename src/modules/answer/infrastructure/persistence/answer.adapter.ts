@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MemberIdentifier } from 'src/modules/member/decorator/member-identifier.decorator';
 import { AnswerCreateReqDto } from '../../application/dto/answer-create.dto';
 import { AnswerFindResDto } from '../../application/dto/answer-find.dto';
+import { AnswerHistoryResDto } from '../../application/dto/answer-history.dto';
 import { Answer } from '../../domain/entity/answer.entity';
 import { AnswerPort } from '../../domain/port/answer.port';
 import { AnswerQueryRepository } from './repository/answer-query.repository';
@@ -13,6 +14,7 @@ export class AsnwerAdapter implements AnswerPort {
     private readonly answerQueryRepository: AnswerQueryRepository,
     private readonly answerRepository: AnswerRepository,
   ) {}
+
   async createAnswer(
     memberIdentifier: number,
     answerCreateReqDto: AnswerCreateReqDto,
@@ -48,8 +50,29 @@ export class AsnwerAdapter implements AnswerPort {
     );
     return answers;
   }
+  async findPaginatedAnswerByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+  ): Promise<AnswerHistoryResDto[] | undefined> {
+    const answers: AnswerHistoryResDto[] = await this.answerQueryRepository.findPaginatedAnswerByMemberIdentifier(
+      memberIdentifier,
+      skippedItems,
+      perPage,
+    );
+    return answers;
+  }
+
   async saveAnswer(answer: Answer): Promise<number | undefined> {
     await this.answerQueryRepository.save(answer);
     return answer.identifier;
+  }
+  async countBoardByMemberIdentifier(
+    memberIdentifier: number,
+  ): Promise<number> {
+    const count: number = await this.answerRepository.count({
+      member_identifier: { identifier: memberIdentifier },
+    });
+    return count;
   }
 }

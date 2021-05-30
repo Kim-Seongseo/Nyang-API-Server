@@ -8,6 +8,7 @@ import { QuestionCheckIssuerService } from './application/service/question-check
 import { QuestionCreateService } from './application/service/question-create.service';
 import { QuestionDeleteService } from './application/service/question-delete.service';
 import { QuestionDetailViewService } from './application/service/question-detail-view.service';
+import { QuestionHistoryService } from './application/service/question-history.service';
 import { QuestionSearchService } from './application/service/question-search.service';
 import { QuestionUpdateService } from './application/service/question-update.service';
 import { QuestionUtilService } from './application/service/question-util-service';
@@ -35,14 +36,12 @@ import { QuestionRepository } from './infrastructure/persistence/repository/ques
     QuestionCheckIssuerService,
     QuestionAdoptService,
     QuestionUtilService,
+    QuestionHistoryService,
     {
       provide: QUESTION_PORT,
       useClass: QuestionAdapter,
     },
   ],
-  exports: [
-    QuestionCheckIssuerService,
-    QuestionAdoptService,
-  ],
+  exports: [QuestionCheckIssuerService, QuestionAdoptService],
 })
 export class QuestionModule {}

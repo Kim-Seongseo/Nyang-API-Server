@@ -8,6 +8,7 @@ import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { LEN_OF_SUMMARY } from 'src/modules/question/domain/constant/content.constant';
 import { AnswerState } from 'src/modules/answer/domain/type/answer-state.type';
 import { QuestionState } from 'src/modules/question/domain/entity/question-state.enum';
+import { QuestionHistoryResDto } from 'src/modules/question/application/dto/question-history.dto';
 
 @EntityRepository(Question)
 export class QuestionQueryRepository extends Repository<Question> {
@@ -134,5 +135,30 @@ export class QuestionQueryRepository extends Repository<Question> {
       { identifier: question.identifier },
       { state: QuestionState.ADOPTED },
     );
+  }
+
+  async findPaginatedQuestionByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+  ): Promise<QuestionHistoryResDto[] | undefined> {
+    const datas = await this.createQueryBuilder('q')
+      .select('q.identifier', 'identifier')
+      .addSelect('q.title', 'title')
+      .addSelect('q.create_date', 'created_date')
+      .addSelect('count(a.identifier)', 'answer_number')
+      .addSelect('q.state', 'state')
+      .innerJoin('answer', 'a', 'a.question_identifier = q.identifier')
+      .where('q.member_identifier = :memberIdentifier', { memberIdentifier })
+      .andWhere('q.commonIs_deleted = :isDeleted', { isDeleted: 'none' })
+      .groupBy('q.identifier')
+      .orderBy('q.create_date', 'DESC')
+      .offset(skippedItems)
+      .limit(perPage)
+      .getRawMany();
+
+    return datas.map((data) => {
+      return plainToClass(QuestionHistoryResDto, classToPlain(data));
+    });
   }
 }

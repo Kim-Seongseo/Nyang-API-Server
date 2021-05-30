@@ -15,6 +15,12 @@ export class QuestionUtilService {
     return await this.questionPort.countQuestion();
   }
 
+  async totalDataPerMember(memberIdentifier): Promise<number | undefined> {
+    return await this.questionPort.countQuestionByMemberIdentifier(
+      memberIdentifier,
+    );
+  }
+
   async totalPage(
     totalData: number,
     perPage: number,
