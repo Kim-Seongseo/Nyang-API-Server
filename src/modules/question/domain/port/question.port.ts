@@ -4,7 +4,6 @@ import { QuestionHistoryResDto } from '../../application/dto/question-history.dt
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
 import { QuestionState } from '../entity/question-state.enum';
-import { Question } from '../entity/question.entity';
 
 export const QUESTION_PORT = 'QUESTION_PORT';
 
@@ -21,7 +20,7 @@ export interface QuestionPort {
 
   deleteQuestionByIdentifier(identifier: number): Promise<number | undefined>;
 
-  findQuestionByIdentifier(identifier: number): Promise<Question | undefined>;
+  findQuestionIssuerByIdentifier(identifier:number):Promise<number|undefined>;
 
   findQuestionDetailByIdentifierAndMember(
     memberIdentifier: number,
