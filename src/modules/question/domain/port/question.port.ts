@@ -1,5 +1,6 @@
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
+import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
 import { Question } from '../entity/question.entity';
@@ -38,7 +39,17 @@ export interface QuestionPort {
     perPage: number,
   ): Promise<QuestionViewResDto[] | undefined>;
 
+  findPaginatedQuestionByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+  ): Promise<QuestionHistoryResDto[] | undefined>;
+
   countQuestion(): Promise<number | undefined>;
+
+  countQuestionByMemberIdentifier(
+    memberIdentifier: number,
+  ): Promise<number | undefined>;
 
   updateQuestionState(postIdentifier: number): Promise<void | undefined>;
 }

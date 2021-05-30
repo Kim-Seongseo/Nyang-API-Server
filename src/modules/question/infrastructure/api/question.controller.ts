@@ -26,6 +26,7 @@ import { Permissions } from 'src/modules/role/decorator/role.decorator';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
+import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
 import { QuestionSearchReqDto } from '../../application/dto/question-search.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
@@ -34,6 +35,7 @@ import { QuestionCheckIssuerService } from '../../application/service/question-c
 import { QuestionCreateService } from '../../application/service/question-create.service';
 import { QuestionDeleteService } from '../../application/service/question-delete.service';
 import { QuestionDetailViewService } from '../../application/service/question-detail-view.service';
+import { QuestionHistoryService } from '../../application/service/question-history.service';
 import { QuestionSearchService } from '../../application/service/question-search.service';
 import { QuestionUpdateService } from '../../application/service/question-update.service';
 import { QuestionUtilService } from '../../application/service/question-util-service';
@@ -52,6 +54,7 @@ export class QuestionController {
     private readonly questionSearchService: QuestionSearchService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
     private readonly quesitonUtileService: QuestionUtilService,
+    private readonly questionHistoryService: QuestionHistoryService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -219,6 +222,68 @@ export class QuestionController {
         questions,
       );
     } catch (error) {
+      return this.responseService.error(error.response, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '회원별 게시물 기록 조회' })
+  @ApiQuery({
+    name: 'page',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'perPage',
+    type: 'string',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'success',
+    type: [QuestionHistoryResDto],
+  })
+  @ApiBearerAuth('token')
+  @Permissions(
+    PermissionType.BOARD_ACCESS,
+    PermissionType.BOARD_INFO_PUBLISH,
+    PermissionType.BOARD_MANAGE,
+  )
+  @Get('/history')
+  async viewFreeBoardHistory(
+    @MemberIdentifier() memberIdentifier: number,
+    @Query('page', new DefaultValuePipe(PAGE), ParseIntPipe) page: number,
+    @Query('perPage', new DefaultValuePipe(PER_PAGE), ParseIntPipe)
+    perPage: number,
+  ): Promise<Response | undefined> {
+    try {
+      const skippedItems: number = await this.quesitonUtileService.skip(
+        page,
+        perPage,
+      );
+      const boards: QuestionHistoryResDto[] = await this.questionHistoryService.history(
+        memberIdentifier,
+        perPage,
+        skippedItems,
+      );
+
+      const totalData: number = await this.quesitonUtileService.totalDataPerMember(
+        memberIdentifier,
+      );
+      const totalPage = await this.quesitonUtileService.totalPage(
+        totalData,
+        perPage,
+      );
+      return this.responseService.paging(
+        '질문 기록을 성공적으로 조회하였습니다.',
+        HttpStatus.OK,
+        totalData,
+        totalPage,
+        page,
+        perPage,
+        boards,
+      );
+    } catch (error) {
+      console.log(error);
       return this.responseService.error(error.response, error.status);
     }
   }

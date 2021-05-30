@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionDetailViewResDto } from '../../application/dto/question-detail.dto';
 import { QuestionCreateReqDto } from '../../application/dto/question-enroll.dto';
+import { QuestionHistoryResDto } from '../../application/dto/question-history.dto';
 import { QuestionUpdateReqDto } from '../../application/dto/question-update.dto';
 import { QuestionViewResDto } from '../../application/dto/question-view.dto';
 import { Question } from '../../domain/entity/question.entity';
@@ -14,9 +15,6 @@ export class QuestionAdapter implements QuestionPort {
     private readonly questionRepository: QuestionRepository,
     private readonly questionQueryRepository: QuestionQueryRepository,
   ) {}
-  async countQuestion(): Promise<number | undefined> {
-    return await this.questionRepository.count();
-  }
 
   async createQuestion(
     memberIdentifier: number,
@@ -94,8 +92,32 @@ export class QuestionAdapter implements QuestionPort {
     );
     return questions;
   }
-
+  async findPaginatedQuestionByMemberIdentifier(
+    memberIdentifier: number,
+    skippedItems: number,
+    perPage: number,
+  ): Promise<QuestionHistoryResDto[] | undefined> {
+    const questions: QuestionHistoryResDto[] = await this.questionQueryRepository.findPaginatedQuestionByMemberIdentifier(
+      memberIdentifier,
+      skippedItems,
+      perPage,
+    );
+    return questions;
+  }
   async updateQuestionState(postIdentifier: number): Promise<void | undefined> {
     await this.questionQueryRepository.updateQuestionState(postIdentifier);
+  }
+
+  async countQuestion(): Promise<number | undefined> {
+    return await this.questionRepository.count();
+  }
+
+  async countQuestionByMemberIdentifier(
+    memberIdentifier: number,
+  ): Promise<number> {
+    const count: number = await this.questionRepository.count({
+      member_identifier: { identifier: memberIdentifier },
+    });
+    return count;
   }
 }
