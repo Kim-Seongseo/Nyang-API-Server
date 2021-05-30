@@ -4,6 +4,7 @@ import { RecordState } from 'src/modules/post/domain/entity/record-state.enum';
 import { classToPlain, plainToClass } from 'class-transformer';
 import { AnswerFindResDto } from '../../../application/dto/answer-find.dto';
 import { AnswerHistoryResDto } from 'src/modules/answer/application/dto/answer-history.dto';
+import { AnswerState } from 'src/modules/answer/domain/type/answer-state.type';
 
 @EntityRepository(Answer)
 export class AnswerQueryRepository extends Repository<Answer> {
@@ -28,15 +29,16 @@ export class AnswerQueryRepository extends Repository<Answer> {
         })
         .leftJoin('file', 'f', 'm.member_photo = f.identifier')
         .getRawMany();
-      console.log(memberIdentifier);
-      return datas.map((data) => {
+      
+      return await Promise.all(datas.map(async (data) => {
         const isEditable =
           data.memberIdentifier === memberIdentifier ? true : false;
+        const adopted_number = await this.findAdoptedRecordByIdentifier(data.memberIdentifier);
         return plainToClass(
           AnswerFindResDto,
-          classToPlain({ ...data, isEditable }),
+          classToPlain({ ...data, isEditable, adopted_number }),
         );
-      });
+      }));
     } catch (error) {
       console.log(error);
     }
@@ -66,5 +68,17 @@ export class AnswerQueryRepository extends Repository<Answer> {
     return datas.map((data) => {
       return plainToClass(AnswerHistoryResDto, classToPlain(data));
     });
+  }
+
+  async findAdoptedRecordByIdentifier(memberIdentifier: number): Promise<number | undefined>{
+    const data = await this.createQueryBuilder('a')
+    .select('count(a.identifier)','record')
+    .innerJoin('member','m','m.identifier = a.member_identifier')
+    .where('m.identifier = :memberIdentifier', {memberIdentifier})
+    .andWhere('a.select_state = :state',{state: AnswerState.SELECTED})  
+    .getRawOne();
+
+    const record = data.record;
+    return record;
   }
 }

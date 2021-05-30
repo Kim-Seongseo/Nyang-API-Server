@@ -31,6 +31,10 @@ export class AnswerFindResDto {
   nickname: string;
 
   @Expose()
+  @IsNumber()
+  adopted_number: number;
+
+  @Expose()
   @IsString()
   profile_photo_path: string;
 
