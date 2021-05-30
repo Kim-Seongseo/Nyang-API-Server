@@ -146,7 +146,7 @@ export class QuestionQueryRepository extends Repository<Question> {
       .select('q.identifier', 'identifier')
       .addSelect('q.title', 'title')
       .addSelect('q.create_date', 'created_date')
-      .addSelect('count(c.identifier)', 'answer_number')
+      .addSelect('count(a.identifier)', 'answer_number')
       .addSelect('q.state', 'state')
       .innerJoin('answer', 'a', 'a.question_identifier = q.identifier')
       .where('q.member_identifier = :memberIdentifier', { memberIdentifier })
