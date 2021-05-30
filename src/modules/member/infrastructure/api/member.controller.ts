@@ -119,9 +119,9 @@ export class MemberController {
     // params: dto / done
     // 필수 입력정보 검증 -> validator & optional / done
     try {
-      const fileIdentifier = null;
+      let fileIdentifier:number = null;
       if (file) {
-        const fileIdentifier: number = await this.fileUploadService.upload(
+        fileIdentifier = await this.fileUploadService.upload(
           file,
         );
       }
