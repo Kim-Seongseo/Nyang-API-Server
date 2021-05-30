@@ -150,7 +150,7 @@ export class AnswerController {
     }
   }
 
-  @ApiOperation({ summary: '회원별 댓글 기록 조회' })
+  @ApiOperation({ summary: '회원별 답변 기록 조회' })
   @ApiQuery({
     name: 'page',
     type: 'string',
@@ -195,7 +195,7 @@ export class AnswerController {
         perPage,
       );
       return this.responseService.paging(
-        '게시물 기록을 성공적으로 조회하였습니다.',
+        '답변 기록을 성공적으로 조회하였습니다.',
         HttpStatus.OK,
         totalData,
         totalPage,
