@@ -134,15 +134,16 @@ export class QuestionQueryRepository extends Repository<Question> {
       .addSelect('q.create_date', 'created_date')
       .addSelect('count(a.identifier)', 'answer_number')
       .addSelect('q.state', 'state')
-      .innerJoin('answer', 'a', 'a.question_identifier = q.identifier')
+      .leftJoin('answer', 'a', 'a.question_identifier = q.identifier')
       .where('q.member_identifier = :memberIdentifier', { memberIdentifier })
-      .andWhere('q.commonIs_deleted = :isDeleted', { isDeleted: 'none' })
+      .andWhere('q.commonIs_deleted = :none', { none: 'none' })
       .groupBy('q.identifier')
       .orderBy('q.create_date', 'DESC')
       .offset(skippedItems)
       .limit(perPage)
       .getRawMany();
 
+    console.log(datas);
     return datas.map((data) => {
       return plainToClass(QuestionHistoryResDto, classToPlain(data));
     });
