@@ -3,6 +3,7 @@ import { UnexpectedErrorException } from 'src/modules/common/exception/unexpecte
 import { ROLE_MEMBER_MAPPING_PORT } from 'src/modules/role/domain/port/port.constant';
 import { RoleMemberMappingPort } from 'src/modules/role/domain/port/role-member-mapping.port';
 import { RoleMemberMappingUpdateReqDto } from '../../dto/role-member-mapping-update.dto';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class RoleMemberMappingUpdateService {
@@ -11,6 +12,7 @@ export class RoleMemberMappingUpdateService {
     private readonly roleMemberMappingPort: RoleMemberMappingPort,
   ) {}
 
+  @Transactional()
   async update(
     roleMemberMappingUpdateReqDto: RoleMemberMappingUpdateReqDto,
   ): Promise<number | undefined> {

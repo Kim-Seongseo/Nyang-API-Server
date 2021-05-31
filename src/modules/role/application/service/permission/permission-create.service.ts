@@ -5,6 +5,7 @@ import { PERMISSION_PORT } from 'src/modules/role/domain/port/port.constant';
 import { PermissionType } from 'src/modules/role/domain/type/permission-type.enum';
 import { DuplicatedPermissionException } from '../../exception/duplicated-name.exception';
 import { PermissionExistService } from './permission-exist.service';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class PermissionCreateService {
@@ -12,6 +13,8 @@ export class PermissionCreateService {
     @Inject(PERMISSION_PORT) private readonly permissionPort: PermissionPort,
     private readonly permissionExistService: PermissionExistService,
   ) {}
+
+  @Transactional()
   async create(permissionName: string): Promise<number | undefined> {
     const role = null;
     if (await this.permissionExistService.isExist(permissionName)) {

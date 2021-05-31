@@ -5,11 +5,13 @@ import { Answer } from '../../domain/entity/answer.entity';
 import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
 import { NotExistException } from '../exception/not-exist.exception';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class AnswerDeleteService {
   constructor(@Inject(ANSWER_PORT) private readonly answerPort: AnswerPort) {}
 
+  @Transactional()
   async delete(
     identifier: number,
     memberIdentifier: number,

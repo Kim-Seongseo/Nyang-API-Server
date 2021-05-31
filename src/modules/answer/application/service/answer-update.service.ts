@@ -6,7 +6,7 @@ import { AnswerPort, ANSWER_PORT } from '../../domain/port/answer.port';
 import { AnswerUpdateReqDto } from '../dto/answer-update.dto';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
 import { NotExistException } from '../exception/not-exist.exception';
-
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 @Injectable()
 export class AnswerUpdateService {
   constructor(
@@ -14,6 +14,7 @@ export class AnswerUpdateService {
     private readonly answerPort: AnswerPort,
   ) {}
 
+  @Transactional()
   async update(
     identifier: number,
     memberIdentifier: number,

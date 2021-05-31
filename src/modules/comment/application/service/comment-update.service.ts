@@ -6,6 +6,7 @@ import { CommentPort, COMMENT_PORT } from '../../domain/port/comment.port';
 import { CommentUpdateReqDto } from '../dto/comment-update.dto';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
 import { NotExistException } from '../exception/not-exist.exception';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class CommentUpdateService {
@@ -13,6 +14,7 @@ export class CommentUpdateService {
     @Inject(COMMENT_PORT) private readonly commentPort: CommentPort,
   ) {}
 
+  @Transactional()
   async update(
     identifer: number,
     memberIdentifier: number,

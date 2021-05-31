@@ -83,7 +83,7 @@ export class BoardQueryRepository extends Repository<Board> {
     }
     const datas = await query
       .groupBy('b.identifier')
-      .orderBy('create_date', 'DESC')
+      .orderBy('b.create_date', 'DESC')
       .offset(skippedItems)
       .limit(perPage)
       .getRawMany();

@@ -5,6 +5,7 @@ import { Member } from 'src/modules/member/domain/entity/member.entity';
 import { Comment } from '../../domain/entity/comment.entity';
 import { CommentPort, COMMENT_PORT } from '../../domain/port/comment.port';
 import { NotAIssuerException } from '../exception/not-a-issuer.exception';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class CommentDeleteService {
@@ -12,6 +13,7 @@ export class CommentDeleteService {
     @Inject(COMMENT_PORT) private readonly commentPort: CommentPort,
   ) {}
 
+  @Transactional()
   async delete(
     identifier: number,
     memberIdentifier: number,
