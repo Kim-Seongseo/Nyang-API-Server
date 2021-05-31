@@ -70,8 +70,10 @@ export class BoardQueryRepository extends Repository<Board> {
       .addSelect('m.nickname', 'nickname')
       .addSelect('count(c.identifier)', 'commentNum')
       .addSelect('b.create_date', 'create_date')
+      .addSelect('f.path', 'profile_photo_path')
       .innerJoin('member', 'm', 'b.memberIdentifierIdentifier = m.identifier')
       .leftJoin('comment', 'c', 'c.boardIdentifierIdentifier = b.identifier')
+      .leftJoin('file', 'f', 'm.member_photo = f.identifier')
       .where('b.commonIs_deleted = :none', { none: 'none' })
       .andWhere('b.category = :category', { category });
     if (keyword) {

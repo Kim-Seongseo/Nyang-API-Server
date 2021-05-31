@@ -76,8 +76,10 @@ export class QuestionQueryRepository extends Repository<Question> {
       .addSelect('q.state', 'state')
       .addSelect('count(a.identifier)', 'answerNum')
       .addSelect('q.create_date', 'create_date')
+      .addSelect('f.path', 'profile_photo_path')
       .innerJoin('member', 'm', 'q.memberIdentifierIdentifier = m.identifier')
       .leftJoin('answer', 'a', 'a.questionIdentifierIdentifier = q.identifier')
+      .leftJoin('file', 'f', 'm.member_photo = f.identifier')
       .where('q.commonIs_deleted = :none', { none: 'none' })
       .groupBy('q.identifier')
       .orderBy('create_date', 'DESC')
@@ -110,8 +112,10 @@ export class QuestionQueryRepository extends Repository<Question> {
       .addSelect('q.state', 'state')
       .addSelect('count(a.identifier)', 'answerNum')
       .addSelect('q.create_date', 'create_date')
+      .addSelect('f.path', 'profile_photo_path')
       .innerJoin('member', 'm', 'q.memberIdentifierIdentifier = m.identifier')
       .leftJoin('answer', 'a', 'a.questionIdentifierIdentifier = q.identifier')
+      .leftJoin('file', 'f', 'm.member_photo = f.identifier')
       .where('q.commonIs_deleted = :none', { none: 'none' })
       .andWhere('q.title like :keyword', {
         keyword: `%${keyword}%`,
