@@ -59,8 +59,6 @@ export class AnswerController {
     private readonly answerHistoryService: AnswerHistoryService,
     private readonly responseService: ResponseService,
     private readonly questionCheckIssuerService: QuestionCheckIssuerService,
-    private readonly questionAdoptService: QuestionAdoptService,
-    private readonly questionRelegationService: QuestionRelegationService,
   ) {}
 
   @ApiOperation({ summary: '답변 등록' })
@@ -280,10 +278,8 @@ export class AnswerController {
       }
 
       const identifier: string = (
-        await this.answerRelegationService.relegation(answerIdentifier)
+        await this.answerRelegationService.relegation(answerIdentifier, postIdentifier)
       ).toString();
-
-      await this.questionRelegationService.relegation(postIdentifier);
 
       return this.responseService.success(
         '답변을 성공적으로 좌천시켰습니다.',
@@ -327,10 +323,8 @@ export class AnswerController {
       }
 
       const identifier: string = (
-        await this.answerAdoptService.adopt(answerIdentifier)
+        await this.answerAdoptService.adopt(answerIdentifier, postIdentifier)
       ).toString();
-
-      await this.questionAdoptService.adopt(postIdentifier);
 
       return this.responseService.success(
         '답변을 성공적으로 채택하였습니다.',

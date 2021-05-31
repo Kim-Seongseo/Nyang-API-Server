@@ -6,6 +6,7 @@ import { Member } from '../../domain/entity/member.entity';
 import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { MemberCreateReqDto } from '../dto/member-signIn.dto';
 import { MemberCheckDuplicationService } from './member-check-duplication.service';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class MemberCreateService {
@@ -15,6 +16,7 @@ export class MemberCreateService {
     private readonly roleMemberMappingCreateService: RoleMemberMappingCreateService,
   ) {}
 
+  @Transactional()
   async create(
     memberCreateReqDto: MemberCreateReqDto,
   ): Promise<number | undefined> {

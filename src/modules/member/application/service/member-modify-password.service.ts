@@ -4,11 +4,13 @@ import { UnexpectedErrorException } from 'src/modules/common/exception/unexpecte
 import { Member } from '../../domain/entity/member.entity';
 import { MemberPort, MEMBER_PORT } from '../../domain/port/member.port';
 import { MemberModifyPasswordReqDto } from '../dto/member-update-password.dto';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class MemberModifyPasswordService {
   constructor(@Inject(MEMBER_PORT) private readonly memberPort: MemberPort) {}
 
+  @Transactional()
   async modifyPassword(
     memberModifyPasswordReqDto: MemberModifyPasswordReqDto,
   ): Promise<number | undefined> {

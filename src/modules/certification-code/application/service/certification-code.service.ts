@@ -3,16 +3,14 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  RequestTimeoutException,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { CertificationCodeRepository } from 'src/modules/certification-code/infrastructure/repository/certification-code.repository';
 import { CertificationCode } from '../../domain/entity/certification-code.entity';
 import { CertificationCodeEmailCreateReqDto } from '../dto/certification-code-email-create.dto';
 import {
   CertificationCodeEmailFindReqDto,
-  CertificationCodeEmailFindResDto,
 } from '../dto/certification-code-email-find.dto';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class CertificationCodeService {
@@ -20,6 +18,7 @@ export class CertificationCodeService {
     private certificationCodeRepository: CertificationCodeRepository,
   ) {}
 
+  @Transactional()
   async insert(
     certificationCodeEmailCreateReqDto: CertificationCodeEmailCreateReqDto,
   ): Promise<void | undefined> {

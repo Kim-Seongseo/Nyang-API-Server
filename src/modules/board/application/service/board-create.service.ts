@@ -3,11 +3,12 @@ import { UnexpectedErrorException } from 'src/modules/common/exception/unexpecte
 import { BoardPort, BOARD_PORT } from '../../domain/port/board.port';
 import { BoardType } from '../../domain/type/board.type';
 import { BoardCreateReqDto } from '../dto/board-create.dto';
-
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 @Injectable()
 export class BoardCreateService {
   constructor(@Inject(BOARD_PORT) private readonly boardPort: BoardPort) {}
 
+  @Transactional()
   async create(
     memberIdentifier: number,
     boardCreateReqDto: BoardCreateReqDto,
