@@ -20,6 +20,10 @@ export class BoardViewResDto {
 
   @Expose()
   @IsString()
+  readonly profile_photo_path: string;
+
+  @Expose()
+  @IsString()
   readonly summary: string;
 
   @Expose()

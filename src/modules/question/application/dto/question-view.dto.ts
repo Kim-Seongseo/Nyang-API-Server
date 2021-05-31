@@ -29,6 +29,10 @@ export class QuestionViewResDto {
   readonly nickname: string;
 
   @Expose()
+  @IsString()
+  readonly profile_photo_path: string;
+
+  @Expose()
   @IsNumber()
   readonly state: QuestionState;
 
