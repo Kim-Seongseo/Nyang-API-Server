@@ -22,7 +22,7 @@ export class QuestionViewResDto {
 
   @Expose()
   @IsString()
-  readonly species: string;
+  readonly genus: string;
 
   @Expose()
   @IsString()
