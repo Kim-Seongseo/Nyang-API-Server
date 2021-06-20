@@ -1,0 +1,10 @@
+# lib & auto
+node_modules
+dist
+
+# env
+config
+.env
+
+#file
+images
