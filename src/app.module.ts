@@ -16,25 +16,15 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import connectionOption from 'ormconfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'mysql',
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT) || 3306,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
-        entities: ['dist/**/*.entity{.ts,.js}'],
-        synchronize: true,
-        // logging: true,
-      }),
-    }),
+    TypeOrmModule.forRoot(connectionOption),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '/images'),
     }),
